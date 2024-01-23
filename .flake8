@@ -1,0 +1,4 @@
+# Time-stamp: <2024-01-13 20:55:06 krylon>
+[flake8]
+per-file-ignores =
+                 test_database.py: E501
