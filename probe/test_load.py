@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-25 18:44:39 krylon>
+# Time-stamp: <2024-01-27 20:40:55 krylon>
 #
 # /data/code/python/medusa/probe/test_load.py
 # created on 25. 01. 2024
@@ -48,13 +48,14 @@ class LoadTest(unittest.TestCase):
         """Clean up afterwards"""
         os.system(f'rm -rf "{TEST_DIR}"')
 
-    def test_get_load_data(self):
+    def test_get_load_data(self) -> None:
         """Bla"""
         p: Final[LoadProbe] = LoadProbe(timedelta(seconds=2))
         self.assertTrue(p.is_due())
         data = p.get_data()
         self.assertFalse(p.is_due())
         self.assertIsNotNone(data)
+        assert data is not None
         self.assertIsInstance(data, dict)
         self.assertEqual(len(data), 3)
         for k, v in data.items():
