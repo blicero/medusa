@@ -1,9 +1,11 @@
-[tool.pylint.main]
-# Time-stamp: <2024-01-17 11:35:22 krylon>
+# Time-stamp: <2024-05-29 19:16:49 krylon>
+#
 # Analyse import fallback blocks. This can be used to support both Python 2 and 3
 # compatible code, which means that the block might have code that exists only in
 # one or another interpreter, leading to false positives when analysed.
 # analyse-fallback-blocks =
+
+[tool.pylint.main]
 
 # Clear in-memory caches upon conclusion of linting. Useful if running pylint in
 # a server-like mode.
@@ -163,7 +165,7 @@ function-naming-style = "snake_case"
 # function-rgx =
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names = ["i", "j", "k", "ex", "Run", "_"]
+good-names = ["i", "j", "k", "ex", "Run", "_", "e", "x", "y", "a", "b"]
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -251,7 +253,7 @@ valid-metaclass-classmethod-first-arg = ["mcs"]
 max-args = 5
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes = 7
+max-attributes = 20
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr = 5
@@ -272,10 +274,10 @@ max-public-methods = 20
 max-returns = 6
 
 # Maximum number of statements in function / method body.
-max-statements = 50
+max-statements = 100
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods = 2
+min-public-methods = 1
 
 [tool.pylint.exceptions]
 # Exceptions that will emit a warning when caught.
@@ -299,7 +301,7 @@ indent-string = "    "
 max-line-length = 100
 
 # Maximum number of lines in a module.
-max-module-lines = 1000
+max-module-lines = 5000
 
 # Allow the body of a class to be on the same line as the declaration if body
 # contains single statement.
@@ -377,8 +379,10 @@ disable = [
         "deprecated-pragma",
         # "use-implicit-booleaness-not-comparison-to-string",
         "use-symbolic-message-instead",
+        "W0511",
         "C0302",
-        "C0103"]
+        "C0103",
+        "R0801"]
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -549,3 +553,7 @@ ignored-argument-names = "_.*|^ignored_|^unused_"
 redefining-builtins-modules = ["six.moves", "past.builtins", "future.builtins", "builtins", "io"]
 
 
+[tool.pytest.ini_options]
+filterwarnings = [
+               "ignore::UserWarning",
+]
