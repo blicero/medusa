@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-24 00:27:24 krylon>
+# Time-stamp: <2024-05-29 19:15:43 krylon>
 #
 # /data/code/python/medusa/common.py
 # created on 24. 01. 2024
@@ -37,8 +37,11 @@ class Path:
         self.__base = root
 
     def base(self, folder: str = "") -> str:
-        """Return the base directory for application specific files.
-        If path is a non-empty string, set the base directory to its value."""
+        """
+        Return the base directory for application specific files.
+
+        If path is a non-empty string, set the base directory to its value.
+        """
         if folder != "":
             self.__base = folder
         return self.__base

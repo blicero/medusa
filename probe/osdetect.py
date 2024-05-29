@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-26 16:10:50 krylon>
+# Time-stamp: <2024-05-29 19:18:00 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -24,9 +24,12 @@ import krylib
 
 
 class Platform(NamedTuple):
-    """Platform identifies a combination of hardware architecture, operating
-    system, and version.
-    Example: Platform("Debian", "bookworm", "amd64")"""
+    """
+    Platform identifies a combination of hardware architecture, operating system, and version.
+
+    Example: Platform("Debian", "bookworm", "amd64")
+    """
+
     name: str
     version: str
     arch: str

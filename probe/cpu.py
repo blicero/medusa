@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-27 20:38:33 krylon>
+# Time-stamp: <2024-05-29 19:17:29 krylon>
 #
 # /data/code/python/medusa/probe/cpu.py
 # created on 27. 01. 2024
@@ -27,6 +27,7 @@ class CPUProbe(BaseProbe):
     """Query various CPU-related data"""
 
     def get_data(self) -> Optional[dict[str, Any]]:
+        """Get data on CPU(s)"""
         data = get_cpu_info()
         self._set_stamp()
         info = {"frequency": data["hz_actual"][0]}
