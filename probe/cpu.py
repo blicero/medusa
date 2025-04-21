@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-05-29 19:17:29 krylon>
+# Time-stamp: <2025-04-21 15:08:08 krylon>
 #
 # /data/code/python/medusa/probe/cpu.py
 # created on 27. 01. 2024
@@ -16,21 +16,23 @@ medusa.probe.cpu
 (c) 2024 Benjamin Walkenhorst
 """
 
-from typing import Any, Optional
-
 from cpuinfo import get_cpu_info
-
+from medusa.data import CPURecord, Record
 from medusa.probe.base import BaseProbe
 
 
 class CPUProbe(BaseProbe):
     """Query various CPU-related data"""
 
-    def get_data(self) -> Optional[dict[str, Any]]:
+    def get_data(self) -> Record:
         """Get data on CPU(s)"""
         data = get_cpu_info()
         self._set_stamp()
-        info = {"frequency": data["hz_actual"][0]}
+        # info = {"frequency": data["hz_actual"][0]}
+        info: CPURecord = CPURecord(
+            timestamp=self.last_fetch,
+            frequency=data["hz_actual"][0],
+        )
         # TODO Get temperature, if possible utilization, too.
         return info
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-27 20:40:55 krylon>
+# Time-stamp: <2025-04-21 15:07:52 krylon>
 #
 # /data/code/python/medusa/probe/test_load.py
 # created on 25. 01. 2024
@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 from typing import Final
 
 from medusa import common
+from medusa.data import LoadRecord
 from medusa.probe.sysload import LoadProbe
 
 TEST_DIR: str = os.path.join(
@@ -56,12 +57,7 @@ class LoadTest(unittest.TestCase):
         self.assertFalse(p.is_due())
         self.assertIsNotNone(data)
         assert data is not None
-        self.assertIsInstance(data, dict)
-        self.assertEqual(len(data), 3)
-        for k, v in data.items():
-            self.assertIsInstance(k, str)
-            self.assertIsInstance(v, float)
-            self.assertGreaterEqual(v, 0)
+        self.assertIsInstance(data, LoadRecord)
 
 
 # Local Variables: #

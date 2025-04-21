@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 13:12:59 krylon>
+# Time-stamp: <2025-04-21 15:20:00 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -53,6 +53,7 @@ def guess_os(osrel: str = OS_REL) -> Platform:
     """Attempt to determine which platform we are running on."""
     # First step, we try /etc/os-release, if it exists.
     if krylib.fexist(osrel):
+        print(f"Read os-release data from {osrel}")
         info: dict[str, str] = {}
         with open(osrel, "r", encoding="utf-8") as fh:
             for line in fh:

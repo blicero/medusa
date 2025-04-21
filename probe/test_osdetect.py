@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 13:11:21 krylon>
+# Time-stamp: <2025-04-21 17:50:07 krylon>
 #
 # /data/code/python/medusa/probe/test_osdetect.py
 # created on 26. 01. 2024
@@ -60,8 +60,9 @@ class OsDetectTest(unittest.TestCase):
         ]
 
         for s in samples:
-            release: str = f"os-release-{s[0]}"
+            release: str = f"probe/os-release-{s[0]}"
             guess: Platform = guess_os(release)
+            print(f"{release} => {guess}")
             self.assertEqual(guess.name, s[1])
 
 

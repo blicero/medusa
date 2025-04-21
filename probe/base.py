@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-03-18 21:47:36 krylon>
+# Time-stamp: <2025-04-21 15:06:33 krylon>
 #
 # /data/code/python/medusa/probe/base.py
 # created on 25. 01. 2024
@@ -19,9 +19,10 @@ medusa.probe.base
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
-from typing import Any, Final, Optional
+from typing import Final, Optional
 
 from medusa import common
+from medusa.data import Record
 
 
 class BaseProbe(ABC):
@@ -40,7 +41,7 @@ class BaseProbe(ABC):
         self.last_fetch = datetime.now()
 
     @abstractmethod
-    def get_data(self) -> Optional[dict[str, Any]]:
+    def get_data(self) -> Optional[Record]:
         """Retrieve data."""
 
     def is_due(self) -> bool:
