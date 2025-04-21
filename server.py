@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-03-18 21:56:32 krylon>
+# Time-stamp: <2025-04-21 15:08:17 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -25,7 +25,7 @@ class RequestHandler(BaseRequestHandler):
 
     def setup(self) -> None:
         """Prepare the handler for handling its request."""
-        pass
+
 
 # Local Variables: #
 # python-indent: 4 #

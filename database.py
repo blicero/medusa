@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-03-18 22:13:22 krylon>
+# Time-stamp: <2025-04-21 14:46:10 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -24,10 +24,13 @@ OPEN_LOCK: Final[Lock] = Lock()
 INIT_QUERIES: Final[list[str]] = [
     """
 CREATE TABLE host (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
-    os TEXT NOT NULL,
+    id                  INTEGER PRIMARY KEY,
+    name                TEXT NOT NULL,
+    os                  TEXT NOT NULL,
+    last_contact        INTEGER NOT NULL DEFAULT 0,
 ) STRICT
+    """,
+    """
     """,
 ]
 
