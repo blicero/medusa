@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-05-29 19:18:00 krylon>
+# Time-stamp: <2025-04-21 13:12:59 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -67,11 +67,11 @@ def guess_os(osrel: str = OS_REL) -> Platform:
             case "raspbian":
                 return Platform("debian", info["version_id"], "raspberry-pi")
             case "opensuse-tumbleweed" | "opensuse-leap":
-                return Platform("opensuse", info["version_id"], "unknown")
+                return Platform(info["id"], info["version_id"], "unknown")
             case "freebsd":
                 return Platform("freebsd", info["version_id"], "unknown")
             case "arch" | "manjaro":
-                return Platform("arch", info["version_id"], "unknown")
+                return Platform("arch", 'n/a', "unknown")
 
     uname: Final[str] = sp.check_output(["/bin/uname", "-smr"]).decode()
     sysname, version, arch = uname.strip().split()

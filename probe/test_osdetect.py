@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-26 16:18:01 krylon>
+# Time-stamp: <2025-04-21 13:11:21 krylon>
 #
 # /data/code/python/medusa/probe/test_osdetect.py
 # created on 26. 01. 2024
@@ -22,6 +22,7 @@ from datetime import datetime
 from typing import Final
 
 from medusa import common
+from medusa.probe.osdetect import Platform, guess_os
 
 TEST_PATH_TEMPLATE: Final[str] = \
     "medusa_probe_test_osdetect_%Y%m%d_%H%M%S"
@@ -49,6 +50,19 @@ class OsDetectTest(unittest.TestCase):
     def tearDownClass(cls) -> None:
         """Clean up afterwards"""
         os.system(f'rm -rf "{TEST_DIR}"')
+
+    def test_guess_os(self) -> None:
+        """Test parsing the os-release samples we have gathered."""
+        samples = [
+            ('arch', 'arch'),
+            ('raspbian', 'debian'),
+            ('opensuse-tumbleweed', 'opensuse-tumbleweed'),
+        ]
+
+        for s in samples:
+            release: str = f"os-release-{s[0]}"
+            guess: Platform = guess_os(release)
+            self.assertEqual(guess.name, s[1])
 
 
 # Local Variables: #
