@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2024-01-25 18:32:12 krylon>
+# Time-stamp: <2025-03-18 21:47:36 krylon>
 #
 # /data/code/python/medusa/probe/base.py
 # created on 25. 01. 2024
 # (c) 2024 Benjamin Walkenhorst
 #
-# This file is part of the Vox audiobook reader. It is distributed under the
+# This file is part of the Medusa network monitor. It is distributed under the
 # terms of the GNU General Public License 3. See the file LICENSE for details
 # or find a copy online at https://www.gnu.org/licenses/gpl-3.0
 
