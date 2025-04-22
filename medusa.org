@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-22 15:18:25 krylon>
+# Time-stamp: <2025-04-22 19:04:21 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,16 +14,16 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-04-22 Di 15:18]
+   #+CAPTION: Clock summary at [2025-04-22 Di 19:04]
    | Headline               | Time   |        |      |
    |------------------------+--------+--------+------|
-   | *Total time*           | *5:09* |        |      |
+   | *Total time*           | *5:56* |        |      |
    |------------------------+--------+--------+------|
-   | *Medusa [0/0]*         | *5:09* |        |      |
-   | \_  /Components [0/0]/ |        | /5:09/ |      |
+   | *Medusa [0/0]*         | *5:56* |        |      |
+   | \_  /Components [0/0]/ |        | /5:56/ |      |
    | \_    Probes [0/0]     |        |        | 2:31 |
-   | \_    Model [0/0]      |        |        | 1:43 |
-   | \_    Database [0/0]   |        |        | 0:55 |
+   | \_    Model [0/0]      |        |        | 2:17 |
+   | \_    Database [0/0]   |        |        | 1:08 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -50,6 +50,7 @@
     :VISIBILITY: children
     :END:
     :LOGBOOK:
+    CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:51] =>  0:34
     CLOCK: [2025-04-21 Mo 13:31]--[2025-04-21 Mo 15:14] =>  1:43
     :END:
 *** Database [0/0]
@@ -58,6 +59,8 @@
     :VISIBILITY: children
     :END:
     :LOGBOOK:
+    CLOCK: [2025-04-22 Di 18:51]--[2025-04-22 Di 19:04] =>  0:13
+    CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:17] =>  0:00
     CLOCK: [2025-04-22 Di 14:23]--[2025-04-22 Di 15:18] =>  0:55
     :END:
 *** Server [0/1]
