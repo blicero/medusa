@@ -58,7 +58,7 @@ class CPURecord(Record):
 
     def source(self) -> str:
         """Return the source of the Record."""
-        return "CPU"
+        return "cpu"
 
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
@@ -81,11 +81,12 @@ class LoadRecord(Record):
 
     def source(self) -> str:
         """Return the source of the Record."""
-        return "SysLoad"
+        return "sysload"
 
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
         return json.dumps(self.load)
+
 
 # Local Variables: #
 # python-indent: 4 #
