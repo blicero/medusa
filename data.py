@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 15:06:18 krylon>
+# Time-stamp: <2025-04-22 15:05:45 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -16,13 +16,14 @@ medusa.data
 (c) 2025 Benjamin Walkenhorst
 """
 
-from abc import ABC
+import json
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import NamedTuple, Optional
 
 
-@dataclass(kw_only=True)
+@dataclass(slots=True, kw_only=True)
 class Host:
     """Host represents a computer - real or virtual - on a network."""
 
@@ -40,12 +41,28 @@ class Record(ABC):
     host_id: int = 0
     timestamp: datetime = field(default_factory=datetime.now)
 
+    @abstractmethod
+    def source(self) -> str:
+        """Return the source of the Record."""
+
+    @abstractmethod
+    def payload(self) -> str:
+        """Return the Record payload in serialized form."""
+
 
 @dataclass(slots=True)
 class CPURecord(Record):
     """CPURecord represents the CPU frequency and possible load."""
 
     frequency: int = 0
+
+    def source(self) -> str:
+        """Return the source of the Record."""
+        return "CPU"
+
+    def payload(self) -> str:
+        """Return the Record payload in serialized form."""
+        return json.dumps(self.frequency)
 
 
 class SysLoad(NamedTuple):
@@ -62,6 +79,13 @@ class LoadRecord(Record):
 
     load: Optional[SysLoad]
 
+    def source(self) -> str:
+        """Return the source of the Record."""
+        return "SysLoad"
+
+    def payload(self) -> str:
+        """Return the Record payload in serialized form."""
+        return json.dumps(self.load)
 
 # Local Variables: #
 # python-indent: 4 #
