@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-21 15:14:14 krylon>
+# Time-stamp: <2025-04-22 15:18:25 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,15 +14,16 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-04-21 Mo 15:14]
+   #+CAPTION: Clock summary at [2025-04-22 Di 15:18]
    | Headline               | Time   |        |      |
    |------------------------+--------+--------+------|
-   | *Total time*           | *4:14* |        |      |
+   | *Total time*           | *5:09* |        |      |
    |------------------------+--------+--------+------|
-   | *Medusa [0/0]*         | *4:14* |        |      |
-   | \_  /Components [0/0]/ |        | /4:14/ |      |
+   | *Medusa [0/0]*         | *5:09* |        |      |
+   | \_  /Components [0/0]/ |        | /5:09/ |      |
    | \_    Probes [0/0]     |        |        | 2:31 |
    | \_    Model [0/0]      |        |        | 1:43 |
+   | \_    Database [0/0]   |        |        | 0:55 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -55,6 +56,9 @@
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
+    :END:
+    :LOGBOOK:
+    CLOCK: [2025-04-22 Di 14:23]--[2025-04-22 Di 15:18] =>  0:55
     :END:
 *** Server [0/1]
     :PROPERTIES:
