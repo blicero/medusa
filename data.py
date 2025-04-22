@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-22 15:05:45 krylon>
+# Time-stamp: <2025-04-22 18:50:28 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -20,7 +20,7 @@ import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import NamedTuple, Optional
+from typing import Any, NamedTuple, Optional
 
 
 @dataclass(slots=True, kw_only=True)
@@ -40,6 +40,28 @@ class Record(ABC):
     record_id: int = -1
     host_id: int = 0
     timestamp: datetime = field(default_factory=datetime.now)
+
+    @staticmethod
+    def get_instance(rid: int, hid: int, tstamp: datetime, src: str, pload: str) -> 'Record':
+        """De-serialize an instance."""
+        raw: Any = json.loads(pload)
+        match src:
+            case 'cpu':
+                return CPURecord(
+                    record_id=rid,
+                    host_id=hid,
+                    timestamp=tstamp,
+                    frequency=raw,
+                )
+            case 'sysload':
+                return LoadRecord(
+                    record_id=rid,
+                    host_id=hid,
+                    timestamp=tstamp,
+                    load=SysLoad(raw[0], raw[1], raw[2]),
+                )
+            case _:
+                raise ValueError(f"Unrecognized payload source '{src}'")
 
     @abstractmethod
     def source(self) -> str:
