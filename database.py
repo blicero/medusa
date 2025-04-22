@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-22 15:01:58 krylon>
+# Time-stamp: <2025-04-22 19:03:45 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -201,8 +201,40 @@ class Database:
         cur.execute(db_queries[QueryID.RecordAdd],
                     (rec.host_id,
                      int(rec.timestamp.timestamp()),
-                     rec.source,
+                     rec.source(),
+                     rec.payload(),
                      ))
+
+        row = cur.fetchone()
+        assert row is not None
+        assert len(row) == 1
+        assert isinstance(row[0], int)
+        rec.record_id = row[0]
+
+    def record_get_by_host(self, host: data.Host, limit: int = -1) -> list[data.Record]:
+        """Load the records for a given Host.
+
+        Records are sorted by timestamp in descending order.
+        If limit is given, only the <limit> most recent records are returned.
+        """
+        cur: sqlite3.Cursor = self.db.cursor()
+        cur.execute(db_queries[QueryID.RecordGetByHost],
+                    (host.host_id, limit))
+
+        records: list[data.Record] = []
+
+        for row in cur:
+            rec: data.Record = data.Record.get_instance(
+                row[0],
+                host.host_id,
+                datetime.fromtimestamp(row[1]),
+                row[2],
+                row[3],
+            )
+            records.append(rec)
+
+        return records
+
 
 # Local Variables: #
 # python-indent: 4 #
