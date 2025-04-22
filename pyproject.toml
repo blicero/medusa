@@ -1,4 +1,4 @@
-# Time-stamp: <2024-05-29 19:16:49 krylon>
+# Time-stamp: <2025-04-22 17:47:20 krylon>
 #
 # Analyse import fallback blocks. This can be used to support both Python 2 and 3
 # compatible code, which means that the block might have code that exists only in
@@ -250,7 +250,7 @@ valid-metaclass-classmethod-first-arg = ["mcs"]
 # ignored-parents =
 
 # Maximum number of arguments for function / method.
-max-args = 5
+max-args = 7
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes = 20
