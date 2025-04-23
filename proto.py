@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-23 20:20:22 krylon>
+# Time-stamp: <2025-04-23 21:15:33 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -16,7 +16,9 @@ medusa.proto
 (c) 2025 Benjamin Walkenhorst
 """
 
+from dataclasses import dataclass
 from enum import IntEnum, auto
+from typing import Any
 
 
 class MsgType(IntEnum):
@@ -37,7 +39,7 @@ class Message:
     mtype: MsgType
     payload: Any
 
-
+    __match_args__ = ("mtype", "payload")
 
 
 # Local Variables: #

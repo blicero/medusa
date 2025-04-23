@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-23 20:18:34 krylon>
+# Time-stamp: <2025-04-23 21:49:43 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -17,6 +17,7 @@ medusa.server
 """
 
 
+import json
 import random
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -27,6 +28,7 @@ from typing import Final, Optional
 from medusa import common
 from medusa.data import Host
 from medusa.database import Database
+from medusa.proto import Message, MsgType
 
 # We keep the lifetime rather low initially, for testing and debugging.
 # Later on, this should be configurable, and a lot longer by default (couple of hours?).
@@ -95,6 +97,7 @@ class SessionStore:
 
     @classmethod
     def get_store(cls) -> 'SessionStore':
+        """Return the quasi-singleton instance of the SessionStore."""
         with cls.slock:
             if cls._instance is not None:
                 return cls._instance
@@ -115,9 +118,14 @@ class RequestHandler(DatagramRequestHandler):
     def handle(self) -> None:
         """You got a Datagram. Deal with it."""
         self.log.debug(f"Handle request from {self.client_address}: {self.request[0]}")
-        msg = self.request[0].strip()
+        packet = self.request[0].strip()
         conn = self.request[1]
-        
+        comm = json.loads(packet)
+        assert isinstance(comm, Message)
+
+        match comm.mtype:
+            case MsgType.SessionStart:
+                pass
 
 
 # Local Variables: #
