@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-23 23:59:07 krylon>
+# Time-stamp: <2025-04-25 15:39:23 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,17 +14,18 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-04-23 Mi 23:59]
-   | Headline               | Time    |         |      |
-   |------------------------+---------+---------+------|
-   | *Total time*           | *13:34* |         |      |
-   |------------------------+---------+---------+------|
-   | *Medusa [0/0]*         | *13:34* |         |      |
-   | \_  /Components [0/0]/ |         | /13:34/ |      |
-   | \_    Probes [0/0]     |         |         | 2:31 |
-   | \_    Model [0/0]      |         |         | 2:17 |
-   | \_    Database [0/0]   |         |         | 1:08 |
-   | \_    Server [0/1]     |         |         | 7:38 |
+   #+CAPTION: Clock summary at [2025-04-25 Fr 15:39]
+   | Headline               | Time    |         |      |      |
+   |------------------------+---------+---------+------+------|
+   | *Total time*           | *15:11* |         |      |      |
+   |------------------------+---------+---------+------+------|
+   | *Medusa [0/0]*         | *15:11* |         |      |      |
+   | \_  /Components [0/0]/ |         | /15:11/ |      |      |
+   | \_    Probes [0/0]     |         |         | 2:31 |      |
+   | \_    Model [0/0]      |         |         | 2:17 |      |
+   | \_    Database [0/1]   |         |         | 1:36 |      |
+   | \_      Pool           |         |         |      | 0:28 |
+   | \_    Server [0/1]     |         |         | 8:47 |      |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -54,7 +55,7 @@
     CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:51] =>  0:34
     CLOCK: [2025-04-21 Mo 13:31]--[2025-04-21 Mo 15:14] =>  1:43
     :END:
-*** Database [0/0]
+*** Database [0/1]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -64,12 +65,29 @@
     CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:17] =>  0:00
     CLOCK: [2025-04-22 Di 14:23]--[2025-04-22 Di 15:18] =>  0:55
     :END:
+**** TODO Pool
+     :LOGBOOK:
+     CLOCK: [2025-04-24 Do 18:43]--[2025-04-24 Do 19:11] =>  0:28
+     :END:
+     I want a connection pool, similar to what I created in Go.
+     And I want it to be a context manager, so I can say something like
+     #+BEGIN_SRC Python
+       with db_pool.get() as db:
+           db.do_something(blah)
+     #+END_SRC
+     such that the the database instance will be returned to the pool on exit
+     from the block.
+     ...
+     [2025-04-24 Do 19:06]
+     After looking into this a bit, I think it is too much, I don't need it.
+     The context manager part, I mean.
 *** Server [0/1]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
     :END:
     :LOGBOOK:
+    CLOCK: [2025-04-24 Do 17:33]--[2025-04-24 Do 18:42] =>  1:09
     CLOCK: [2025-04-23 Mi 21:15]--[2025-04-23 Mi 21:40] =>  0:25
     CLOCK: [2025-04-23 Mi 17:45]--[2025-04-23 Mi 20:18] =>  2:33
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
