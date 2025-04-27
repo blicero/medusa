@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 15:06:33 krylon>
+# Time-stamp: <2025-04-25 16:31:01 krylon>
 #
 # /data/code/python/medusa/probe/base.py
 # created on 25. 01. 2024
@@ -25,7 +25,7 @@ from medusa import common
 from medusa.data import Record
 
 
-class BaseProbe(ABC):
+class Probe(ABC):
     """Base class for all probes"""
 
     log: logging.Logger
@@ -43,6 +43,10 @@ class BaseProbe(ABC):
     @abstractmethod
     def get_data(self) -> Optional[Record]:
         """Retrieve data."""
+
+    @abstractmethod
+    def name(self) -> str:
+        """Return the Probe's name."""
 
     def is_due(self) -> bool:
         """Check if it's okay to get new data."""

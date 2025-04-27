@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 15:06:53 krylon>
+# Time-stamp: <2025-04-25 16:32:03 krylon>
 #
 # /data/code/python/medusa/probe/sysload.py
 # created on 25. 01. 2024
@@ -19,10 +19,10 @@ medusa.probe.sysload
 import os
 
 from medusa.data import LoadRecord, Record, SysLoad
-from medusa.probe.base import BaseProbe
+from medusa.probe.base import Probe
 
 
-class LoadProbe(BaseProbe):
+class LoadProbe(Probe):
     """Get the system load average"""
 
     def get_data(self) -> Record:
@@ -34,6 +34,10 @@ class LoadProbe(BaseProbe):
             load=SysLoad(data[0], data[1], data[2]),
         )
         return record
+
+    def name(self) -> str:
+        """Return the Probe's name."""
+        return "Load"
 
 # Local Variables: #
 # python-indent: 4 #

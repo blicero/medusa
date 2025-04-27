@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 15:08:08 krylon>
+# Time-stamp: <2025-04-25 16:31:27 krylon>
 #
 # /data/code/python/medusa/probe/cpu.py
 # created on 27. 01. 2024
@@ -18,10 +18,10 @@ medusa.probe.cpu
 
 from cpuinfo import get_cpu_info
 from medusa.data import CPURecord, Record
-from medusa.probe.base import BaseProbe
+from medusa.probe.base import Probe
 
 
-class CPUProbe(BaseProbe):
+class CPUProbe(Probe):
     """Query various CPU-related data"""
 
     def get_data(self) -> Record:
@@ -35,6 +35,10 @@ class CPUProbe(BaseProbe):
         )
         # TODO Get temperature, if possible utilization, too.
         return info
+
+    def name(self) -> str:
+        """Return the Probe's name."""
+        return "CPU"
 
 
 # Local Variables: #
