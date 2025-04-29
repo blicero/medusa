@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-03-18 21:09:48 krylon>
+# Time-stamp: <2025-04-29 18:04:45 krylon>
 #
 # /data/code/python/medusa/common.py
 # created on 24. 01. 2024
@@ -27,6 +27,10 @@ APP_VERSION: Final[str] = "0.0.1"
 DEBUG: Final[bool] = True
 TIME_FMT: Final[str] = "%Y-%m-%d %H:%M:%S"
 PORT: Final[int] = 9630
+
+
+class MedusaError(Exception):
+    """Base class for error handling inside the application."""
 
 
 class Path:

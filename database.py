@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-29 10:19:54 krylon>
+# Time-stamp: <2025-04-29 18:51:29 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -29,7 +29,7 @@ import krylib
 from medusa import common, data
 
 
-class DatabaseError(Exception):
+class DatabaseError(common.MedusaError):
     """DatabaseError is the base class for errors originating from the database."""
 
 
@@ -45,18 +45,18 @@ CREATE TABLE host (
     id                  INTEGER PRIMARY KEY,
     name                TEXT UNIQUE NOT NULL,
     os                  TEXT NOT NULL,
-    last_contact        INTEGER NOT NULL DEFAULT 0,
+    last_contact        INTEGER NOT NULL DEFAULT 0
 ) STRICT
     """,
     "CREATE INDEX host_name_idx ON host (name)",
 
     """
 CREATE TABLE record (
-    id INTEGER PRIMARY KEY,
-    host_id INTEGER NOT NULL,
-    timestamp INTEGER NOT NULL,
-    source TEXT NOT NULL,
-    payload TEXT NOT NULL DEFAULT '',
+    id          INTEGER PRIMARY KEY,
+    host_id     INTEGER NOT NULL,
+    timestamp   INTEGER NOT NULL,
+    source      TEXT NOT NULL,
+    payload     TEXT NOT NULL DEFAULT '',
     FOREIGN KEY (host_id) REFERENCES host (id)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
@@ -280,7 +280,11 @@ class DBPool:
         """Get a connection from the pool, blocking if necessary."""
         with self.empty:
             if len(self.pool) == 0:
-                self.empty.wait()
+                if block:
+                    self.empty.wait()
+                else:
+                    db = Database()
+                    return db
 
             db = self.pool.pop()
             return db
