@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-29 12:34:48 krylon>
+# Time-stamp: <2025-04-29 18:52:01 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,19 +14,19 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-04-29 Di 12:34]
+   #+CAPTION: Clock summary at [2025-04-29 Di 18:52]
    | Headline               | Time    |         |       |      |
    |------------------------+---------+---------+-------+------|
-   | *Total time*           | *17:21* |         |       |      |
+   | *Total time*           | *18:13* |         |       |      |
    |------------------------+---------+---------+-------+------|
-   | *Medusa [0/0]*         | *17:21* |         |       |      |
-   | \_  /Components [0/0]/ |         | /17:21/ |       |      |
+   | *Medusa [0/0]*         | *18:13* |         |       |      |
+   | \_  /Components [0/0]/ |         | /18:13/ |       |      |
    | \_    Probes [0/0]     |         |         |  2:31 |      |
    | \_    Model [0/0]      |         |         |  2:17 |      |
    | \_    Database [0/1]   |         |         |  1:36 |      |
    | \_      Pool           |         |         |       | 0:28 |
-   | \_    Server [0/2]     |         |         | 10:57 |      |
-   | \_      Protocol       |         |         |       | 2:10 |
+   | \_    Server [0/2]     |         |         | 11:49 |      |
+   | \_      Protocol       |         |         |       | 3:02 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -96,6 +96,7 @@
     :END:
 **** TODO Protocol
      :LOGBOOK:
+     CLOCK: [2025-04-29 Di 17:59]--[2025-04-29 Di 18:51] =>  0:52
      CLOCK: [2025-04-27 So 19:24]--[2025-04-27 So 21:34] =>  2:10
      :END:
 **** TODO mDNS
