@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-24 19:44:13 krylon>
+# Time-stamp: <2025-04-29 10:19:54 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -27,6 +27,15 @@ from typing import Final, Optional
 import krylib
 
 from medusa import common, data
+
+
+class DatabaseError(Exception):
+    """DatabaseError is the base class for errors originating from the database."""
+
+
+class IntegrityError(DatabaseError):
+    """IntegrityError indicates a violation of the database integrity."""
+
 
 OPEN_LOCK: Final[Lock] = Lock()
 
@@ -147,13 +156,18 @@ class Database:
 
     def host_add(self, host: data.Host) -> None:
         """Add a Host to the database."""
-        cur: sqlite3.Cursor = self.db.cursor()
-        cur.execute(db_queries[QueryID.HostAdd],
-                    (host.name,
-                     host.os,
-                     int(host.last_contact.timestamp())))
-        row = cur.fetchone()
-        host.host_id = row[0]
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.HostAdd],
+                        (host.name,
+                         host.os,
+                         int(host.last_contact.timestamp())))
+            row = cur.fetchone()
+            host.host_id = row[0]
+        except sqlite3.IntegrityError as err:
+            msg = f"Error adding Host {host.name}: {err}"
+            self.log.error(msg)
+            raise IntegrityError(msg) from err
 
     def host_update_contact(self, host: data.Host, timestamp: datetime) -> None:
         """Update a Host's contact timestamp."""
