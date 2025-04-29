@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-25 15:39:23 krylon>
+# Time-stamp: <2025-04-29 12:34:48 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,18 +14,19 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-04-25 Fr 15:39]
-   | Headline               | Time    |         |      |      |
-   |------------------------+---------+---------+------+------|
-   | *Total time*           | *15:11* |         |      |      |
-   |------------------------+---------+---------+------+------|
-   | *Medusa [0/0]*         | *15:11* |         |      |      |
-   | \_  /Components [0/0]/ |         | /15:11/ |      |      |
-   | \_    Probes [0/0]     |         |         | 2:31 |      |
-   | \_    Model [0/0]      |         |         | 2:17 |      |
-   | \_    Database [0/1]   |         |         | 1:36 |      |
-   | \_      Pool           |         |         |      | 0:28 |
-   | \_    Server [0/1]     |         |         | 8:47 |      |
+   #+CAPTION: Clock summary at [2025-04-29 Di 12:34]
+   | Headline               | Time    |         |       |      |
+   |------------------------+---------+---------+-------+------|
+   | *Total time*           | *17:21* |         |       |      |
+   |------------------------+---------+---------+-------+------|
+   | *Medusa [0/0]*         | *17:21* |         |       |      |
+   | \_  /Components [0/0]/ |         | /17:21/ |       |      |
+   | \_    Probes [0/0]     |         |         |  2:31 |      |
+   | \_    Model [0/0]      |         |         |  2:17 |      |
+   | \_    Database [0/1]   |         |         |  1:36 |      |
+   | \_      Pool           |         |         |       | 0:28 |
+   | \_    Server [0/2]     |         |         | 10:57 |      |
+   | \_      Protocol       |         |         |       | 2:10 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -81,7 +82,7 @@
      [2025-04-24 Do 19:06]
      After looking into this a bit, I think it is too much, I don't need it.
      The context manager part, I mean.
-*** Server [0/1]
+*** Server [0/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -93,6 +94,10 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
+**** TODO Protocol
+     :LOGBOOK:
+     CLOCK: [2025-04-27 So 19:24]--[2025-04-27 So 21:34] =>  2:10
+     :END:
 **** TODO mDNS
 *** Agent [0/0]
     :PROPERTIES:
