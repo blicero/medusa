@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-27 16:13:02 krylon>
+# Time-stamp: <2025-04-29 18:46:14 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -20,6 +20,7 @@ medusa.agent
 import logging
 from socket import gethostname
 from threading import Lock
+from typing import Optional
 
 from medusa import common
 from medusa.data import Record
@@ -47,9 +48,9 @@ class Agent:
         self.log = common.get_logger("Agent")
         self.probes = set()
 
-        # for p in probes:
-        #     self.probes.add(p)
-        self.probes.extend(probes)
+        for p in probes:
+            self.probes.add(p)
+        # self.probes.extend(probes)
 
     def get_name(self) -> str:
         """Get the Agent's name."""
@@ -64,8 +65,9 @@ class Agent:
         with self.lock:
             for p in self.probes:
                 if force or p.is_due():
-                    res: Record = p.get_data()
-                    results.append(res)
+                    res: Optional[Record] = p.get_data()
+                    if res is not None:
+                        results.append(res)
         return results
 
 
