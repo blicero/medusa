@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-24 20:05:58 krylon>
+# Time-stamp: <2025-04-29 18:48:24 krylon>
 #
 # /data/code/python/medusa/test_database.py
 # created on 24. 04. 2025
@@ -50,10 +50,10 @@ class DBTest(unittest.TestCase):
         if db is not None:
             cls.conn = db
             return db
-        elif cls.conn is not None:
+        if cls.conn is not None:
             return cls.conn
-        else:
-            raise ValueError("No Database connection exists")
+
+        raise ValueError("No Database connection exists")
 
     def test_01_db_open(self) -> None:
         """Open the database."""
