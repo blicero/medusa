@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-24 18:16:21 krylon>
+# Time-stamp: <2025-04-29 10:19:59 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -24,10 +24,11 @@ from typing import Any
 class MsgType(IntEnum):
     """MsgType identifies what kind of message a ... message is."""
 
+    Nothing = auto()
+    NodeRegister = auto()
     ReportSubmit = auto()
-    ReportRequest = auto()
-    ErrNoHost = auto()
-    HostRegister = auto()
+    ReportQuery = auto()
+    Error = auto()
 
 
 @dataclass(slots=True)
