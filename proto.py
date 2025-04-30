@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-29 10:19:59 krylon>
+# Time-stamp: <2025-04-30 17:10:17 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -20,12 +20,19 @@ from dataclasses import dataclass
 from enum import IntEnum, auto
 from typing import Any
 
+from medusa.common import MedusaError
+
+
+class NetworkError(MedusaError):
+    """NetworkError indicates some issue related to network communication."""
+
 
 class MsgType(IntEnum):
     """MsgType identifies what kind of message a ... message is."""
 
     Nothing = auto()
-    NodeRegister = auto()
+    Hello = auto()
+    WhoAreYou = auto()
     ReportSubmit = auto()
     ReportQuery = auto()
     Error = auto()
