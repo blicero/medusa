@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-30 17:28:39 krylon>
+# Time-stamp: <2025-04-30 17:30:50 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -84,7 +84,7 @@
      [2025-04-24 Do 19:06]
      After looking into this a bit, I think it is too much, I don't need it.
      The context manager part, I mean.
-*** Server [0/2]
+*** Server [1/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -104,7 +104,11 @@
      I think I should use TCP and model the agent-server-interaction using
      state machines. I've wanted to play with that anyway, so now I have an
      excuse.
-**** TODO mDNS
+**** SUSPENDED mDNS
+     CLOSED: [2025-04-30 Mi 17:29]
+     Every time, so far, I've dealt with mDNS, it either didn't work out, or
+     the payoff was much, much lower than what I had hoped for.
+     So for the time being, I'll shelve this idea.
 *** Agent [0/0]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
