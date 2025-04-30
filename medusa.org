@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-29 18:52:01 krylon>
+# Time-stamp: <2025-04-30 17:28:39 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -56,7 +56,7 @@
     CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:51] =>  0:34
     CLOCK: [2025-04-21 Mo 13:31]--[2025-04-21 Mo 15:14] =>  1:43
     :END:
-*** Database [0/1]
+*** Database [1/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -66,7 +66,9 @@
     CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:17] =>  0:00
     CLOCK: [2025-04-22 Di 14:23]--[2025-04-22 Di 15:18] =>  0:55
     :END:
-**** TODO Pool
+**** TODO Exception handling
+**** DONE Pool
+     CLOSED: [2025-04-29 Di 20:40]
      :LOGBOOK:
      CLOCK: [2025-04-24 Do 18:43]--[2025-04-24 Do 19:11] =>  0:28
      :END:
@@ -99,6 +101,9 @@
      CLOCK: [2025-04-29 Di 17:59]--[2025-04-29 Di 18:51] =>  0:52
      CLOCK: [2025-04-27 So 19:24]--[2025-04-27 So 21:34] =>  2:10
      :END:
+     I think I should use TCP and model the agent-server-interaction using
+     state machines. I've wanted to play with that anyway, so now I have an
+     excuse.
 **** TODO mDNS
 *** Agent [0/0]
     :PROPERTIES:
