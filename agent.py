@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-29 18:46:14 krylon>
+# Time-stamp: <2025-04-30 17:23:02 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -17,14 +17,20 @@ medusa.agent
 """
 
 
+import json
 import logging
-from socket import gethostname
+import socket
+from datetime import timedelta
 from threading import Lock
-from typing import Optional
+from typing import Final, Optional
 
 from medusa import common
 from medusa.data import Record
 from medusa.probe.base import Probe
+from medusa.proto import Message, MsgType
+
+# For testing/debugging, I set this to a very low value, later on I should increase this.
+REPORT_INTERVAL: Final[timedelta] = timedelta(seconds=10)
 
 
 class Agent:
@@ -35,22 +41,33 @@ class Agent:
         "probes",
         "log",
         "lock",
+        "srv",
+        "sock",
+        "active",
     ]
 
     name: str
     probes: set[Probe]
     log: logging.Logger
     lock: Lock
+    srv: str
+    sock: socket.socket
+    active: bool
 
-    def __init__(self, *probes: Probe) -> None:
+    def __init__(self, addr: str, *probes: Probe) -> None:
         self.lock = Lock()
-        self.name = gethostname()
+        self.name = socket.gethostname()
         self.log = common.get_logger("Agent")
         self.probes = set()
+        self.srv = addr
 
         for p in probes:
             self.probes.add(p)
-        # self.probes.extend(probes)
+
+        self.sock = socket.getaddrinfo(self.srv,
+                                       common.PORT,
+                                       socket.AF_INET6,
+                                       socket.SOCK_DGRAM)
 
     def get_name(self) -> str:
         """Get the Agent's name."""
@@ -69,6 +86,26 @@ class Agent:
                     if res is not None:
                         results.append(res)
         return results
+
+    def is_active(self) -> bool:
+        """Return the Agent's active flag."""
+        with self.lock:
+            return self.active
+
+    def stop(self) -> None:
+        """Tell the Agent to stop."""
+        with self.lock:
+            self.active = False
+
+    def _worker(self) -> None:
+        while self.is_active():
+            results = self.run_probes()
+            for r in results:
+                self._submit_result(r)
+
+    def _submit_result(self, res: Record) -> None:
+        msg: Message = Message(MsgType.ReportSubmit, res)
+        xfr = json.dumps(msg)
 
 
 # Local Variables: #
