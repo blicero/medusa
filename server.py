@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 16:44:31 krylon>
+# Time-stamp: <2025-05-02 17:07:44 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -21,11 +21,13 @@ import json
 import logging
 import socket
 import threading
-from typing import Final
+from datetime import datetime
+from typing import Optional
 
 from medusa import common
+from medusa.data import Host
 from medusa.database import Database
-from medusa.proto import Message, MsgType
+from medusa.proto import BUFSIZE, Message, MsgType
 
 
 class Server:
@@ -85,9 +87,6 @@ class Server:
         worker.start()
 
 
-BUFSIZE: Final[int] = 16384
-
-
 class ConnectionHandler:
     """Connection handles the communication with an Agent."""
 
@@ -96,12 +95,14 @@ class ConnectionHandler:
         "db",
         "conn",
         "addr",
+        "host",
     ]
 
     log: logging.Logger
     db: Database
     conn: socket.socket
     addr: tuple[str, int]
+    host: Optional[Host]
 
     def __init__(self, conn: socket.socket, addr: tuple[str, int]) -> None:
         self.log = common.get_logger("Connection")
@@ -124,15 +125,58 @@ class ConnectionHandler:
             try:
                 rcv = self.conn.recv(BUFSIZE)
                 msg = json.loads(rcv)
-                self.handle_msg(msg)
+                response = self.handle_msg(msg)
+                xfr = json.dumps(response)
+                buf = bytes(xfr, 'UTF-8')
+                self.conn.send(buf)
             except Exception as err:  # pylint: disable-msg=W0718
                 self.log.error("%s receiving data from %s: %s",
                                err.__class__.__name__,
                                self.addr,
                                err)
 
-    def handle_msg(self, msg: Message) -> None:
+    def handle_msg(self, msg: Message) -> Message:
         """Handle a message received from the Agent."""
+        try:
+            match msg.mtype:
+                case MsgType.Hello:
+                    assert isinstance(msg.payload, tuple)
+                    info: tuple[str, str] = msg.payload
+                    return self.handle_hello(info)
+                case _:
+                    self.log.error("Don't know how to handle message %s from %s: %s",
+                                   msg.mtype,
+                                   self.addr,
+                                   msg.payload)
+                    reply = Message(MsgType.Error,
+                                    f"Unsupported message type {msg.mtype}")
+                    return reply
+        except Exception as err:  # pylint: disable-msg=W0718
+            self.log.error("%s handling message from %s: %s\n\nMessage: %s",
+                           err.__class__.__name__,
+                           self.addr,
+                           err,
+                           msg)
+            response = Message(
+                MsgType.Error,
+                f"Error handling msg {msg.mtype}: {err}")
+            return response
+
+    def handle_hello(self, info: tuple[str, str]) -> Message:
+        """Handle a Hello from the Agent."""
+        with self.db:
+            host = self.db.host_get_by_name(info[0])
+            if host is None:
+                host = Host(name=info[0], os=info[1], last_contact=datetime.now())
+                self.db.host_add(host)
+            self.host = host
+
+            response = Message(
+                MsgType.Welcome,
+                ("Welcome aboard",
+                 host.host_id))
+            return response
+
 
 # Local Variables: #
 # python-indent: 4 #

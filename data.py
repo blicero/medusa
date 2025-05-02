@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-22 18:50:28 krylon>
+# Time-stamp: <2025-05-02 17:01:37 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -27,7 +27,7 @@ from typing import Any, NamedTuple, Optional
 class Host:
     """Host represents a computer - real or virtual - on a network."""
 
-    host_id: int
+    host_id: int = 0
     name: str
     os: str
     last_contact: datetime

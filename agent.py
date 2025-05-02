@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 16:43:23 krylon>
+# Time-stamp: <2025-05-02 17:34:16 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -26,8 +26,9 @@ from typing import Final, Optional
 
 from medusa import common
 from medusa.data import Record
+from medusa.probe import osdetect
 from medusa.probe.base import Probe
-from medusa.proto import Message, MsgType
+from medusa.proto import BUFSIZE, Message, MsgType
 
 # For testing/debugging, I set this to a very low value, later on I should increase this.
 REPORT_INTERVAL: Final[timedelta] = timedelta(seconds=10)
@@ -38,6 +39,7 @@ class Agent:
 
     __slots__ = [
         "name",
+        "os",
         "probes",
         "log",
         "lock",
@@ -47,6 +49,7 @@ class Agent:
     ]
 
     name: str
+    os: str
     probes: set[Probe]
     log: logging.Logger
     lock: Lock
@@ -60,6 +63,9 @@ class Agent:
         self.log = common.get_logger("Agent")
         self.probes = set()
         self.srv = addr
+
+        platform = osdetect.guess_os()
+        self.os = platform.name
 
         for p in probes:
             self.probes.add(p)
@@ -94,16 +100,27 @@ class Agent:
         with self.lock:
             self.active = False
 
-    def _worker(self) -> None:
-        while self.is_active():
-            results = self.run_probes()
-            for r in results:
-                self._submit_result(r)
+    def run(self) -> None:
+        """Communicate with the server."""
+        with self.lock:
+            self.active = True
 
-    def _submit_result(self, res: Record) -> None:
-        msg: Message = Message(MsgType.ReportSubmit, res)
-        xfr = json.dumps(msg)
+        rcv = self.sock.recv(BUFSIZE)
+        msg = json.loads(rcv)
+        assert isinstance(msg, Message)
+        assert msg.mtype == MsgType.Hello
+
+        hello = Message(
+            MsgType.Hello,
+            (self.name, self.os))
+        xfr = json.dumps(hello)
         self.sock.send(bytes(xfr, 'UTF-8'))
+
+        rcv = self.sock.recv(BUFSIZE)
+        msg = json.loads(rcv)
+        assert isinstance(msg, Message)
+        assert msg.mtype == MsgType.Welcome
+
 
 # Local Variables: #
 # python-indent: 4 #

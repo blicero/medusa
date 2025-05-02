@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-30 17:10:17 krylon>
+# Time-stamp: <2025-05-02 17:34:01 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -18,9 +18,11 @@ medusa.proto
 
 from dataclasses import dataclass
 from enum import IntEnum, auto
-from typing import Any
+from typing import Any, Final
 
 from medusa.common import MedusaError
+
+BUFSIZE: Final[int] = 16384
 
 
 class NetworkError(MedusaError):
@@ -32,7 +34,7 @@ class MsgType(IntEnum):
 
     Nothing = auto()
     Hello = auto()
-    WhoAreYou = auto()
+    Welcome = auto()
     ReportSubmit = auto()
     ReportQuery = auto()
     Error = auto()
