@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 18:59:23 krylon>
+# Time-stamp: <2025-05-02 20:19:25 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -20,6 +20,7 @@ medusa.agent
 import json
 import logging
 import socket
+import sys
 import time
 from threading import Lock
 from typing import Optional
@@ -28,6 +29,8 @@ from medusa import common
 from medusa.data import Record
 from medusa.probe import osdetect
 from medusa.probe.base import Probe
+from medusa.probe.cpu import CPUProbe
+from medusa.probe.sysload import LoadProbe
 from medusa.proto import (BUFSIZE, REPORT_INTERVAL, Message, MsgType,
                           set_keepalive_linux)
 
@@ -55,7 +58,7 @@ class Agent:
     sock: socket.socket
     active: bool
 
-    def __init__(self, addr: str, *probes: Probe) -> None:
+    def __init__(self, addr: str, *probelist: Probe) -> None:
         self.lock = Lock()
         self.name = socket.gethostname()
         self.log = common.get_logger("Agent")
@@ -65,7 +68,7 @@ class Agent:
         platform = osdetect.guess_os()
         self.os = platform.name
 
-        for p in probes:
+        for p in probelist:
             self.probes.add(p)
 
         self.sock = socket.create_connection((addr, common.PORT))
@@ -159,6 +162,15 @@ class Agent:
             if res is None:
                 self.log.info("No response was received?")
 
+
+if __name__ == '__main__':
+    srv_addr = sys.argv[0]
+    probes = [
+        CPUProbe(REPORT_INTERVAL),
+        LoadProbe(REPORT_INTERVAL),
+    ]
+    ag = Agent(srv_addr, *probes)
+    ag.run()
 
 # Local Variables: #
 # python-indent: 4 #

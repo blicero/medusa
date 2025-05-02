@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 18:16:29 krylon>
+# Time-stamp: <2025-05-02 20:20:42 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -20,7 +20,9 @@ medusa.server
 import json
 import logging
 import socket
+import sys
 import threading
+import time
 from datetime import datetime
 from typing import Optional
 
@@ -49,7 +51,7 @@ class Server:
     sock: socket.socket
     active: bool
 
-    def __init__(self, addr: str = "[::]", port: int = common.PORT) -> None:
+    def __init__(self, addr: str = "::", port: int = common.PORT) -> None:
         self.addr = addr
         self.port = port
         self.log = common.get_logger("Server")
@@ -178,6 +180,16 @@ class ConnectionHandler:
                  host.host_id))
             return response
 
+
+if __name__ == '__main__':
+    try:
+        srv = Server()
+        srv.listen()
+    except KeyboardInterrupt:
+        srv.stop()
+        srv.log.debug("Quitting because you told me to.")
+        time.sleep(1)
+        sys.exit(0)
 
 # Local Variables: #
 # python-indent: 4 #
