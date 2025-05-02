@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 20:19:25 krylon>
+# Time-stamp: <2025-05-02 22:13:04 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -19,6 +19,7 @@ medusa.agent
 
 import json
 import logging
+import os
 import socket
 import sys
 import time
@@ -71,8 +72,15 @@ class Agent:
         for p in probelist:
             self.probes.add(p)
 
-        self.sock = socket.create_connection((addr, common.PORT))
-        set_keepalive_linux(self.sock)
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((addr, common.PORT))
+            set_keepalive_linux(self.sock)
+        except socket.gaierror as err:
+            self.log.error("Failed to connect to %s: %s",
+                           addr,
+                           err)
+            os.abort()
 
     def get_name(self) -> str:
         """Get the Agent's name."""
