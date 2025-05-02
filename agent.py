@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 17:34:16 krylon>
+# Time-stamp: <2025-05-02 18:59:23 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -20,18 +20,16 @@ medusa.agent
 import json
 import logging
 import socket
-from datetime import timedelta
+import time
 from threading import Lock
-from typing import Final, Optional
+from typing import Optional
 
 from medusa import common
 from medusa.data import Record
 from medusa.probe import osdetect
 from medusa.probe.base import Probe
-from medusa.proto import BUFSIZE, Message, MsgType
-
-# For testing/debugging, I set this to a very low value, later on I should increase this.
-REPORT_INTERVAL: Final[timedelta] = timedelta(seconds=10)
+from medusa.proto import (BUFSIZE, REPORT_INTERVAL, Message, MsgType,
+                          set_keepalive_linux)
 
 
 class Agent:
@@ -71,6 +69,7 @@ class Agent:
             self.probes.add(p)
 
         self.sock = socket.create_connection((addr, common.PORT))
+        set_keepalive_linux(self.sock)
 
     def get_name(self) -> str:
         """Get the Agent's name."""
@@ -100,6 +99,24 @@ class Agent:
         with self.lock:
             self.active = False
 
+    def send(self, msg: Message) -> Optional[Message]:
+        """Send a message to the server, receive a response."""
+        xfr: str = json.dumps(msg)
+        self.sock.send(bytes(xfr, 'UTF-8'))
+
+        rcv: bytes = self.sock.recv(BUFSIZE)
+        try:
+            response = json.loads(rcv)
+            assert isinstance(response, Message)
+        except json.JSONDecodeError as jerr:
+            self.log.error("Failed to decode message from %s: %s\n%s\n",
+                           self.srv,
+                           jerr,
+                           rcv)
+            return None
+
+        return response
+
     def run(self) -> None:
         """Communicate with the server."""
         with self.lock:
@@ -113,13 +130,34 @@ class Agent:
         hello = Message(
             MsgType.Hello,
             (self.name, self.os))
-        xfr = json.dumps(hello)
-        self.sock.send(bytes(xfr, 'UTF-8'))
+        res = self.send(hello)
+        if res is not None:
+            assert isinstance(res, Message)
+            assert res.mtype == MsgType.Welcome
 
-        rcv = self.sock.recv(BUFSIZE)
-        msg = json.loads(rcv)
-        assert isinstance(msg, Message)
-        assert msg.mtype == MsgType.Welcome
+        # xfr = json.dumps(hello)
+        # self.sock.send(bytes(xfr, 'UTF-8'))
+
+        # rcv = self.sock.recv(BUFSIZE)
+        # msg = json.loads(rcv)
+        # assert isinstance(msg, Message)
+        # assert msg.mtype == MsgType.Welcome
+
+        while self.is_active():
+            time.sleep(REPORT_INTERVAL.seconds)
+            records: list[Record] = self.run_probes()
+
+            if len(records) == 0:
+                continue
+
+            msg = Message(
+                MsgType.ReportSubmitMany,
+                records)
+
+            res = self.send(msg)
+
+            if res is None:
+                self.log.info("No response was received?")
 
 
 # Local Variables: #

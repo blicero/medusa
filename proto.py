@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 17:34:01 krylon>
+# Time-stamp: <2025-05-02 18:57:35 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -16,13 +16,33 @@ medusa.proto
 (c) 2025 Benjamin Walkenhorst
 """
 
+import socket
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import IntEnum, auto
 from typing import Any, Final
 
 from medusa.common import MedusaError
 
+
+# For testing/debugging, I set this to a very low value, later on I should increase this.
+REPORT_INTERVAL: Final[timedelta] = timedelta(seconds=10)
 BUFSIZE: Final[int] = 16384
+
+
+# Found at
+# https://stackoverflow.com/questions/12248132/how-to-change-tcp-keepalive-timer-using-python-script
+def set_keepalive_linux(sock, after_idle_sec=1, interval_sec=3, max_fails=5):
+    """Set TCP keepalive on an open socket.
+
+    It activates after 1 second (after_idle_sec) of idleness,
+    then sends a keepalive ping once every 3 seconds (interval_sec),
+    and closes the connection after 5 failed ping (max_fails), or 15 seconds
+    """
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, after_idle_sec)
+    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, interval_sec)
+    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, max_fails)
 
 
 class NetworkError(MedusaError):
@@ -36,6 +56,8 @@ class MsgType(IntEnum):
     Hello = auto()
     Welcome = auto()
     ReportSubmit = auto()
+    ReportSubmitMany = auto()
+    ReportAck = auto()
     ReportQuery = auto()
     Error = auto()
 

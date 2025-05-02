@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 17:07:44 krylon>
+# Time-stamp: <2025-05-02 18:16:29 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -27,7 +27,7 @@ from typing import Optional
 from medusa import common
 from medusa.data import Host
 from medusa.database import Database
-from medusa.proto import BUFSIZE, Message, MsgType
+from medusa.proto import BUFSIZE, Message, MsgType, set_keepalive_linux
 
 
 class Server:
@@ -112,6 +112,7 @@ class ConnectionHandler:
         self.log.debug("About to handle connection from %s:%d",
                        addr[0],
                        addr[1])
+        set_keepalive_linux(self.conn)
 
     def run(self) -> None:
         """Handle communication with the Agent."""
