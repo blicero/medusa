@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-30 22:59:11 krylon>
+# Time-stamp: <2025-05-02 16:44:31 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -17,13 +17,15 @@ medusa.server
 """
 
 
+import json
 import logging
 import socket
 import threading
-from dataclasses import dataclass
+from typing import Final
 
 from medusa import common
 from medusa.database import Database
+from medusa.proto import Message, MsgType
 
 
 class Server:
@@ -74,12 +76,16 @@ class Server:
             conn, addr = self.sock.accept()
             self.log.debug("Incoming connection from %s", addr)
             # Create a new thread to handle the connection
+            self._handle(conn, addr)
 
-    def _handle(self, conn, addr):
+    def _handle(self, conn, addr) -> None:
         """Deal with the client."""
         handler = ConnectionHandler(conn, addr)
         worker: threading.Thread = threading.Thread(target=handler.run, daemon=True)
         worker.start()
+
+
+BUFSIZE: Final[int] = 16384
 
 
 class ConnectionHandler:
@@ -106,9 +112,27 @@ class ConnectionHandler:
                        addr[0],
                        addr[1])
 
-
     def run(self) -> None:
-        """The main loop, so to speak."""
+        """Handle communication with the Agent."""
+        msg: Message = Message(
+            MsgType.Hello,
+            "Hello")
+        xfr: str = json.dumps(msg)
+        self.conn.send(bytes(xfr, 'UTF-8'))
+
+        while True:
+            try:
+                rcv = self.conn.recv(BUFSIZE)
+                msg = json.loads(rcv)
+                self.handle_msg(msg)
+            except Exception as err:  # pylint: disable-msg=W0718
+                self.log.error("%s receiving data from %s: %s",
+                               err.__class__.__name__,
+                               self.addr,
+                               err)
+
+    def handle_msg(self, msg: Message) -> None:
+        """Handle a message received from the Agent."""
 
 # Local Variables: #
 # python-indent: 4 #

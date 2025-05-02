@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-30 17:23:02 krylon>
+# Time-stamp: <2025-05-02 16:43:23 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -64,10 +64,7 @@ class Agent:
         for p in probes:
             self.probes.add(p)
 
-        self.sock = socket.getaddrinfo(self.srv,
-                                       common.PORT,
-                                       socket.AF_INET6,
-                                       socket.SOCK_DGRAM)
+        self.sock = socket.create_connection((addr, common.PORT))
 
     def get_name(self) -> str:
         """Get the Agent's name."""
@@ -106,7 +103,7 @@ class Agent:
     def _submit_result(self, res: Record) -> None:
         msg: Message = Message(MsgType.ReportSubmit, res)
         xfr = json.dumps(msg)
-
+        self.sock.send(bytes(xfr, 'UTF-8'))
 
 # Local Variables: #
 # python-indent: 4 #
