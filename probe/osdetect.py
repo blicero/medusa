@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 15:20:00 krylon>
+# Time-stamp: <2025-05-02 21:41:16 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -74,7 +74,7 @@ def guess_os(osrel: str = OS_REL) -> Platform:
             case "arch" | "manjaro":
                 return Platform("arch", 'n/a', "unknown")
 
-    uname: Final[str] = sp.check_output(["/bin/uname", "-smr"]).decode()
+    uname: Final[str] = sp.check_output(["/usr/bin/uname", "-smr"]).decode()
     sysname, version, arch = uname.strip().split()
     return Platform(sysname.lower(), version, arch)
 
