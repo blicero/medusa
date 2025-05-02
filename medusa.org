@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-04-30 23:00:05 krylon>
+# Time-stamp: <2025-05-02 17:34:45 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,19 +14,19 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-04-30 Mi 23:00]
-   | Headline               | Time    |         |       |      |
-   |------------------------+---------+---------+-------+------|
-   | *Total time*           | *23:55* |         |       |      |
-   |------------------------+---------+---------+-------+------|
-   | *Medusa [0/0]*         | *23:55* |         |       |      |
-   | \_  /Components [0/0]/ |         | /23:55/ |       |      |
-   | \_    Probes [0/0]     |         |         |  2:31 |      |
-   | \_    Model [0/0]      |         |         |  2:17 |      |
-   | \_    Database [1/2]   |         |         |  1:36 |      |
-   | \_      Pool           |         |         |       | 0:28 |
-   | \_    Server [1/2]     |         |         | 17:31 |      |
-   | \_      Protocol       |         |         |       | 8:44 |
+   #+CAPTION: Clock summary at [2025-05-02 Fr 17:34]
+   | Headline               | Time      |           |       |      |
+   |------------------------+-----------+-----------+-------+------|
+   | *Total time*           | *1d 1:08* |           |       |      |
+   |------------------------+-----------+-----------+-------+------|
+   | *Medusa [0/0]*         | *1d 1:08* |           |       |      |
+   | \_  /Components [0/0]/ |           | /1d 1:08/ |       |      |
+   | \_    Probes [0/0]     |           |           |  2:31 |      |
+   | \_    Model [0/0]      |           |           |  2:17 |      |
+   | \_    Database [1/2]   |           |           |  1:36 |      |
+   | \_      Pool           |           |           |       | 0:28 |
+   | \_    Server [1/2]     |           |           | 18:44 |      |
+   | \_      Protocol       |           |           |       | 9:57 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -98,6 +98,7 @@
     :END:
 **** TODO Protocol
      :LOGBOOK:
+     CLOCK: [2025-05-02 Fr 16:21]--[2025-05-02 Fr 17:34] =>  1:13
      CLOCK: [2025-04-30 Mi 17:16]--[2025-04-30 Mi 22:58] =>  5:42
      CLOCK: [2025-04-29 Di 17:59]--[2025-04-29 Di 18:51] =>  0:52
      CLOCK: [2025-04-27 So 19:24]--[2025-04-27 So 21:34] =>  2:10
