@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 20:20:42 krylon>
+# Time-stamp: <2025-05-03 18:57:37 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -25,6 +25,8 @@ import threading
 import time
 from datetime import datetime
 from typing import Optional
+
+from krylib import fmt_err
 
 from medusa import common
 from medusa.data import Host
@@ -121,13 +123,22 @@ class ConnectionHandler:
         msg: Message = Message(
             MsgType.Hello,
             "Hello")
-        xfr: str = json.dumps(msg)
-        self.conn.send(bytes(xfr, 'UTF-8'))
+        try:
+            xfr: str = json.dumps(msg.toXFR())
+            self.conn.send(bytes(xfr, 'UTF-8'))
+        except Exception as err:  # pylint: disable-msg=W0718
+            self.log.error("Failed to send Hello message to %s: %s\n%s\n\n",
+                           self.addr,
+                           err,
+                           fmt_err(err))
 
         while True:
             try:
                 rcv = self.conn.recv(BUFSIZE)
-                msg = json.loads(rcv)
+                if len(rcv) == 0:
+                    continue
+                raw = json.loads(str(rcv))
+                msg = Message.fromXFR(raw)
                 response = self.handle_msg(msg)
                 xfr = json.dumps(response)
                 buf = bytes(xfr, 'UTF-8')

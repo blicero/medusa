@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 22:13:04 krylon>
+# Time-stamp: <2025-05-03 18:56:46 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -25,6 +25,8 @@ import sys
 import time
 from threading import Lock
 from typing import Optional
+
+from krylib import fmt_err
 
 from medusa import common
 from medusa.data import Record
@@ -77,9 +79,10 @@ class Agent:
             self.sock.connect((addr, common.PORT))
             set_keepalive_linux(self.sock)
         except socket.gaierror as err:
-            self.log.error("Failed to connect to %s: %s",
+            self.log.error("Failed to connect to %s: %s\n%s\n\n",
                            addr,
-                           err)
+                           err,
+                           fmt_err(err))
             os.abort()
 
     def get_name(self) -> str:
@@ -112,13 +115,14 @@ class Agent:
 
     def send(self, msg: Message) -> Optional[Message]:
         """Send a message to the server, receive a response."""
-        xfr: str = json.dumps(msg)
+        xfr: str = json.dumps(msg.toXFR())
         self.sock.send(bytes(xfr, 'UTF-8'))
 
         rcv: bytes = self.sock.recv(BUFSIZE)
         try:
-            response = json.loads(rcv)
-            assert isinstance(response, Message)
+            raw = json.loads(rcv)
+            assert isinstance(raw, dict)
+            response = Message.fromXFR(raw)
         except json.JSONDecodeError as jerr:
             self.log.error("Failed to decode message from %s: %s\n%s\n",
                            self.srv,
@@ -134,8 +138,9 @@ class Agent:
             self.active = True
 
         rcv = self.sock.recv(BUFSIZE)
-        msg = json.loads(rcv)
-        assert isinstance(msg, Message)
+        raw = json.loads(rcv)
+        assert isinstance(raw, dict)
+        msg: Message = Message.fromXFR(raw)
         assert msg.mtype == MsgType.Hello
 
         hello = Message(
@@ -172,7 +177,7 @@ class Agent:
 
 
 if __name__ == '__main__':
-    srv_addr = sys.argv[0]
+    srv_addr = sys.argv[1]
     probes = [
         CPUProbe(REPORT_INTERVAL),
         LoadProbe(REPORT_INTERVAL),

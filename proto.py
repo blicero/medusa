@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 18:57:35 krylon>
+# Time-stamp: <2025-05-03 20:13:11 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -23,7 +23,6 @@ from enum import IntEnum, auto
 from typing import Any, Final
 
 from medusa.common import MedusaError
-
 
 # For testing/debugging, I set this to a very low value, later on I should increase this.
 REPORT_INTERVAL: Final[timedelta] = timedelta(seconds=10)
@@ -63,7 +62,7 @@ class MsgType(IntEnum):
 
 
 @dataclass(slots=True)
-class Message:
+class Message:  # pylint: disable-msg=R0903
     """Message is what Agents and Servers send to each other."""
 
     mtype: MsgType
@@ -71,6 +70,18 @@ class Message:
 
     __match_args__ = ("mtype", "payload")
 
+    def toXFR(self) -> dict:
+        """Return a dict suitable for serialization."""
+        return {
+            "type": self.mtype.value,
+            "payload": self.payload,
+        }
+
+    @classmethod
+    def fromXFR(cls, xfr) -> 'Message':
+        """Restore a Message from its transfer representation."""
+        msg = Message(MsgType(xfr['type']), xfr['payload'])
+        return msg
 
 # Local Variables: #
 # python-indent: 4 #
