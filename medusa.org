@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-02 21:35:21 krylon>
+# Time-stamp: <2025-05-03 20:08:38 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -108,6 +108,12 @@
      I think I should use TCP and model the agent-server-interaction using
      state machines. I've wanted to play with that anyway, so now I have an
      excuse.
+
+     [2025-05-03 Sa 20:00]
+     It doesn't work quite as I had intended. I think I need to look into
+     asyncore or its successor.
+     ...
+     Oh my, asyncore doesn't exist any longer, asyncio seems a bit much.
 **** SUSPENDED mDNS
      CLOSED: [2025-04-30 Mi 17:29]
      Every time, so far, I've dealt with mDNS, it either didn't work out, or
