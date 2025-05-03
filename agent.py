@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 20:50:17 krylon>
+# Time-stamp: <2025-05-03 21:32:03 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -147,9 +147,10 @@ class Agent:
             MsgType.Hello,
             (self.name, self.os))
         res = self.send(hello)
-        if res is not None:
-            assert isinstance(res, Message)
-            assert res.mtype == MsgType.Welcome
+
+        assert res is not None
+        assert isinstance(res, Message)
+        assert res.mtype == MsgType.Welcome
 
         while self.is_active():
             time.sleep(REPORT_INTERVAL.seconds)
@@ -167,6 +168,10 @@ class Agent:
             if res is None:
                 self.log.info("No response was received?")
 
+    def shutdown(self) -> None:
+        """Close the client connection."""
+        self.sock.shutdown()
+
 
 if __name__ == '__main__':
     srv_addr = sys.argv[1]
@@ -179,6 +184,7 @@ if __name__ == '__main__':
         ag.run()
     except KeyboardInterrupt:
         print("Yay, quitting time!")
+        ag.shutdown()
         sys.exit(0)
 
 # Local Variables: #
