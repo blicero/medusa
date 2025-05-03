@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 18:57:37 krylon>
+# Time-stamp: <2025-05-03 20:47:10 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -22,7 +22,6 @@ import logging
 import socket
 import sys
 import threading
-import time
 from datetime import datetime
 from typing import Optional
 
@@ -110,7 +109,7 @@ class ConnectionHandler:
 
     def __init__(self, conn: socket.socket, addr: tuple[str, int]) -> None:
         self.log = common.get_logger("Connection")
-        self.db = Database()
+        # self.db = Database()
         self.conn = conn
         self.addr = addr
         self.log.debug("About to handle connection from %s:%d",
@@ -120,6 +119,7 @@ class ConnectionHandler:
 
     def run(self) -> None:
         """Handle communication with the Agent."""
+        self.db = Database()
         msg: Message = Message(
             MsgType.Hello,
             "Hello")
@@ -137,12 +137,18 @@ class ConnectionHandler:
                 rcv = self.conn.recv(BUFSIZE)
                 if len(rcv) == 0:
                     continue
-                raw = json.loads(str(rcv))
+                raw = json.loads(str(rcv, encoding="UTF-8"))
                 msg = Message.fromXFR(raw)
                 response = self.handle_msg(msg)
-                xfr = json.dumps(response)
+                xfr = json.dumps(response.toXFR())
                 buf = bytes(xfr, 'UTF-8')
                 self.conn.send(buf)
+            except json.JSONDecodeError as jerr:
+                self.log.error("Failed to decode JSON message (%d byte) from %s: %s\n%s\n\n",
+                               len(rcv),
+                               self.addr,
+                               jerr,
+                               rcv)
             except Exception as err:  # pylint: disable-msg=W0718
                 self.log.error("%s receiving data from %s: %s",
                                err.__class__.__name__,
@@ -154,8 +160,8 @@ class ConnectionHandler:
         try:
             match msg.mtype:
                 case MsgType.Hello:
-                    assert isinstance(msg.payload, tuple)
-                    info: tuple[str, str] = msg.payload
+                    assert isinstance(msg.payload, list)
+                    info: list[str] = msg.payload
                     return self.handle_hello(info)
                 case _:
                     self.log.error("Don't know how to handle message %s from %s: %s",
@@ -166,17 +172,18 @@ class ConnectionHandler:
                                     f"Unsupported message type {msg.mtype}")
                     return reply
         except Exception as err:  # pylint: disable-msg=W0718
-            self.log.error("%s handling message from %s: %s\n\nMessage: %s",
+            self.log.error("%s handling message from %s: %s\nMessage: %s\n%s\n",
                            err.__class__.__name__,
                            self.addr,
                            err,
-                           msg)
+                           msg,
+                           fmt_err(err))
             response = Message(
                 MsgType.Error,
                 f"Error handling msg {msg.mtype}: {err}")
             return response
 
-    def handle_hello(self, info: tuple[str, str]) -> Message:
+    def handle_hello(self, info: list[str]) -> Message:
         """Handle a Hello from the Agent."""
         with self.db:
             host = self.db.host_get_by_name(info[0])
@@ -199,7 +206,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         srv.stop()
         srv.log.debug("Quitting because you told me to.")
-        time.sleep(1)
+        # time.sleep(1)
         sys.exit(0)
 
 # Local Variables: #

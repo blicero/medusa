@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 18:56:46 krylon>
+# Time-stamp: <2025-05-03 20:50:17 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -151,14 +151,6 @@ class Agent:
             assert isinstance(res, Message)
             assert res.mtype == MsgType.Welcome
 
-        # xfr = json.dumps(hello)
-        # self.sock.send(bytes(xfr, 'UTF-8'))
-
-        # rcv = self.sock.recv(BUFSIZE)
-        # msg = json.loads(rcv)
-        # assert isinstance(msg, Message)
-        # assert msg.mtype == MsgType.Welcome
-
         while self.is_active():
             time.sleep(REPORT_INTERVAL.seconds)
             records: list[Record] = self.run_probes()
@@ -183,7 +175,11 @@ if __name__ == '__main__':
         LoadProbe(REPORT_INTERVAL),
     ]
     ag = Agent(srv_addr, *probes)
-    ag.run()
+    try:
+        ag.run()
+    except KeyboardInterrupt:
+        print("Yay, quitting time!")
+        sys.exit(0)
 
 # Local Variables: #
 # python-indent: 4 #
