@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-03 20:08:38 krylon>
+# Time-stamp: <2025-05-03 21:33:19 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -14,19 +14,19 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-02 Fr 21:35]
+   #+CAPTION: Clock summary at [2025-05-03 Sa 21:33]
    | Headline               | Time      |           |       |       |
    |------------------------+-----------+-----------+-------+-------|
-   | *Total time*           | *1d 2:21* |           |       |       |
+   | *Total time*           | *1d 2:59* |           |       |       |
    |------------------------+-----------+-----------+-------+-------|
-   | *Medusa [0/0]*         | *1d 2:21* |           |       |       |
-   | \_  /Components [0/0]/ |           | /1d 2:21/ |       |       |
+   | *Medusa [0/0]*         | *1d 2:59* |           |       |       |
+   | \_  /Components [0/0]/ |           | /1d 2:59/ |       |       |
    | \_    Probes [0/0]     |           |           |  2:31 |       |
    | \_    Model [0/0]      |           |           |  2:17 |       |
    | \_    Database [1/2]   |           |           |  1:36 |       |
    | \_      Pool           |           |           |       |  0:28 |
-   | \_    Server [1/2]     |           |           | 19:57 |       |
-   | \_      Protocol       |           |           |       | 11:10 |
+   | \_    Server [1/2]     |           |           | 20:35 |       |
+   | \_      Protocol       |           |           |       | 11:48 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -98,6 +98,7 @@
     :END:
 **** TODO Protocol
      :LOGBOOK:
+     CLOCK: [2025-05-03 Sa 20:55]--[2025-05-03 Sa 21:33] =>  0:38
      CLOCK: [2025-05-02 Fr 21:22]--[2025-05-02 Fr 21:35] =>  0:13
      CLOCK: [2025-05-02 Fr 18:00]--[2025-05-02 Fr 19:00] =>  1:00
      CLOCK: [2025-05-02 Fr 16:21]--[2025-05-02 Fr 17:34] =>  1:13
