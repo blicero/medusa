@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-29 18:51:29 krylon>
+# Time-stamp: <2025-05-03 22:37:06 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -39,6 +39,8 @@ class IntegrityError(DatabaseError):
 
 OPEN_LOCK: Final[Lock] = Lock()
 
+# I'm feeling a little sheepish realizing just now I could keep the host.last_contact
+# timestamp up to date using triggers.
 INIT_QUERIES: Final[list[str]] = [
     """
 CREATE TABLE host (
@@ -67,6 +69,15 @@ CREATE TABLE record (
     "CREATE INDEX record_host_idx ON record (host_id)",
     "CREATE INDEX record_time_idx ON record (timestamp)",
     "CREATE INDEX record_src_idx ON record (source)",
+    """
+CREATE TRIGGER tr_host_contact_stamp
+    AFTER INSERT ON record
+    BEGIN
+        UPDATE host
+            SET last_contact = unixepoch()
+            WHERE id = NEW.host_id;
+    END
+    """,
 ]
 
 
