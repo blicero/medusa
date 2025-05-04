@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 20:47:10 krylon>
+# Time-stamp: <2025-05-03 22:44:50 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -25,10 +25,11 @@ import threading
 from datetime import datetime
 from typing import Optional
 
+import jsonpickle
 from krylib import fmt_err
 
 from medusa import common
-from medusa.data import Host
+from medusa.data import Host, Record
 from medusa.database import Database
 from medusa.proto import BUFSIZE, Message, MsgType, set_keepalive_linux
 
@@ -124,7 +125,7 @@ class ConnectionHandler:
             MsgType.Hello,
             "Hello")
         try:
-            xfr: str = json.dumps(msg.toXFR())
+            xfr: str = jsonpickle.encode(msg)
             self.conn.send(bytes(xfr, 'UTF-8'))
         except Exception as err:  # pylint: disable-msg=W0718
             self.log.error("Failed to send Hello message to %s: %s\n%s\n\n",
@@ -137,10 +138,9 @@ class ConnectionHandler:
                 rcv = self.conn.recv(BUFSIZE)
                 if len(rcv) == 0:
                     continue
-                raw = json.loads(str(rcv, encoding="UTF-8"))
-                msg = Message.fromXFR(raw)
+                msg = jsonpickle.decode(rcv)
                 response = self.handle_msg(msg)
-                xfr = json.dumps(response.toXFR())
+                xfr = jsonpickle.encode(response)
                 buf = bytes(xfr, 'UTF-8')
                 self.conn.send(buf)
             except json.JSONDecodeError as jerr:
@@ -160,12 +160,14 @@ class ConnectionHandler:
         try:
             match msg.mtype:
                 case MsgType.Hello:
-                    assert isinstance(msg.payload, list)
-                    info: list[str] = msg.payload
+                    assert isinstance(msg.payload, tuple)
+                    info: tuple[str, str] = msg.payload
                     return self.handle_hello(info)
+                case MsgType.ReportSubmitMany:
+                    return self.handle_report(msg.payload)
                 case _:
                     self.log.error("Don't know how to handle message %s from %s: %s",
-                                   msg.mtype,
+                                   msg.mtype.name,
                                    self.addr,
                                    msg.payload)
                     reply = Message(MsgType.Error,
@@ -183,7 +185,7 @@ class ConnectionHandler:
                 f"Error handling msg {msg.mtype}: {err}")
             return response
 
-    def handle_hello(self, info: list[str]) -> Message:
+    def handle_hello(self, info: tuple[str, str]) -> Message:
         """Handle a Hello from the Agent."""
         with self.db:
             host = self.db.host_get_by_name(info[0])
@@ -197,6 +199,18 @@ class ConnectionHandler:
                 ("Welcome aboard",
                  host.host_id))
             return response
+
+    def handle_report(self, report: list[Record]) -> Message:
+        """Handle a list of Records from an Agent."""
+        assert self.host is not None
+        with self.db:
+            self.log.debug("We received %d records from %s",
+                           len(report),
+                           self.addr)
+            for rec in report:
+                rec.host_id = self.host.host_id
+                self.db.record_add(rec)
+        return Message(MsgType.ReportAck, "Thank you")
 
 
 if __name__ == '__main__':

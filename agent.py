@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 21:32:03 krylon>
+# Time-stamp: <2025-05-03 22:44:07 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -26,6 +26,7 @@ import time
 from threading import Lock
 from typing import Optional
 
+import jsonpickle
 from krylib import fmt_err
 
 from medusa import common
@@ -115,14 +116,13 @@ class Agent:
 
     def send(self, msg: Message) -> Optional[Message]:
         """Send a message to the server, receive a response."""
-        xfr: str = json.dumps(msg.toXFR())
+        xfr: str = jsonpickle.encode(msg)
         self.sock.send(bytes(xfr, 'UTF-8'))
 
         rcv: bytes = self.sock.recv(BUFSIZE)
         try:
-            raw = json.loads(rcv)
-            assert isinstance(raw, dict)
-            response = Message.fromXFR(raw)
+            response = jsonpickle.decode(rcv)
+            assert isinstance(response, Message)
         except json.JSONDecodeError as jerr:
             self.log.error("Failed to decode message from %s: %s\n%s\n",
                            self.srv,
@@ -138,9 +138,9 @@ class Agent:
             self.active = True
 
         rcv = self.sock.recv(BUFSIZE)
-        raw = json.loads(rcv)
-        assert isinstance(raw, dict)
-        msg: Message = Message.fromXFR(raw)
+        msg = jsonpickle.decode(rcv)
+        print(f"Received instance of {msg.__class__.__name__} from Server: {msg}")
+        assert isinstance(msg, Message)
         assert msg.mtype == MsgType.Hello
 
         hello = Message(
@@ -159,6 +159,9 @@ class Agent:
             if len(records) == 0:
                 continue
 
+            self.log.debug("I shall deliver %d records to the server",
+                           len(records))
+
             msg = Message(
                 MsgType.ReportSubmitMany,
                 records)
@@ -167,10 +170,14 @@ class Agent:
 
             if res is None:
                 self.log.info("No response was received?")
+                self.shutdown()
+                break
 
     def shutdown(self) -> None:
         """Close the client connection."""
-        self.sock.shutdown()
+        with self.lock:
+            self.active = False
+            self.sock.shutdown(socket.SHUT_RDWR)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 20:13:11 krylon>
+# Time-stamp: <2025-05-03 21:49:56 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -70,18 +70,6 @@ class Message:  # pylint: disable-msg=R0903
 
     __match_args__ = ("mtype", "payload")
 
-    def toXFR(self) -> dict:
-        """Return a dict suitable for serialization."""
-        return {
-            "type": self.mtype.value,
-            "payload": self.payload,
-        }
-
-    @classmethod
-    def fromXFR(cls, xfr) -> 'Message':
-        """Restore a Message from its transfer representation."""
-        msg = Message(MsgType(xfr['type']), xfr['payload'])
-        return msg
 
 # Local Variables: #
 # python-indent: 4 #
