@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-29 18:04:45 krylon>
+# Time-stamp: <2025-05-04 18:53:31 krylon>
 #
 # /data/code/python/medusa/common.py
 # created on 24. 01. 2024
@@ -23,7 +23,7 @@ from typing import Final
 from threading import Lock
 
 APP_NAME: Final[str] = "Medusa"
-APP_VERSION: Final[str] = "0.0.1"
+APP_VERSION: Final[str] = "0.0.2"
 DEBUG: Final[bool] = True
 TIME_FMT: Final[str] = "%Y-%m-%d %H:%M:%S"
 PORT: Final[int] = 9630
