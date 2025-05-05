@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 22:37:06 krylon>
+# Time-stamp: <2025-05-05 17:57:38 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -182,60 +182,80 @@ class Database:
 
     def host_update_contact(self, host: data.Host, timestamp: datetime) -> None:
         """Update a Host's contact timestamp."""
-        cur: sqlite3.Cursor = self.db.cursor()
-        cur.execute(db_queries[QueryID.HostUpdateContact],
-                    (int(timestamp.timestamp()),
-                     host.host_id))
-        host.last_contact = timestamp
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.HostUpdateContact],
+                        (int(timestamp.timestamp()),
+                         host.host_id))
+            host.last_contact = timestamp
+        except sqlite3.Error as err:
+            msg = f"{err.__class__.__name__} trying to update last_contact for {host.name}: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
 
     def host_get_by_name(self, name: str) -> Optional[data.Host]:
         """Look up a Host by its name."""
-        cur: sqlite3.Cursor = self.db.cursor()
-        cur.execute(db_queries[QueryID.HostGetByName],
-                    (name, ))
-        row = cur.fetchone()
-        if row is not None:
-            host: data.Host = data.Host(
-                host_id=row[0],
-                name=name,
-                os=row[1],
-                last_contact=datetime.fromtimestamp(row[2]),
-            )
-            return host
-        return None
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.HostGetByName],
+                        (name, ))
+            row = cur.fetchone()
+            if row is not None:
+                host: data.Host = data.Host(
+                    host_id=row[0],
+                    name=name,
+                    os=row[1],
+                    last_contact=datetime.fromtimestamp(row[2]),
+                )
+                return host
+            return None
+        except sqlite3.Error as err:
+            msg = f"{err.__class__.__name__} trying to look up Host {name}: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
 
     def host_get_all(self) -> list[data.Host]:
         """Return all Hosts stored in the database."""
-        cur: sqlite3.Cursor = self.db.cursor()
-        cur.execute(db_queries[QueryID.HostGetAll])
-        hosts: list[data.Host] = []
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.HostGetAll])
+            hosts: list[data.Host] = []
 
-        for row in cur:
-            h: data.Host = data.Host(
-                host_id=row[0],
-                name=row[1],
-                os=row[2],
-                last_contact=datetime.fromtimestamp(row[3]),
-            )
-            hosts.append(h)
+            for row in cur:
+                h: data.Host = data.Host(
+                    host_id=row[0],
+                    name=row[1],
+                    os=row[2],
+                    last_contact=datetime.fromtimestamp(row[3]),
+                )
+                hosts.append(h)
 
-        return hosts
+            return hosts
+        except sqlite3.Error as err:
+            msg = f"{err.__class__.__name__} trying to fetch all Hosts: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
 
     def record_add(self, rec: data.Record) -> None:
         """Add a Record to the database."""
-        cur: sqlite3.Cursor = self.db.cursor()
-        cur.execute(db_queries[QueryID.RecordAdd],
-                    (rec.host_id,
-                     int(rec.timestamp.timestamp()),
-                     rec.source(),
-                     rec.payload(),
-                     ))
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.RecordAdd],
+                        (rec.host_id,
+                         int(rec.timestamp.timestamp()),
+                         rec.source(),
+                         rec.payload(),
+                         ))
 
-        row = cur.fetchone()
-        assert row is not None
-        assert len(row) == 1
-        assert isinstance(row[0], int)
-        rec.record_id = row[0]
+            row = cur.fetchone()
+            assert row is not None
+            assert len(row) == 1
+            assert isinstance(row[0], int)
+            rec.record_id = row[0]
+        except sqlite3.Error as err:
+            msg = f"{err.__class__.__name__} trying to add Record: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
 
     def record_get_by_host(self, host: data.Host, limit: int = -1) -> list[data.Record]:
         """Load the records for a given Host.
@@ -243,23 +263,28 @@ class Database:
         Records are sorted by timestamp in descending order.
         If limit is given, only the <limit> most recent records are returned.
         """
-        cur: sqlite3.Cursor = self.db.cursor()
-        cur.execute(db_queries[QueryID.RecordGetByHost],
-                    (host.host_id, limit))
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.RecordGetByHost],
+                        (host.host_id, limit))
 
-        records: list[data.Record] = []
+            records: list[data.Record] = []
 
-        for row in cur:
-            rec: data.Record = data.Record.get_instance(
-                row[0],
-                host.host_id,
-                datetime.fromtimestamp(row[1]),
-                row[2],
-                row[3],
-            )
-            records.append(rec)
+            for row in cur:
+                rec: data.Record = data.Record.get_instance(
+                    row[0],
+                    host.host_id,
+                    datetime.fromtimestamp(row[1]),
+                    row[2],
+                    row[3],
+                )
+                records.append(rec)
 
-        return records
+            return records
+        except sqlite3.Error as err:
+            msg = f"{err.__class__.__name__} trying to load records for Host {host.name}: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
 
 
 class DBPool:
