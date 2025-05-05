@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 22:44:50 krylon>
+# Time-stamp: <2025-05-05 18:09:22 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -29,6 +29,7 @@ import jsonpickle
 from krylib import fmt_err
 
 from medusa import common
+from medusa.common import MedusaError
 from medusa.data import Host, Record
 from medusa.database import Database
 from medusa.proto import BUFSIZE, Message, MsgType, set_keepalive_linux
@@ -143,6 +144,12 @@ class ConnectionHandler:
                 xfr = jsonpickle.encode(response)
                 buf = bytes(xfr, 'UTF-8')
                 self.conn.send(buf)
+            except OSError as oerr:
+                self.log.error("OSError while handling Agent %s: %s",
+                               self.addr,
+                               oerr)
+                self.conn.shutdown(socket.SHUT_RDWR)
+                return
             except json.JSONDecodeError as jerr:
                 self.log.error("Failed to decode JSON message (%d byte) from %s: %s\n%s\n\n",
                                len(rcv),
@@ -203,14 +210,20 @@ class ConnectionHandler:
     def handle_report(self, report: list[Record]) -> Message:
         """Handle a list of Records from an Agent."""
         assert self.host is not None
-        with self.db:
-            self.log.debug("We received %d records from %s",
-                           len(report),
-                           self.addr)
-            for rec in report:
-                rec.host_id = self.host.host_id
-                self.db.record_add(rec)
-        return Message(MsgType.ReportAck, "Thank you")
+        try:
+            with self.db:
+                self.log.debug("We received %d records from %s",
+                               len(report),
+                               self.addr)
+                for rec in report:
+                    rec.host_id = self.host.host_id
+                    self.db.record_add(rec)
+            return Message(MsgType.ReportAck, "Thank you")
+        except MedusaError as err:
+            msg = f"{err.__class__.__name__} trying to handle report from {self.addr}: {err}"
+            self.log.error(msg)
+            response = Message(MsgType.Error, msg)
+            return response
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-03 22:44:07 krylon>
+# Time-stamp: <2025-05-05 18:33:40 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -19,15 +19,14 @@ medusa.agent
 
 import json
 import logging
-import os
 import socket
 import sys
 import time
 from threading import Lock
-from typing import Optional
+from typing import Final, Optional
 
 import jsonpickle
-from krylib import fmt_err
+from krylib import fib, fmt_err
 
 from medusa import common
 from medusa.data import Record
@@ -37,6 +36,9 @@ from medusa.probe.cpu import CPUProbe
 from medusa.probe.sysload import LoadProbe
 from medusa.proto import (BUFSIZE, REPORT_INTERVAL, Message, MsgType,
                           set_keepalive_linux)
+
+# The maximum number of errors we tolerate before we bail.
+MAX_ERR: Final[int] = 10
 
 
 class Agent:
@@ -51,6 +53,7 @@ class Agent:
         "srv",
         "sock",
         "active",
+        "errcnt",
     ]
 
     name: str
@@ -61,6 +64,7 @@ class Agent:
     srv: str
     sock: socket.socket
     active: bool
+    errcnt: int
 
     def __init__(self, addr: str, *probelist: Probe) -> None:
         self.lock = Lock()
@@ -68,6 +72,7 @@ class Agent:
         self.log = common.get_logger("Agent")
         self.probes = set()
         self.srv = addr
+        self.errcnt = 0
 
         platform = osdetect.guess_os()
         self.os = platform.name
@@ -75,16 +80,27 @@ class Agent:
         for p in probelist:
             self.probes.add(p)
 
+        while not self.connect():
+            delay: int = fib(self.errcnt+1)
+            self.log.error("Failed to connect to %s. Waiting %d seconds...",
+                           self.srv,
+                           delay)
+            time.sleep(delay)
+
+    def connect(self) -> bool:
+        """Attempt to connect to the server."""
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((addr, common.PORT))
+            self.sock.connect((self.srv, common.PORT))
             set_keepalive_linux(self.sock)
-        except socket.gaierror as err:
+        except OSError as err:
             self.log.error("Failed to connect to %s: %s\n%s\n\n",
-                           addr,
+                           self.srv,
                            err,
                            fmt_err(err))
-            os.abort()
+            self.errcnt += 1
+            return False
+        return True
 
     def get_name(self) -> str:
         """Get the Agent's name."""
@@ -123,6 +139,14 @@ class Agent:
         try:
             response = jsonpickle.decode(rcv)
             assert isinstance(response, Message)
+        except OSError as oerr:
+            self.log.error("OSError trying to talk to Server at %s: %s",
+                           self.srv,
+                           oerr)
+            self.errcnt += 1
+            if self.errcnt < MAX_ERR and self.connect():
+                return self.send(msg)
+            return None
         except json.JSONDecodeError as jerr:
             self.log.error("Failed to decode message from %s: %s\n%s\n",
                            self.srv,
@@ -168,10 +192,27 @@ class Agent:
 
             res = self.send(msg)
 
-            if res is None:
-                self.log.info("No response was received?")
-                self.shutdown()
-                break
+            match res:
+                case None:
+                    self.log.info("No response was received?")
+                    self.shutdown()
+                    break
+                case Message(MsgType.Error, errmsg):
+                    self.log.error("Server reported an error: %s",
+                                   errmsg)
+                    self.errcnt += 1
+                    if self.errcnt >= MAX_ERR:
+                        self.shutdown()
+                        break
+                case Message(MsgType.ReportAck, _):
+                    self.log.debug("Server processed report successfully.")
+                case Message(mtype, payload):
+                    self.log.error("Unexpected message type %s in response to report: %s",
+                                   mtype,
+                                   payload)
+                case _:
+                    self.log.error("Don't know what to make of this: %s",
+                                   res)
 
     def shutdown(self) -> None:
         """Close the client connection."""
