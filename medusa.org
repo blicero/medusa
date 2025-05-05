@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-04 00:51:56 krylon>
+# Time-stamp: <2025-05-05 17:58:15 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [2/4]
+* Medusa [4/4]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,26 +18,27 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-03 Sa 23:31]
-   | Headline               | Time      |           |       |       |
-   |------------------------+-----------+-----------+-------+-------|
-   | *Total time*           | *1d 4:50* |           |       |       |
-   |------------------------+-----------+-----------+-------+-------|
-   | *Medusa [0/0]*         | *1d 4:50* |           |       |       |
-   | \_  /Components [0/0]/ |           | /1d 4:50/ |       |       |
-   | \_    Probes [0/0]     |           |           |  2:31 |       |
-   | \_    Model [0/0]      |           |           |  2:17 |       |
-   | \_    Database [1/2]   |           |           |  1:36 |       |
-   | \_      Pool           |           |           |       |  0:28 |
-   | \_    Server [1/2]     |           |           | 22:26 |       |
-   | \_      Protocol       |           |           |       | 13:39 |
+   #+CAPTION: Clock summary at [2025-05-05 Mo 17:58]
+   | Headline                   | Time      |           |       |       |
+   |----------------------------+-----------+-----------+-------+-------|
+   | *Total time*               | *1d 4:59* |           |       |       |
+   |----------------------------+-----------+-----------+-------+-------|
+   | *Medusa [4/4]*             | *1d 4:59* |           |       |       |
+   | \_  /Components [4/4]/     |           | /1d 4:59/ |       |       |
+   | \_    Probes [0/0]         |           |           |  2:31 |       |
+   | \_    Model [0/0]          |           |           |  2:17 |       |
+   | \_    Database [2/2]       |           |           |  1:45 |       |
+   | \_      Exception handling |           |           |       |  0:09 |
+   | \_      Pool               |           |           |       |  0:28 |
+   | \_    Server [2/2]         |           |           | 22:26 |       |
+   | \_      Protocol           |           |           |       | 13:39 |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
    :END:
-** Components [0/0]
+** Components [4/4]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -60,7 +61,7 @@
     CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:51] =>  0:34
     CLOCK: [2025-04-21 Mo 13:31]--[2025-04-21 Mo 15:14] =>  1:43
     :END:
-*** Database [1/2]
+*** Database [2/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -70,7 +71,11 @@
     CLOCK: [2025-04-22 Di 18:17]--[2025-04-22 Di 18:17] =>  0:00
     CLOCK: [2025-04-22 Di 14:23]--[2025-04-22 Di 15:18] =>  0:55
     :END:
-**** TODO Exception handling
+**** DONE Exception handling
+     CLOSED: [2025-05-05 Mo 17:57]
+     :LOGBOOK:
+     CLOCK: [2025-05-05 Mo 17:48]--[2025-05-05 Mo 17:57] =>  0:09
+     :END:
 **** DONE Pool
      CLOSED: [2025-04-29 Di 20:40]
      :LOGBOOK:
@@ -88,7 +93,7 @@
      [2025-04-24 Do 19:06]
      After looking into this a bit, I think it is too much, I don't need it.
      The context manager part, I mean.
-*** Server [1/2]
+*** Server [2/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -100,7 +105,8 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
-**** TODO Protocol
+**** DONE Protocol
+     CLOSED: [2025-05-05 Mo 17:00]
      :LOGBOOK:
      CLOCK: [2025-05-03 Sa 21:40]--[2025-05-03 Sa 23:31] =>  1:51
      CLOCK: [2025-05-03 Sa 20:55]--[2025-05-03 Sa 21:33] =>  0:38
