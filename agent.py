@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-05 18:33:40 krylon>
+# Time-stamp: <2025-05-05 19:32:37 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -218,7 +218,12 @@ class Agent:
         """Close the client connection."""
         with self.lock:
             self.active = False
-            self.sock.shutdown(socket.SHUT_RDWR)
+            try:
+                self.sock.shutdown(socket.SHUT_RDWR)
+            except OSError as err:
+                self.log.error("Error while shutting down connection to %s: %s",
+                               self.srv,
+                               err)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-05 19:11:28 krylon>
+# Time-stamp: <2025-05-05 19:39:45 krylon>
 #
 # /data/code/python/medusa/probe/cpu.py
 # created on 27. 01. 2024
@@ -28,7 +28,6 @@ class CPUProbe(Probe):
         """Get data on CPU(s)"""
         data = get_cpu_info()
         self._set_stamp()
-        # info = {"frequency": data["hz_actual"][0]}
         if "hz_actual" in data:
             info: CPURecord = CPURecord(
                 timestamp=self.last_fetch,
