@@ -1,7 +1,8 @@
+{# -*- mode: web; coding: utf-8; -*- #}
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Time-stamp: "2025-05-06 10:15:39 krylon" -->
+    <!-- Time-stamp: "2025-05-06 14:58:47 krylon" -->
     <title>{% block title %}{% endblock %}</title>
 
     <meta charset="utf-8" />
@@ -17,22 +18,28 @@
   </head>
 
   <body>
-    {% block intro %}
-    {% include "intro.jinja" %}
-    {% endblock %}
+    <div class="intro">
+      {% block intro %}
+      {% include "intro.jinja" %}
+      {% endblock %}
+    </div>
 
-    {% block menu %}
-    {% include "menu.jinja" %}
-    {% endblock %}
+    <div class="menu">
+      {% block menu %}
+      {% include "menu.jinja" %}
+      {% endblock %}
+    </div>
 
-    {% block content %}
-    Here be <b>content</b>
-    {% endblock %}
+    <div class="content">
+      {% block content %}
+      Here be <b>content</b>
+      {% endblock %}
+    </div>
 
     {% block footer %}
     <hr />
     <div class="footer">
-      &copy; 2025{%- if year > 2025 -%}-{% year %}{% endif -%}
+      &copy; 2025{%- if year > 2025 -%}-{{ year }}{% endif -%}
       Benjamin Walkenhorst
     </div>
     {% endblock %}

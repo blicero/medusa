@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 10:23:21 krylon>
+# Time-stamp: <2025-05-06 14:56:25 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -20,9 +20,10 @@ medusa.web
 import logging
 import os
 import threading
+from datetime import datetime
 
 import bottle
-from bottle import route
+from bottle import route, run
 from jinja2 import Environment, FileSystemLoader
 
 from medusa import common
@@ -46,12 +47,22 @@ class WebUI:
         self.env = Environment(loader=FileSystemLoader(self.root))
 
         bottle.debug(common.DEBUG)
+        route("/main", callback=self.main)
 
-    @route("/main")
+    def run(self) -> None:
+        """Run the web server."""
+        run(host="localhost", port=9001, debug=common.DEBUG)
+
     def main(self):
         """Presents the landing page."""
         tmpl = self.env.get_template("main.jinja")
-        return tmpl.render(title="Main")
+        return tmpl.render(title=f"{common.APP_NAME} {common.APP_VERSION} - Main",
+                           year=datetime.now().year)
+
+
+if __name__ == '__main__':
+    ui = WebUI()
+    ui.run()
 
 # Local Variables: #
 # python-indent: 4 #
