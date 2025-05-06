@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 15:31:13 krylon>
+# Time-stamp: <2025-05-06 15:38:26 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -94,6 +94,8 @@ class WebUI:
         #      Set caching header?
         mtype = find_mime_type(path)
         response.set_header("Content-Type", mtype)
+        response.set_header("Cache-Control",
+                            "no-store, max-age=0" if common.DEBUG else "max-age=7200")
 
         full_path = os.path.join(self.root, "static", path)
         with open(full_path, "rb") as fh:
