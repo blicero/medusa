@@ -1,8 +1,8 @@
-{# -*- mode: web; coding: utf-8; -*- #}
+{# -*- mode: jinja2; coding: utf-8; -*- #}
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Time-stamp: "2025-05-06 18:20:17 krylon" -->
+    <!-- Time-stamp: "2025-05-06 19:06:25 krylon" -->
     <title>{% block title %}{% endblock %}</title>
 
     <meta charset="utf-8" />
@@ -40,7 +40,28 @@
 
     <div class="content">
       {% block content %}
-      Here be <b>content</b>
+      <h3>Hosts</h3>
+      <table class="table table-light table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>OS</th>
+            <th>Last Contact</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for host in hosts %}
+            <tr>
+              <td>{{ host.host_id }}</td>
+              <td>{{ host.name }}</td>
+              <td>{{ host.os }}</td>
+              <td>{{ host.contact_str }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
       {% endblock %}
     </div>
 

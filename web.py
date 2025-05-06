@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 18:33:19 krylon>
+# Time-stamp: <2025-05-06 22:56:45 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -24,13 +24,15 @@ import re
 import socket
 import threading
 from datetime import datetime
-from typing import Any, Final
+from typing import Any, Final, Optional
 
 import bottle
 from bottle import response, route, run
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, Template
 
 from medusa import common
+from medusa.data import Host
+from medusa.database import Database
 
 mime_types: Final[dict[str, str]] = {
     ".css":  "text/css",
@@ -83,6 +85,7 @@ class WebUI:
 
         bottle.debug(common.DEBUG)
         route("/main", callback=self.main)
+        route("/host/<host_id:int>", callback=self.host_details)
         route("/static/<path>", callback=self.staticfile)
         route("/ajax/beacon", callback=self.handle_beacon)
         route("/favicon.ico", callback=self.handle_favicon)
@@ -91,6 +94,8 @@ class WebUI:
         """Return a dict with a few default variables filled in already."""
         default: dict = {
             "now": datetime.now().strftime(common.TIME_FMT),
+            "year": datetime.now().year,
+            "time_fmt": common.TIME_FMT,
         }
 
         return default
@@ -99,15 +104,42 @@ class WebUI:
         """Run the web server."""
         run(host="localhost", port=9001, debug=common.DEBUG)
 
-    def main(self):
+    def main(self) -> str:
         """Presents the landing page."""
-        tmpl = self.env.get_template("main.jinja")
-        tmpl_vars = self._tmpl_vars()
-        tmpl_vars["title"] = f"{common.APP_NAME} {common.APP_VERSION} - Main"
-        tmpl_vars["year"] = datetime.now().year
-        return tmpl.render(tmpl_vars)
+        try:
+            db: Database = Database()
+            response.set_header("Cache-Control", "no-store, max-age=0")
+            tmpl = self.env.get_template("main.jinja")
+            tmpl_vars = self._tmpl_vars()
+            tmpl_vars["title"] = f"{common.APP_NAME} {common.APP_VERSION} - Main"
+            tmpl_vars["year"] = datetime.now().year
+            tmpl_vars["hosts"] = db.host_get_all()
+            return tmpl.render(tmpl_vars)
+        finally:
+            db.close()
 
-    def handle_beacon(self) -> Any:
+    def host_details(self, host_id) -> str:
+        """Render a detailed view of the information about a given Host."""
+        try:
+            db: Database = Database()
+            response.set_header("Cache-Control", "no-store, max-age=0")
+            host: Optional[Host] = db.host_get_by_id(host_id)
+            if host is None:
+                response.status = 404
+                return f"Host {host_id} does not exist in the database."
+
+            tmpl: Template = self.env.get_template("host.jinja")
+            tmpl_vars = self._tmpl_vars()
+            tmpl_vars["host"] = host
+            tmpl_vars["hosts"] = db.host_get_all()
+            tmpl_vars["data"] = db.record_get_by_host(host)
+            # ...
+
+            return tmpl.render(tmpl_vars)
+        finally:
+            db.close()
+
+    def handle_beacon(self) -> str:
         """Handle the AJAX call for the beacon."""
         jdata: dict[str, Any] = {
             "Status": True,
@@ -130,7 +162,7 @@ class WebUI:
                                 "no-store, max-age=0" if common.DEBUG else "max-age=7200")
             return fh.read()
 
-    def staticfile(self, path):
+    def staticfile(self, path) -> bytes:
         """Return one of the static files."""
         # TODO Determine MIME type?
         #      Set caching header?

@@ -1,0 +1,41 @@
+{# -*- mode: jinja2; coding: utf-8; -*-
+Time-stamp: <2025-05-06 22:54:06 krylon>
+/data/code/python/medusa/web/templates/host.jinja
+created on 06. 05. 2025
+(c) 2025 Benjamin Walkenhorst
+ #}
+
+{% extends "main.jinja" %}
+
+{% block title %}
+  Details for Host {{ host.shortname }}
+{% endblock %}
+
+{% block content %}
+  <h2>{{ host.shortname }}</h2>
+  <h4>{{ host.os }}</h4>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Time</th>
+        <th>Source</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in data %}
+        <tr>
+          <td>{{ row.record_id }}</td>
+          <td>{{ row.timestamp.strftime(time_fmt) }}</td>{# Ob das das geht? 🫣 #}
+          <td>{{ row.source() }}</td>
+          <td>{{ row.payload() }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+
