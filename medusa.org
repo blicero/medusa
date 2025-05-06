@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-06 15:31:49 krylon>
+# Time-stamp: <2025-05-06 18:34:15 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -18,20 +18,20 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-06 Di 15:31]
+   #+CAPTION: Clock summary at [2025-05-06 Di 18:34]
    | Headline                     | Time      |           |         |       |
    |------------------------------+-----------+-----------+---------+-------|
-   | *Total time*                 | *1d 8:57* |           |         |       |
+   | *Total time*                 | *1d 9:18* |           |         |       |
    |------------------------------+-----------+-----------+---------+-------|
-   | *Medusa [5/6]*               | *1d 8:57* |           |         |       |
-   | \_  /Components [5/6]/       |           | /1d 8:57/ |         |       |
+   | *Medusa [5/6]*               | *1d 9:18* |           |         |       |
+   | \_  /Components [5/6]/       |           | /1d 9:18/ |         |       |
    | \_    Probes [0/0]           |           |           |    2:31 |       |
    | \_    Model [0/0]            |           |           |    2:17 |       |
    | \_    Database [2/2]         |           |           |    1:45 |       |
    | \_      Exception handling   |           |           |         |  0:09 |
    | \_      Pool                 |           |           |         |  0:28 |
-   | \_    Server [3/4]           |           |           | 1d 2:24 |       |
-   | \_      Web Interface [0/0]  |           |           |         |  3:00 |
+   | \_    Server [3/4]           |           |           | 1d 2:45 |       |
+   | \_      Web Interface [0/0]  |           |           |         |  3:21 |
    | \_      Error Handling [0/0] |           |           |         |  0:58 |
    | \_      Protocol             |           |           |         | 13:39 |
    #+END:
@@ -116,6 +116,7 @@
      :VISIBILITY: children
      :END:
      :LOGBOOK:
+     CLOCK: [2025-05-06 Di 18:12]--[2025-05-06 Di 18:33] =>  0:21
      CLOCK: [2025-05-06 Di 15:06]--[2025-05-06 Di 15:31] =>  0:25
      CLOCK: [2025-05-06 Di 14:44]--[2025-05-06 Di 14:59] =>  0:15
      CLOCK: [2025-05-06 Di 10:16]--[2025-05-06 Di 10:24] =>  0:08
@@ -125,6 +126,8 @@
      I am looking into Bottle first, which I have never used, but it sounds
      nice.
      For templating, I'll use [[https://jinja.palletsprojects.com/en/stable/][Jinja]].
+     [2025-05-06 Di 18:12]
+     *Update* So far both Bottle and Jinja2 are very pleasant to use.
 **** DONE Error Handling [0/0]
      CLOSED: [2025-05-05 Mo 20:00]
      :PROPERTIES:
