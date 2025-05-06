@@ -1,5 +1,5 @@
-{# -*- mode: web; coding: utf-8; -*-
-Time-stamp: <2025-05-06 10:14:49 krylon>
+{# -*- mode: jinja2; coding: utf-8; -*-
+Time-stamp: <2025-05-06 18:55:26 krylon>
 %filename%
 created on %date%
 (c) %year% %author%
