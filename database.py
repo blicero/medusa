@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-05 17:57:38 krylon>
+# Time-stamp: <2025-05-06 22:48:17 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -87,6 +87,7 @@ class QueryID(IntEnum):
 
     HostAdd = auto()
     HostUpdateContact = auto()
+    HostGetByID = auto()
     HostGetByName = auto()
     HostGetAll = auto()
     RecordAdd = auto()
@@ -100,8 +101,16 @@ INSERT INTO host (name, os, last_contact)
 RETURNING id
     """,
     QueryID.HostUpdateContact: "UPDATE host SET last_contact = ? WHERE id = ?",
+    QueryID.HostGetByID: """
+SELECT
+    name,
+    os,
+    last_contact
+FROM host
+WHERE id = ?
+    """,
     QueryID.HostGetByName: "SELECT id, os, last_contact FROM host WHERE name = ?",
-    QueryID.HostGetAll: "SELECT id, name, os, last_contact FROM host",
+    QueryID.HostGetAll: "SELECT id, name, os, last_contact FROM host ORDER BY name",
     QueryID.RecordAdd: """
 INSERT into record (host_id, timestamp, source, payload)
             VALUES (      ?,         ?,      ?,       ?)
@@ -165,6 +174,10 @@ class Database:
     def __exit__(self, ex_type, ex_val, traceback):
         return self.db.__exit__(ex_type, ex_val, traceback)
 
+    def close(self) -> None:
+        """Close the underlying database connection explicitly."""
+        self.db.close()
+
     def host_add(self, host: data.Host) -> None:
         """Add a Host to the database."""
         try:
@@ -214,6 +227,27 @@ class Database:
             self.log.error(msg)
             raise DatabaseError(msg) from err
 
+    def host_get_by_id(self, host_id: int) -> Optional[data.Host]:
+        """Look up a Host by its name."""
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.HostGetByID],
+                        (host_id, ))
+            row = cur.fetchone()
+            if row is not None:
+                host: data.Host = data.Host(
+                    host_id=host_id,
+                    name=row[0],
+                    os=row[1],
+                    last_contact=datetime.fromtimestamp(row[2]),
+                )
+                return host
+            return None
+        except sqlite3.Error as err:
+            msg = f"{err.__class__.__name__} trying to look up Host {host_id}: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
+
     def host_get_all(self) -> list[data.Host]:
         """Return all Hosts stored in the database."""
         try:
@@ -243,7 +277,7 @@ class Database:
             cur.execute(db_queries[QueryID.RecordAdd],
                         (rec.host_id,
                          int(rec.timestamp.timestamp()),
-                         rec.source(),
+                         rec.source,
                          rec.payload(),
                          ))
 
