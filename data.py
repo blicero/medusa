@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 17:01:37 krylon>
+# Time-stamp: <2025-05-06 22:36:06 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -17,10 +17,16 @@ medusa.data
 """
 
 import json
+import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, NamedTuple, Optional
+from typing import Any, Final, NamedTuple, Optional
+
+from medusa import common
+
+name_short_pat: Final[re.Pattern] = \
+    re.compile("^([^.]+)")
 
 
 @dataclass(slots=True, kw_only=True)
@@ -31,6 +37,19 @@ class Host:
     name: str
     os: str
     last_contact: datetime
+
+    @property
+    def contact_str(self) -> str:
+        """Return a textual representation of the last_contact timestamp."""
+        return self.last_contact.strftime(common.TIME_FMT)
+
+    @property
+    def shortname(self) -> str:
+        """Return the hostname, stripped of the domain part, if present."""
+        m = name_short_pat.search(self.name)
+        if m is None:
+            return self.name
+        return m[1]
 
 
 @dataclass(slots=True)
