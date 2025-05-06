@@ -1,9 +1,41 @@
 {# -*- mode: web; coding: utf-8; -*-
-Time-stamp: <2025-05-06 10:15:25 krylon>
+Time-stamp: <2025-05-06 17:41:51 krylon>
 /data/code/python/medusa/web/templates/intro.jinja
 created on 06. 05. 2025
 (c) 2025 Benjamin Walkenhorst
  #}
+<h1 id="page_title">{{ title }}</h1>
+<hr />
 
-<h2>Here be <b><i>Intro</i></b></h2>
+{% if dbg %}
+<script>
+ $(document).ready(function() {
+   if (!settings.beacon.active) {
+     $("#beacon")[0].innerHTML = "Beacon is suspended";
+   }
+ });
+</script>
+
+<table>
+  <tr>
+    <td>
+      <div class="debug container-fluid">
+        {{ app_string }} running on {{ hostname }}<br />
+        Template rendered on <time>{{ now }}</time><br />
+        <div id="beacon" class="debug" onclick="beaconToggle();">
+          Beacon
+        </div>
+      </div>
+    </td>
+    <td>
+      {# {{ template "msg" . }} #}
+    </td>
+  </tr>
+</table>
+{% endif %}
+<p>
+  &nbsp;
+</p>
+
+<hr />
 

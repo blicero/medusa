@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 15:38:26 krylon>
+# Time-stamp: <2025-05-06 18:33:19 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -17,12 +17,14 @@ medusa.web
 """
 
 
+import json
 import logging
 import os
 import re
+import socket
 import threading
 from datetime import datetime
-from typing import Final
+from typing import Any, Final
 
 import bottle
 from bottle import response, route, run
@@ -73,10 +75,25 @@ class WebUI:
         else:
             self.root = root
         self.env = Environment(loader=FileSystemLoader(os.path.join(self.root, "templates")))
+        self.env.globals = {
+            "dbg": common.DEBUG,
+            "app_string": f"{common.APP_NAME} {common.APP_VERSION}",
+            "hostname": socket.gethostname(),
+        }
 
         bottle.debug(common.DEBUG)
         route("/main", callback=self.main)
         route("/static/<path>", callback=self.staticfile)
+        route("/ajax/beacon", callback=self.handle_beacon)
+        route("/favicon.ico", callback=self.handle_favicon)
+
+    def _tmpl_vars(self) -> dict:
+        """Return a dict with a few default variables filled in already."""
+        default: dict = {
+            "now": datetime.now().strftime(common.TIME_FMT),
+        }
+
+        return default
 
     def run(self) -> None:
         """Run the web server."""
@@ -85,8 +102,33 @@ class WebUI:
     def main(self):
         """Presents the landing page."""
         tmpl = self.env.get_template("main.jinja")
-        return tmpl.render(title=f"{common.APP_NAME} {common.APP_VERSION} - Main",
-                           year=datetime.now().year)
+        tmpl_vars = self._tmpl_vars()
+        tmpl_vars["title"] = f"{common.APP_NAME} {common.APP_VERSION} - Main"
+        tmpl_vars["year"] = datetime.now().year
+        return tmpl.render(tmpl_vars)
+
+    def handle_beacon(self) -> Any:
+        """Handle the AJAX call for the beacon."""
+        jdata: dict[str, Any] = {
+            "Status": True,
+            "Message": common.APP_NAME,
+            "Timestamp": datetime.now().strftime(common.TIME_FMT),
+            "Hostname": socket.gethostname(),
+        }
+
+        response.set_header("Content-Type", "application/json")
+        response.set_header("Cache-Control", "no-store, max-age=0")
+
+        return json.dumps(jdata)
+
+    def handle_favicon(self) -> bytes:
+        """Handle the request for the favicon."""
+        path: Final[str] = os.path.join(self.root, "static", "favicon.ico")
+        with open(path, "rb") as fh:
+            response.set_header("Content-Type", "image/vnd.microsoft.icon")
+            response.set_header("Cache-Control",
+                                "no-store, max-age=0" if common.DEBUG else "max-age=7200")
+            return fh.read()
 
     def staticfile(self, path):
         """Return one of the static files."""
@@ -105,6 +147,7 @@ class WebUI:
 if __name__ == '__main__':
     ui = WebUI()
     ui.run()
+
 
 # Local Variables: #
 # python-indent: 4 #

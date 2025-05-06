@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Time-stamp: "2025-05-06 14:58:47 krylon" -->
+    <!-- Time-stamp: "2025-05-06 18:20:17 krylon" -->
     <title>{% block title %}{% endblock %}</title>
 
     <meta charset="utf-8" />
@@ -15,6 +15,14 @@
     <script src="/static/jquery-3.7.1.min.js"></script>
     <script src="/static/bootstrap.bundle.min.js"></script>
     <script src="/static/underscore.js"></script>
+    <script src="/static/interact.js"></script>
+    <script src="/static/settings.js"></script>
+    <script>
+     $(document).ready(() => {
+       initSettings()
+       beaconLoop()
+     })
+    </script>
   </head>
 
   <body>
@@ -39,7 +47,7 @@
     {% block footer %}
     <hr />
     <div class="footer">
-      &copy; 2025{%- if year > 2025 -%}-{{ year }}{% endif -%}
+      &copy; 2025{%- if year > 2025 %} - {{ year }}{% endif %}
       Benjamin Walkenhorst
     </div>
     {% endblock %}
