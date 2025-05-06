@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-05 21:37:38 krylon>
+# Time-stamp: <2025-05-06 10:23:21 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -21,6 +21,10 @@ import logging
 import os
 import threading
 
+import bottle
+from bottle import route
+from jinja2 import Environment, FileSystemLoader
+
 from medusa import common
 
 
@@ -30,6 +34,7 @@ class WebUI:
     log: logging.Logger
     tmpl_root: str
     lock: threading.Lock
+    env: Environment
 
     def __init__(self, root: str = "") -> None:
         self.log = common.get_logger("WebUI")
@@ -38,6 +43,15 @@ class WebUI:
             self.root = os.path.join(".", "web", "templates")
         else:
             self.root = root
+        self.env = Environment(loader=FileSystemLoader(self.root))
+
+        bottle.debug(common.DEBUG)
+
+    @route("/main")
+    def main(self):
+        """Presents the landing page."""
+        tmpl = self.env.get_template("main.jinja")
+        return tmpl.render(title="Main")
 
 # Local Variables: #
 # python-indent: 4 #
