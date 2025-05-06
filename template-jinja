@@ -1,41 +1,24 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <!-- Time-stamp: "2025-05-05 21:57:21 krylon" -->
-    {% block head %}
-    <title>{{ title }}</title>
+{# -*- mode: web; coding: utf-8; -*-
+Time-stamp: <2025-05-06 10:14:49 krylon>
+%filename%
+created on %date%
+(c) %year% %author%
+ #}
 
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/bootstrap.min.css" />
-    <link rel="stylesheet" href="/static/bootstrap-reboot.min.css" />
-    <link rel="stylesheet" href="/static/bootstrap-utilities.min.css" />
+{% extends "main.jinja" %}
 
-    <link rel="stylesheet" href="/static/style.css" />
+{% block title %}
+{% endblock %}
 
-    <script src="/static/jquery-3.7.1.min.js"></script>
-    <script src="/static/bootstrap.bundle.min.js"></script>
-    <script src="/static/underscore.js"></script>
-    {% endblock %}
-  </head>
+{% block intro %}
+{% endblock %}
 
-  <body>
-    {% block intro %}
-    Here be intro
-    {% endblock %}
+{% block menu %}
+{% endblock %}
 
-    {% block menu %}
-    <big>Here</big> be menu
-    {% endblock %}
+{% block content %}
+{% endblock %}
 
-    {% block content %}
-    Here be <b>content</b>
-    {% endblock %}
+{% block footer %}
+{% endblock %}
 
-    {% block footer %}
-    <hr />
-    <div class="footer">
-      &copy; 2025 Benjamin Walkenhorst
-    </div>
-    {% endblock %}
-  </body>
-</html>
