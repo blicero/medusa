@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-04 18:53:31 krylon>
+# Time-stamp: <2025-05-06 22:50:13 krylon>
 #
 # /data/code/python/medusa/common.py
 # created on 24. 01. 2024
@@ -86,8 +86,8 @@ def set_basedir(folder: str) -> None:
 
 def init_app() -> None:
     """Initialize the application environment"""
-    print(f"Create base directory {path.base()}")
     if not os.path.isdir(path.base()):
+        print(f"Create base directory {path.base()}")
         os.mkdir(path.base())
 
 
