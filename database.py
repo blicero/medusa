@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 22:48:17 krylon>
+# Time-stamp: <2025-05-07 17:33:06 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -92,6 +92,7 @@ class QueryID(IntEnum):
     HostGetAll = auto()
     RecordAdd = auto()
     RecordGetByHost = auto()
+    RecordGetByHostProbe = auto()
 
 
 db_queries: Final[dict[QueryID, str]] = {
@@ -126,7 +127,16 @@ FROM record
 WHERE host_id = ?
 ORDER BY timestamp DESC
 LIMIT ?
-""",
+    """,
+    QueryID.RecordGetByHostProbe: """
+SELECT
+    id,
+    timestamp,
+    payload
+FROM record
+WHERE host_id = ? and source = ?
+ORDER BY timestamp
+    """,
 }
 
 
@@ -317,6 +327,30 @@ class Database:
             return records
         except sqlite3.Error as err:
             msg = f"{err.__class__.__name__} trying to load records for Host {host.name}: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
+
+    def record_get_by_host_probe(self, host: data.Host, source: str) -> list[data.Record]:
+        """Load records for a given Host and source."""
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.RecordGetByHostProbe],
+                        (host.host_id, source))
+            records: list[data.Record] = []
+
+            for row in cur:
+                rec: data.Record = data.Record.get_instance(
+                    row[0],
+                    host.host_id,
+                    datetime.fromtimestamp(row[1]),
+                    source,
+                    row[2])
+                records.append(rec)
+
+            return records
+        except sqlite3.Error as err:
+            cname: Final[str] = err.__class__.__name__
+            msg = f"{cname} trying to load records for Host {host.name} from {source}: {err}"
             self.log.error(msg)
             raise DatabaseError(msg) from err
 
