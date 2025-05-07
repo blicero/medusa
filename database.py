@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-07 17:33:06 krylon>
+# Time-stamp: <2025-05-07 19:59:17 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -287,7 +287,7 @@ class Database:
             cur.execute(db_queries[QueryID.RecordAdd],
                         (rec.host_id,
                          int(rec.timestamp.timestamp()),
-                         rec.source,
+                         rec.source(),
                          rec.payload(),
                          ))
 
