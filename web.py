@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 22:56:45 krylon>
+# Time-stamp: <2025-05-07 18:13:26 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -24,13 +24,15 @@ import re
 import socket
 import threading
 from datetime import datetime
-from typing import Any, Final, Optional
+from io import BytesIO
+from typing import Any, Final, Optional, Union
 
 import bottle
 from bottle import response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
+from matplotlib.figure import Figure
 
-from medusa import common
+from medusa import common, data
 from medusa.data import Host
 from medusa.database import Database
 
@@ -86,6 +88,7 @@ class WebUI:
         bottle.debug(common.DEBUG)
         route("/main", callback=self.main)
         route("/host/<host_id:int>", callback=self.host_details)
+        route("/graph/sysload/<host_id:int>", callback=self.host_load_graph)
         route("/static/<path>", callback=self.staticfile)
         route("/ajax/beacon", callback=self.handle_beacon)
         route("/favicon.ico", callback=self.handle_favicon)
@@ -139,19 +142,37 @@ class WebUI:
         finally:
             db.close()
 
-    def handle_beacon(self) -> str:
-        """Handle the AJAX call for the beacon."""
-        jdata: dict[str, Any] = {
-            "Status": True,
-            "Message": common.APP_NAME,
-            "Timestamp": datetime.now().strftime(common.TIME_FMT),
-            "Hostname": socket.gethostname(),
-        }
+    def host_load_graph(self, host_id: int) -> Union[str, bytes]:
+        """Render a a time series chart of sysload data for the given host."""
+        try:
+            db: Database = Database()
+            host: Optional[data.Host] = db.host_get_by_id(host_id)
+            if host is None:
+                response.status = 404
+                return f"Host {host_id} does not exist in the database."
+            records: list = db.record_get_by_host_probe(host, "sysload")
+            timestamps = [r.timestamp for r in records]
+            load1 = [r.load.load1 for r in records]
+            load5 = [r.load.load5 for r in records]
+            load15 = [r.load.load15 for r in records]
 
-        response.set_header("Content-Type", "application/json")
-        response.set_header("Cache-Control", "no-store, max-age=0")
+            fig = Figure()
+            ax = fig.subplots()
+            ax.plot(timestamps, load1, load5, load15)  # pylint: disable-msg=E1101
+            ax.set_xlabel("Time")  # pylint: disable-msg=E1101
+            ax.set_ylabel("Load Average")  # pylint: disable-msg=E1101
+            ax.set_title(f"System Load on {host.name}")  # pylint: disable-msg=E1101
 
-        return json.dumps(jdata)
+            response.set_header("Content-Type", "image/png")
+            response.set_header("Cache-Control", "no-store, max-age=0")
+            buf = BytesIO()
+            fig.savefig(buf, format="png")
+            return buf.getvalue()
+
+        finally:
+            db.close()
+
+    # Static files
 
     def handle_favicon(self) -> bytes:
         """Handle the request for the favicon."""
@@ -174,6 +195,22 @@ class WebUI:
         full_path = os.path.join(self.root, "static", path)
         with open(full_path, "rb") as fh:
             return fh.read()
+
+    # AJAX Handlers
+
+    def handle_beacon(self) -> str:
+        """Handle the AJAX call for the beacon."""
+        jdata: dict[str, Any] = {
+            "Status": True,
+            "Message": common.APP_NAME,
+            "Timestamp": datetime.now().strftime(common.TIME_FMT),
+            "Hostname": socket.gethostname(),
+        }
+
+        response.set_header("Content-Type", "application/json")
+        response.set_header("Cache-Control", "no-store, max-age=0")
+
+        return json.dumps(jdata)
 
 
 if __name__ == '__main__':
