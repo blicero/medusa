@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-07 18:13:26 krylon>
+# Time-stamp: <2025-05-07 19:56:00 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -151,6 +151,10 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records: list = db.record_get_by_host_probe(host, "sysload")
+            self.log.debug("Rendering chart of %d data points collected between %s and %s.",
+                           len(records),
+                           records[0].timestamp.strftime(common.TIME_FMT),
+                           records[-1].timestamp.strftime(common.TIME_FMT))
             timestamps = [r.timestamp for r in records]
             load1 = [r.load.load1 for r in records]
             load5 = [r.load.load5 for r in records]
@@ -158,6 +162,10 @@ class WebUI:
 
             fig = Figure()
             ax = fig.subplots()
+            ax.xaxis.set_ticks_position("bottom")  # pylint: disable-msg=E1101
+            ax.tick_params(which="major", width=1.0, length=5)  # pylint: disable-msg=E1101
+            ax.tick_params(which="minor", width=0.75, length=2.5)  # pylint: disable-msg=E1101
+            # ax.yaxis.set_major_formatter(lambda x, pos: x.strftime(common.TIME_FMT))
             ax.plot(timestamps, load1, load5, load15)  # pylint: disable-msg=E1101
             ax.set_xlabel("Time")  # pylint: disable-msg=E1101
             ax.set_ylabel("Load Average")  # pylint: disable-msg=E1101
