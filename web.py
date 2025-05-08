@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-08 11:01:00 krylon>
+# Time-stamp: <2025-05-08 18:15:47 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -164,13 +164,15 @@ class WebUI:
 
             fig = Figure(layout="constrained")
             ax = fig.subplots()
+
             ax.xaxis.set_ticks_position("bottom")  # pylint: disable-msg=E1101
             ax.tick_params(which="major", width=1.0, length=5)  # pylint: disable-msg=E1101
             ax.tick_params(which="minor", width=0.75, length=2.5)  # pylint: disable-msg=E1101
-            # ax.yaxis.set_major_formatter(lambda x, pos: x.strftime(common.TIME_FMT))
+
             ax.set_xlabel("Time")  # pylint: disable-msg=E1101
             ax.set_ylabel("Load Average")  # pylint: disable-msg=E1101
             ax.set_title(f"System Load on {host.name}")  # pylint: disable-msg=E1101
+
             ax.plot(timestamps, load1)  # pylint: disable-msg=E1101
             ax.xaxis.set_major_formatter(mdates.DateFormatter(common.TIME_FMT))
             ax.xaxis.set_major_locator(ticker.LinearLocator(3))
