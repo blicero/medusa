@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-06 22:36:06 krylon>
+# Time-stamp: <2025-05-09 21:11:46 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -127,6 +127,28 @@ class LoadRecord(Record):
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
         return json.dumps(self.load)
+
+
+class SensorData(NamedTuple):
+    """SensorData is a number and a unit."""
+
+    value: float
+    unit: str
+
+
+@dataclass(slots=True, kw_only=True)
+class SensorRecord(Record):
+    """SensorRecord is data retrieved from hardware sensors."""
+
+    sensors: dict[str, SensorData]
+
+    def source(self) -> str:
+        """Return the source of the Record."""
+        return "sensors"
+
+    def payload(self) -> str:
+        """Return the Record payload in serialized form."""
+        return json.dumps(self.sensors)
 
 
 # Local Variables: #
