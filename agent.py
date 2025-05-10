@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-05 19:32:37 krylon>
+# Time-stamp: <2025-05-09 22:51:38 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -20,8 +20,8 @@ medusa.agent
 import json
 import logging
 import socket
-import sys
 import time
+from datetime import timedelta
 from threading import Lock
 from typing import Final, Optional
 
@@ -29,11 +29,10 @@ import jsonpickle
 from krylib import fib, fmt_err
 
 from medusa import common
+from medusa.config import Config
 from medusa.data import Record
 from medusa.probe import osdetect
 from medusa.probe.base import Probe
-from medusa.probe.cpu import CPUProbe
-from medusa.probe.sysload import LoadProbe
 from medusa.proto import (BUFSIZE, REPORT_INTERVAL, Message, MsgType,
                           set_keepalive_linux)
 
@@ -66,19 +65,48 @@ class Agent:
     active: bool
     errcnt: int
 
-    def __init__(self, addr: str, *probelist: Probe) -> None:
+    @staticmethod
+    def get_probe(name: str, interval: int) -> Optional[Probe]:
+        """Create a Probe by name, to deal with imports."""
+        assert interval > 0
+        delta = timedelta(seconds=interval)
+        match name.lower():
+            case "cpu":
+                from medusa.probe.cpu import CPUProbe  # pylint: disable-msg=C0415
+                return CPUProbe(delta)
+            case "sysload":
+                from medusa.probe.sysload import LoadProbe  # pylint: disable-msg=C0415
+                return LoadProbe(delta)
+            case "sensors":
+                from medusa.probe.sensors import SensorProbe
+                return SensorProbe(delta)
+            case _:
+                raise ValueError(f"Unknown Probe type {name}")
+
+    def __init__(self, addr: str = "") -> None:
+        cfg = Config()
         self.lock = Lock()
         self.name = socket.gethostname()
         self.log = common.get_logger("Agent")
         self.probes = set()
-        self.srv = addr
+        if addr != "":
+            self.srv = addr
+        else:
+            srv = cfg.get("Agent", "Server")
+            assert isinstance(srv, str)
+            self.srv = srv
         self.errcnt = 0
 
         platform = osdetect.guess_os()
         self.os = platform.name
 
-        for p in probelist:
-            self.probes.add(p)
+        plist: list[str] = cfg.get("Agent", "Probes")
+        period: int = cfg.get("Probe", "Interval")
+
+        for pname in plist:
+            p = self.get_probe(pname, period)
+            if p is not None:
+                self.probes.add(p)
 
         while not self.connect():
             delay: int = fib(self.errcnt+1)
@@ -225,20 +253,6 @@ class Agent:
                                self.srv,
                                err)
 
-
-if __name__ == '__main__':
-    srv_addr = sys.argv[1]
-    probes = [
-        CPUProbe(REPORT_INTERVAL),
-        LoadProbe(REPORT_INTERVAL),
-    ]
-    ag = Agent(srv_addr, *probes)
-    try:
-        ag.run()
-    except KeyboardInterrupt:
-        print("Yay, quitting time!")
-        ag.shutdown()
-        sys.exit(0)
 
 # Local Variables: #
 # python-indent: 4 #

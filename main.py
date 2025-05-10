@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-07 20:02:12 krylon>
+# Time-stamp: <2025-05-09 20:31:28 krylon>
 #
 # /data/code/python/medusa/medusa.py
 # created on 07. 05. 2025
@@ -24,9 +24,6 @@ from threading import Thread
 
 from medusa import common
 from medusa.agent import Agent
-from medusa.probe.cpu import CPUProbe
-from medusa.probe.sysload import LoadProbe
-from medusa.proto import REPORT_INTERVAL
 from medusa.server import Server
 from medusa.web import WebUI
 
@@ -58,11 +55,7 @@ try:
             tsrv.join()
             wsrv.join()
         case "agent":
-            probes = [
-                CPUProbe(REPORT_INTERVAL),
-                LoadProbe(REPORT_INTERVAL),
-            ]
-            ag = Agent(args.address, *probes)
+            ag = Agent(args.address)
             try:
                 ag.run()
             finally:
