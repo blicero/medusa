@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-08 18:15:47 krylon>
+# Time-stamp: <2025-05-09 19:57:17 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -159,8 +159,8 @@ class WebUI:
                            records[-1].timestamp.strftime(common.TIME_FMT))
             timestamps = [r.timestamp for r in records]
             load1 = [r.load.load1 for r in records]
-            load5 = [r.load.load5 for r in records]
-            load15 = [r.load.load15 for r in records]
+            # load5 = [r.load.load5 for r in records]
+            # load15 = [r.load.load15 for r in records]
 
             fig = Figure(layout="constrained")
             ax = fig.subplots()
@@ -174,9 +174,9 @@ class WebUI:
             ax.set_title(f"System Load on {host.name}")  # pylint: disable-msg=E1101
 
             ax.plot(timestamps, load1)  # pylint: disable-msg=E1101
-            ax.xaxis.set_major_formatter(mdates.DateFormatter(common.TIME_FMT))
-            ax.xaxis.set_major_locator(ticker.LinearLocator(3))
-            ax.xaxis.set_minor_locator(ticker.LinearLocator(10))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter(common.TIME_FMT))  # noqa: E501  pylint: disable-msg=E1101
+            ax.xaxis.set_major_locator(ticker.LinearLocator(3))  # pylint: disable-msg=E1101
+            ax.xaxis.set_minor_locator(ticker.LinearLocator(10))  # pylint: disable-msg=E1101
 
             response.set_header("Content-Type", "image/png")
             response.set_header("Cache-Control", "no-store, max-age=0")
