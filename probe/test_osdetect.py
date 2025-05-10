@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-21 17:50:07 krylon>
+# Time-stamp: <2025-05-10 16:47:55 krylon>
 #
 # /data/code/python/medusa/probe/test_osdetect.py
 # created on 26. 01. 2024
@@ -59,8 +59,13 @@ class OsDetectTest(unittest.TestCase):
             ('opensuse-tumbleweed', 'opensuse-tumbleweed'),
         ]
 
+        if os.path.basename(os.getcwd()) == "probe":
+            prefix = ""
+        else:
+            prefix = "probe/"
+
         for s in samples:
-            release: str = f"probe/os-release-{s[0]}"
+            release: str = f"{prefix}os-release-{s[0]}"
             guess: Platform = guess_os(release)
             print(f"{release} => {guess}")
             self.assertEqual(guess.name, s[1])

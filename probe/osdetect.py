@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-02 21:41:16 krylon>
+# Time-stamp: <2025-05-10 16:42:56 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -18,6 +18,7 @@ medusa.probe.osdetect
 
 import re
 import subprocess as sp
+import warnings
 from typing import Final, NamedTuple, Optional
 
 import krylib
@@ -73,6 +74,10 @@ def guess_os(osrel: str = OS_REL) -> Platform:
                 return Platform("freebsd", info["version_id"], "unknown")
             case "arch" | "manjaro":
                 return Platform("arch", 'n/a', "unknown")
+    else:
+        warnings.warn("No os-release file was found, calling uname(1)",
+                      UserWarning,
+                      1)
 
     uname: Final[str] = sp.check_output(["/usr/bin/uname", "-smr"]).decode()
     sysname, version, arch = uname.strip().split()
