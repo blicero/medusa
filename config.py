@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-09 20:06:04 krylon>
+# Time-stamp: <2025-05-12 18:04:12 krylon>
 #
 # /data/code/python/medusa/config.py
 # created on 09. 05. 2025
@@ -22,13 +22,13 @@ from typing import Any, Final
 
 import krylib
 import tomlkit
+from tomlkit.items import Table
 from tomlkit.toml_document import Container, TOMLDocument
 from tomlkit.toml_file import TOMLFile
 
 from medusa import common
 
-DEFAULT_CONFIG: Final[str] = f"""
-# Time-stamp: <>
+DEFAULT_CONFIG: Final[str] = f"""# Time-stamp: <>
 
 [Global]
 Port = {common.PORT}
@@ -87,7 +87,10 @@ class Config:
         try:
             assert section in self.doc
             s = self.doc[section]
-            assert isinstance(s, Container)
+            self.log.debug("Section %s is a %s",
+                           section,
+                           s.__class__.__name__)
+            assert isinstance(s, Table)
             return s[key]
         except tomlkit.exceptions.TOMLKitError as err:
             self.log.error('%s while trying to retrieve "%s.%s": %s\n\n%s\n\n',

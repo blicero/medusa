@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-10 16:37:22 krylon>
+# Time-stamp: <2025-05-10 18:49:15 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -27,7 +27,7 @@ from medusa.probe.base import Probe
 from medusa.probe.osdetect import Platform, guess_os
 
 sysctlPat: Final[re.Pattern] = re.compile(r"^hw[.]sensors[.]([^=]+)=(.*)$", re.M)
-tempPat: Final[re.Pattern] = re.compile(r"^(\d+(?:[.]\d+)?)? \s+ degC", re.X)
+tempPat: Final[re.Pattern] = re.compile(r"^(\d+(?:[.]\d+)?)? \s+ (degC)", re.X)
 
 
 class SensorProbe(Probe):
@@ -38,6 +38,10 @@ class SensorProbe(Probe):
     def __init__(self, interval: timedelta) -> None:
         super().__init__(interval)
         self.platform = guess_os()
+
+    def name(self) -> str:
+        """Return the Probe's name."""
+        return "Sensors"
 
     def get_data(self) -> Record:
         """Retrieve sensor data."""
@@ -101,8 +105,8 @@ class SensorProbe(Probe):
         extract: dict[str, SensorData] = {}
 
         for m in matches:
-            name: str = m[1]
-            sens: str = m[2]
+            name: str = m[0]
+            sens: str = m[1]
 
             deg = tempPat.match(sens)
             if deg is not None:

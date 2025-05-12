@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-09 22:51:38 krylon>
+# Time-stamp: <2025-05-12 17:58:25 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -78,7 +78,7 @@ class Agent:
                 from medusa.probe.sysload import LoadProbe  # pylint: disable-msg=C0415
                 return LoadProbe(delta)
             case "sensors":
-                from medusa.probe.sensors import SensorProbe
+                from medusa.probe.sensors import SensorProbe  # pylint: disable-msg=C0415
                 return SensorProbe(delta)
             case _:
                 raise ValueError(f"Unknown Probe type {name}")
