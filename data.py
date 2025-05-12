@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 19:07:47 krylon>
+# Time-stamp: <2025-05-12 23:42:42 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -161,6 +161,13 @@ class SensorRecord(Record):
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
         return json.dumps(self.sensors)
+
+
+@dataclass(slots=True, kw_only=True)
+class DiskRecord(Record):
+    """DiskRecord carries the free space on one or more file systems."""
+
+    disks: dict[str, int]
 
 
 # Local Variables: #
