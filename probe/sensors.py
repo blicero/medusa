@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-10 18:49:15 krylon>
+# Time-stamp: <2025-05-12 18:32:45 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -52,8 +52,6 @@ class SensorProbe(Probe):
                 result = self._run_sensors_linux()
             case "openbsd":
                 result = self._run_sensors_openbsd()
-            case "freebsd":
-                pass
             case _:
                 raise NotImplementedError(f"Unsupported platform {self.platform.name}")
 
@@ -82,8 +80,14 @@ class SensorProbe(Probe):
 
         for k, v in sdata.items():
             # TODO This is far from optimal, but it'll do for now, I suppose.
+            self.log.debug("Process item %s", k)
             if "input" in v:
-                extract[k] = SensorData(v["value"], v["unit"])
+                extract[k] = SensorData(v["input"]["value"], v["input"]["unit"])
+            else:
+                for x, y in v.items():
+                    if "input" in y:
+                        idx = f"{k}/{x}"
+                        extract[idx] = SensorData(y["input"]["value"], y["input"]["unit"])
 
         return extract
 
