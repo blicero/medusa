@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 18:32:45 krylon>
+# Time-stamp: <2025-05-12 18:51:44 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -63,7 +63,7 @@ class SensorProbe(Probe):
 
     def _run_sensors_linux(self) -> Optional[dict[str, SensorData]]:
         """Attempt to run sensors(1) on a Linux host."""
-        cmd: list[str] = ["/usr/bin/sensors", "-J"]
+        cmd: list[str] = ["/usr/bin/sensors", "-j"]
         proc = subprocess.run(cmd,
                               capture_output=True,
                               text=True,
