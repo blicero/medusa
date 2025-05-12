@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 18:04:12 krylon>
+# Time-stamp: <2025-05-12 18:19:26 krylon>
 #
 # /data/code/python/medusa/config.py
 # created on 09. 05. 2025
@@ -38,7 +38,7 @@ Debug = {common.DEBUG}
 Interval = 60
 
 [Agent]
-Probes = [ "cpu", "sysload" ]
+Probes = [ "cpu", "sysload", "sensors" ]
 Server = "schwarzgeraet"
 
 [Server]
@@ -87,9 +87,9 @@ class Config:
         try:
             assert section in self.doc
             s = self.doc[section]
-            self.log.debug("Section %s is a %s",
-                           section,
-                           s.__class__.__name__)
+            # self.log.debug("Section %s is a %s",
+            #                section,
+            #                s.__class__.__name__)
             assert isinstance(s, Table)
             return s[key]
         except tomlkit.exceptions.TOMLKitError as err:
