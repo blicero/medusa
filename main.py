@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-09 20:31:28 krylon>
+# Time-stamp: <2025-05-12 18:44:25 krylon>
 #
 # /data/code/python/medusa/medusa.py
 # created on 07. 05. 2025
@@ -19,6 +19,7 @@ This is the "main" script to invoke from the command line.
 """
 
 import argparse
+import os
 import sys
 from threading import Thread
 
@@ -42,6 +43,8 @@ args = parser.parse_args()
 print(f"Mode: {args.mode} - Base: {args.basedir} - Address: {args.address} - Port: {args.port}")
 
 try:
+    common.set_basedir(os.path.expanduser(args.basedir))
+
     match args.mode:
         case "server":
             srv = Server(args.address, args.port)
