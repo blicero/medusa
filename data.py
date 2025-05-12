@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-09 21:11:46 krylon>
+# Time-stamp: <2025-05-12 19:07:47 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -78,6 +78,18 @@ class Record(ABC):
                     host_id=hid,
                     timestamp=tstamp,
                     load=SysLoad(raw[0], raw[1], raw[2]),
+                )
+            case 'sensors':
+                values: dict[str, SensorData] = {}
+                for k, v in raw.items():
+                    x = SensorData(v[0], v[1])
+                    values[k] = x
+
+                return SensorRecord(
+                    record_id=rid,
+                    host_id=hid,
+                    timestamp=tstamp,
+                    sensors=values,
                 )
             case _:
                 raise ValueError(f"Unrecognized payload source '{src}'")
