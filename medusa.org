@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-13 18:22:42 krylon>
+# Time-stamp: <2025-05-13 18:55:24 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [7/11]
+* Medusa [8/11]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,28 +18,29 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-13 Di 18:22]
-   | Headline                     | Time      |           |         |       |      |
-   |------------------------------+-----------+-----------+---------+-------+------|
-   | *Total time*                 | *2d 0:52* |           |         |       |      |
-   |------------------------------+-----------+-----------+---------+-------+------|
-   | *Medusa [7/11]*              | *2d 0:52* |           |         |       |      |
-   | \_  /Components [7/10]/      |           | /2d 0:38/ |         |       |      |
-   | \_    Main [0/0]             |           |           |    0:40 |       |      |
-   | \_    Probes [1/3]           |           |           |   10:20 |       |      |
-   | \_      Free disk space ?    |           |           |         |  1:47 |      |
-   | \_      Conditional imports  |           |           |         |  1:09 |      |
-   | \_      Sensors              |           |           |         |  2:10 |      |
-   | \_    Model [0/0]            |           |           |    2:17 |       |      |
-   | \_    Database [2/2]         |           |           |    1:45 |       |      |
-   | \_      Exception handling   |           |           |         |  0:09 |      |
-   | \_      Pool                 |           |           |         |  0:28 |      |
-   | \_    Server [4/5]           |           |           | 1d 9:36 |       |      |
-   | \_      Web Interface [1/1]  |           |           |         |  9:39 |      |
-   | \_        Graphs             |           |           |         |       | 1:55 |
-   | \_      Error Handling [0/0] |           |           |         |  0:58 |      |
-   | \_      Protocol             |           |           |         | 14:12 |      |
-   | \_  /Bugs [0/1]/             |           | /0:14/    |         |       |      |
+   #+CAPTION: Clock summary at [2025-05-13 Di 18:55]
+   | Headline                              | Time      |           |         |       |      |
+   |---------------------------------------+-----------+-----------+---------+-------+------|
+   | *Total time*                          | *2d 1:30* |           |         |       |      |
+   |---------------------------------------+-----------+-----------+---------+-------+------|
+   | *Medusa [8/11]*                       | *2d 1:30* |           |         |       |      |
+   | \_  /Components [7/10]/               |           | /2d 0:38/ |         |       |      |
+   | \_    Main [0/0]                      |           |           |    0:40 |       |      |
+   | \_    Probes [1/3]                    |           |           |   10:20 |       |      |
+   | \_      Free disk space ?             |           |           |         |  1:47 |      |
+   | \_      Conditional imports           |           |           |         |  1:09 |      |
+   | \_      Sensors                       |           |           |         |  2:10 |      |
+   | \_    Model [0/0]                     |           |           |    2:17 |       |      |
+   | \_    Database [2/2]                  |           |           |    1:45 |       |      |
+   | \_      Exception handling            |           |           |         |  0:09 |      |
+   | \_      Pool                          |           |           |         |  0:28 |      |
+   | \_    Server [4/5]                    |           |           | 1d 9:36 |       |      |
+   | \_      Web Interface [1/1]           |           |           |         |  9:39 |      |
+   | \_        Graphs                      |           |           |         |       | 1:55 |
+   | \_      Error Handling [0/0]          |           |           |         |  0:58 |      |
+   | \_      Protocol                      |           |           |         | 14:12 |      |
+   | \_  /Bugs [1/1]/                      |           | /0:52/    |         |       |      |
+   | \_    Error deserializing report data |           |           |    0:38 |       |      |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -222,7 +223,7 @@
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
    :END:
-** Bugs [0/1]
+** Bugs [1/1]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -230,7 +231,11 @@
    :LOGBOOK:
    CLOCK: [2025-05-12 Mo 17:50]--[2025-05-12 Mo 18:04] =>  0:14
    :END:
-*** TODO [2025-05-13 Di 18:12] Error deserializing report data
+*** DONE Error deserializing report data
+    CLOSED: [2025-05-13 Di 18:53]
+    :LOGBOOK:
+    CLOCK: [2025-05-13 Di 18:15]--[2025-05-13 Di 18:53] =>  0:38
+    :END:
     I get these strange errors when the Server is trying to deserialize report
     data from a client. Weirder still, the traceback says it comes from the
     *YAML* parser, which I don't even use, but apparently jsonpickle does
@@ -241,4 +246,7 @@
     If that doesn't help, I might have to reconsider how I serialize data.
     Maybe I could use YAML directly, which I have not used in ... forever, but
     I have no particular reason not to use it.
-    
+    [2025-05-13 Di 18:53]
+    Delivering the records individually appears to work (for now). The
+    situation with YAML and the various libraries and their availability
+    across different systems is just too much. So I'll leave it at this.
