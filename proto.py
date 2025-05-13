@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-08 17:05:09 krylon>
+# Time-stamp: <2025-05-13 17:33:25 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -28,7 +28,7 @@ from medusa.common import MedusaError
 
 # For testing/debugging, I set this to a very low value, later on I should increase this.
 REPORT_INTERVAL: Final[timedelta] = timedelta(seconds=60)
-BUFSIZE: Final[int] = 16384
+BUFSIZE: Final[int] = 65336
 
 
 # Found at

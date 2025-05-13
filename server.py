@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-05 18:09:22 krylon>
+# Time-stamp: <2025-05-13 17:36:27 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -26,6 +26,7 @@ from datetime import datetime
 from typing import Optional
 
 import jsonpickle
+import krylib
 from krylib import fmt_err
 
 from medusa import common
@@ -157,10 +158,11 @@ class ConnectionHandler:
                                jerr,
                                rcv)
             except Exception as err:  # pylint: disable-msg=W0718
-                self.log.error("%s receiving data from %s: %s",
+                self.log.error("%s receiving data from %s: %s\n\n%s\n\n",
                                err.__class__.__name__,
                                self.addr,
-                               err)
+                               err,
+                               krylib.fmt_err(err))
 
     def handle_msg(self, msg: Message) -> Message:
         """Handle a message received from the Agent."""
