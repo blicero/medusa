@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 18:46:08 krylon>
+# Time-stamp: <2025-05-13 17:00:35 krylon>
 #
 # /data/code/python/medusa/config.py
 # created on 09. 05. 2025
@@ -38,7 +38,7 @@ Debug = {"true" if common.DEBUG else "false"}
 Interval = 60
 
 [Agent]
-Probes = [ "cpu", "sysload", "sensors" ]
+Probes = [ "cpu", "sysload", "sensors", "disk" ]
 Server = "schwarzgeraet"
 
 [Server]

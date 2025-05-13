@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 14:59:25 krylon>
+# Time-stamp: <2025-05-13 17:21:55 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -91,6 +91,13 @@ class Record(ABC):
                     timestamp=tstamp,
                     sensors=values,
                 )
+            case 'disk':
+                return DiskRecord(
+                    record_id=rid,
+                    host_id=hid,
+                    timestamp=tstamp,
+                    disks=raw,
+                )
             case _:
                 raise ValueError(f"Unrecognized payload source '{src}'")
 
@@ -180,9 +187,11 @@ class DiskRecord(Record):
     disks: dict[str, FileSystem]
 
     def source(self) -> str:
+        """Return the source of the Record."""
         return "disk"
 
     def payload(self) -> str:
+        """Return the Record payload in serialized form."""
         return json.dumps(self.disks)
 
 
