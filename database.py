@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-07 19:59:17 krylon>
+# Time-stamp: <2025-05-13 19:35:57 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -18,6 +18,7 @@ medusa.database
 
 import logging
 import sqlite3
+import time
 from collections import deque
 from datetime import datetime
 from enum import IntEnum, auto, unique
@@ -134,7 +135,7 @@ SELECT
     timestamp,
     payload
 FROM record
-WHERE host_id = ? and source = ?
+WHERE host_id = ? AND source = ? AND timestamp >= ?
 ORDER BY timestamp
     """,
 }
@@ -330,12 +331,14 @@ class Database:
             self.log.error(msg)
             raise DatabaseError(msg) from err
 
-    def record_get_by_host_probe(self, host: data.Host, source: str) -> list[data.Record]:
+    def record_get_by_host_probe(self, host: data.Host, source: str, age: int = 86400) \
+            -> list[data.Record]:
         """Load records for a given Host and source."""
+        min_stamp = int(time.time()) - age
         try:
             cur: sqlite3.Cursor = self.db.cursor()
             cur.execute(db_queries[QueryID.RecordGetByHostProbe],
-                        (host.host_id, source))
+                        (host.host_id, source, min_stamp))
             records: list[data.Record] = []
 
             for row in cur:
