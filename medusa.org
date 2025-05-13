@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-13 17:43:19 krylon>
+# Time-stamp: <2025-05-13 18:22:42 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [7/10]
+* Medusa [7/11]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,12 +18,12 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-13 Di 17:43]
+   #+CAPTION: Clock summary at [2025-05-13 Di 18:22]
    | Headline                     | Time      |           |         |       |      |
    |------------------------------+-----------+-----------+---------+-------+------|
    | *Total time*                 | *2d 0:52* |           |         |       |      |
    |------------------------------+-----------+-----------+---------+-------+------|
-   | *Medusa [7/10]*              | *2d 0:52* |           |         |       |      |
+   | *Medusa [7/11]*              | *2d 0:52* |           |         |       |      |
    | \_  /Components [7/10]/      |           | /2d 0:38/ |         |       |      |
    | \_    Main [0/0]             |           |           |    0:40 |       |      |
    | \_    Probes [1/3]           |           |           |   10:20 |       |      |
@@ -39,7 +39,7 @@
    | \_        Graphs             |           |           |         |       | 1:55 |
    | \_      Error Handling [0/0] |           |           |         |  0:58 |      |
    | \_      Protocol             |           |           |         | 14:12 |      |
-   | \_  /Bugs [0/0]/             |           | /0:14/    |         |       |      |
+   | \_  /Bugs [0/1]/             |           | /0:14/    |         |       |      |
    #+END:
 ** Features [0/0]
    :PROPERTIES:
@@ -222,7 +222,7 @@
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
    :END:
-** Bugs [0/0]
+** Bugs [0/1]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -230,3 +230,15 @@
    :LOGBOOK:
    CLOCK: [2025-05-12 Mo 17:50]--[2025-05-12 Mo 18:04] =>  0:14
    :END:
+*** TODO [2025-05-13 Di 18:12] Error deserializing report data
+    I get these strange errors when the Server is trying to deserialize report
+    data from a client. Weirder still, the traceback says it comes from the
+    *YAML* parser, which I don't even use, but apparently jsonpickle does
+    (WTF???).
+    I have a vague hunch this has something to do with the length of the
+    message or the buffering of incoming data on the server.
+    So I will first try to have the Agent deliver each Record individually.
+    If that doesn't help, I might have to reconsider how I serialize data.
+    Maybe I could use YAML directly, which I have not used in ... forever, but
+    I have no particular reason not to use it.
+    
