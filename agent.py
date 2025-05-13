@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 17:00:21 krylon>
+# Time-stamp: <2025-05-13 18:47:18 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -217,33 +217,34 @@ class Agent:
             self.log.debug("I shall deliver %d records to the server",
                            len(records))
 
-            msg = Message(
-                MsgType.ReportSubmitMany,
-                records)
+            for r in records:
+                msg = Message(
+                    MsgType.ReportSubmitMany,
+                    [r])
 
-            res = self.send(msg)
+                res = self.send(msg)
 
-            match res:
-                case None:
-                    self.log.info("No response was received?")
-                    self.shutdown()
-                    break
-                case Message(MsgType.Error, errmsg):
-                    self.log.error("Server reported an error: %s",
-                                   errmsg)
-                    self.errcnt += 1
-                    if self.errcnt >= MAX_ERR:
+                match res:
+                    case None:
+                        self.log.info("No response was received?")
                         self.shutdown()
                         break
-                case Message(MsgType.ReportAck, _):
-                    self.log.debug("Server processed report successfully.")
-                case Message(mtype, payload):
-                    self.log.error("Unexpected message type %s in response to report: %s",
-                                   mtype,
-                                   payload)
-                case _:
-                    self.log.error("Don't know what to make of this: %s",
-                                   res)
+                    case Message(MsgType.Error, errmsg):
+                        self.log.error("Server reported an error: %s",
+                                       errmsg)
+                        self.errcnt += 1
+                        if self.errcnt >= MAX_ERR:
+                            self.shutdown()
+                            break
+                    case Message(MsgType.ReportAck, _):
+                        self.log.debug("Server processed report successfully.")
+                    case Message(mtype, payload):
+                        self.log.error("Unexpected message type %s in response to report: %s",
+                                       mtype,
+                                       payload)
+                    case _:
+                        self.log.error("Don't know what to make of this: %s",
+                                       res)
 
     def shutdown(self) -> None:
         """Close the client connection."""
