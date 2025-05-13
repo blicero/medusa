@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 23:42:42 krylon>
+# Time-stamp: <2025-05-13 14:59:25 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -163,11 +163,27 @@ class SensorRecord(Record):
         return json.dumps(self.sensors)
 
 
+class FileSystem(NamedTuple):
+    """FileSystem knows the total, used, and free space on a filesystem."""
+
+    dev: str
+    total: int
+    used: int
+    free: int
+    path: str
+
+
 @dataclass(slots=True, kw_only=True)
 class DiskRecord(Record):
     """DiskRecord carries the free space on one or more file systems."""
 
-    disks: dict[str, int]
+    disks: dict[str, FileSystem]
+
+    def source(self) -> str:
+        return "disk"
+
+    def payload(self) -> str:
+        return json.dumps(self.disks)
 
 
 # Local Variables: #
