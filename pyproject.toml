@@ -1,4 +1,4 @@
-# Time-stamp: <2025-04-22 17:47:20 krylon>
+# Time-stamp: <2025-05-13 18:01:47 krylon>
 #
 # Analyse import fallback blocks. This can be used to support both Python 2 and 3
 # compatible code, which means that the block might have code that exists only in
@@ -557,3 +557,6 @@ redefining-builtins-modules = ["six.moves", "past.builtins", "future.builtins", 
 filterwarnings = [
                "ignore::UserWarning",
 ]
+
+[tool.mypy]
+disable_error_code = ["import-untyped"]
