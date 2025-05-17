@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 17:57:51 krylon>
+# Time-stamp: <2025-05-17 22:38:31 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -157,12 +157,6 @@ class ConnectionHandler:
                                len(rcv),
                                self.addr,
                                jerr,
-                               rcv)
-            except yaml.parser.ParserError as perr:
-                self.log.error("ParserError receiving data from %s: %s\n\n%s\n\n%s\n\n",
-                               self.addr,
-                               perr,
-                               krylib.fmt_err(perr),
                                rcv)
             except Exception as err:  # pylint: disable-msg=W0718
                 self.log.error("%s receiving data from %s: %s\n\n%s\n\n",
