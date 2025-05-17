@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 20:18:42 krylon>
+# Time-stamp: <2025-05-17 21:40:45 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -24,15 +24,13 @@ import re
 import socket
 import threading
 from datetime import datetime
-from io import BytesIO
 from typing import Any, Final, Optional, Union
 
 import bottle
 import matplotlib.dates as mdates
+import pygal
 from bottle import response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
-from matplotlib import ticker
-from matplotlib.figure import Figure
 
 from medusa import common, data
 from medusa.data import Host
@@ -145,7 +143,7 @@ class WebUI:
             db.close()
 
     def host_load_graph(self, host_id: int) -> Union[str, bytes]:
-        """Render a a time series chart of sysload data for the given host."""
+        """Render a time series chart of sysload data for the given host."""
         try:
             db: Database = Database()
             host: Optional[data.Host] = db.host_get_by_id(host_id)
@@ -153,37 +151,15 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records: list = db.record_get_by_host_probe(host, "sysload")
-            self.log.debug("Rendering chart of %d data points collected between %s and %s.",
-                           len(records),
-                           records[0].timestamp.strftime(common.TIME_FMT),
-                           records[-1].timestamp.strftime(common.TIME_FMT))
-            timestamps = [r.timestamp for r in records]
-            # load1 = [r.load.load1 for r in records]
-            load5 = [r.load.load5 for r in records]
-            # load15 = [r.load.load15 for r in records]
+            chart = pygal.Line(x_label_rotation=20)
+            chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
+            chart.add("Load1", [x.load.load1 for x in records])
+            chart.add("Load5", [x.load.load5 for x in records])
+            chart.add("Load15", [x.load.load15 for x in records])
 
-            fig = Figure(layout="constrained")
-            ax = fig.subplots()
-
-            ax.xaxis.set_ticks_position("bottom")  # pylint: disable-msg=E1101
-            ax.tick_params(which="major", width=1.0, length=5)  # pylint: disable-msg=E1101
-            ax.tick_params(which="minor", width=0.75, length=2.5)  # pylint: disable-msg=E1101
-
-            ax.set_xlabel("Time")  # pylint: disable-msg=E1101
-            ax.set_ylabel("Load Average")  # pylint: disable-msg=E1101
-            ax.set_title(f"System Load on {host.name}")  # pylint: disable-msg=E1101
-
-            ax.plot(timestamps, load5)  # pylint: disable-msg=E1101
-            ax.xaxis.set_major_formatter(mdates.DateFormatter(common.TIME_FMT))  # noqa: E501  pylint: disable-msg=E1101
-            ax.xaxis.set_major_locator(ticker.LinearLocator(3))  # pylint: disable-msg=E1101
-            ax.xaxis.set_minor_locator(ticker.LinearLocator(10))  # pylint: disable-msg=E1101
-
-            response.set_header("Content-Type", "image/png")
+            response.set_header("Content-Type", "image/svg+xml")
             response.set_header("Cache-Control", "no-store, max-age=0")
-            buf = BytesIO()
-            fig.savefig(buf, format="png")
-            return buf.getvalue()
-
+            return chart.render(is_unicode=True)
         finally:
             db.close()
 

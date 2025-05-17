@@ -1,5 +1,5 @@
 {# -*- mode: jinja2; coding: utf-8; -*-
-Time-stamp: <2025-05-07 18:23:49 krylon>
+Time-stamp: <2025-05-17 21:25:58 krylon>
 /data/code/python/medusa/web/templates/host.jinja
 created on 06. 05. 2025
 (c) 2025 Benjamin Walkenhorst
@@ -17,8 +17,11 @@ created on 06. 05. 2025
 
   <hr />
 
-  <img src="/graph/sysload/{{ host.host_id }}"
-       class="rounded mx-auto d-block" />
+  {# <img src="/graph/sysload/{{ host.host_id }}"
+  class="rounded mx-auto d-block" /> #}
+  <figure>
+    <embed type="image/svg+xml" src="/graph/sysload/{{ host.host_id }}" />
+  </figure>
 
   <hr />
 
