@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 19:35:57 krylon>
+# Time-stamp: <2025-05-17 20:18:43 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -19,10 +19,9 @@ medusa.database
 import logging
 import sqlite3
 import time
-from collections import deque
 from datetime import datetime
 from enum import IntEnum, auto, unique
-from threading import Condition, Lock
+from threading import Lock
 from typing import Final, Optional
 
 import krylib
@@ -334,7 +333,7 @@ class Database:
     def record_get_by_host_probe(self, host: data.Host, source: str, age: int = 86400) \
             -> list[data.Record]:
         """Load records for a given Host and source."""
-        min_stamp = int(time.time()) - age
+        min_stamp: Final[int] = int(time.time()) - age
         try:
             cur: sqlite3.Cursor = self.db.cursor()
             cur.execute(db_queries[QueryID.RecordGetByHostProbe],
@@ -357,50 +356,6 @@ class Database:
             self.log.error(msg)
             raise DatabaseError(msg) from err
 
-
-class DBPool:
-    """DBPool provides a pool of database connections that can be shared among multiple threads."""
-
-    __slots__ = [
-        "lock",
-        "log",
-        "pool",
-        "empty",
-    ]
-
-    lock: Lock
-    empty: Condition
-    log: logging.Logger
-    pool: deque
-
-    def __init__(self, cnt: int = 4) -> None:
-        self.lock = Lock()
-        self.empty = Condition(self.lock)
-        self.log = common.get_logger("DBPool")
-        self.pool = deque()
-
-        for _ in range(cnt):
-            db = Database()
-            self.pool.append(db)
-
-    def get(self, block: bool = True) -> Database:
-        """Get a connection from the pool, blocking if necessary."""
-        with self.empty:
-            if len(self.pool) == 0:
-                if block:
-                    self.empty.wait()
-                else:
-                    db = Database()
-                    return db
-
-            db = self.pool.pop()
-            return db
-
-    def put(self, db: Database) -> None:
-        """Return the the database connection to the pool."""
-        with self.empty:
-            self.pool.append(db)
-            self.empty.notify()
 
 # Local Variables: #
 # python-indent: 4 #
