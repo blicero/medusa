@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-13 18:55:24 krylon>
+# Time-stamp: <2025-05-13 19:55:42 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -42,11 +42,14 @@
    | \_  /Bugs [1/1]/                      |           | /0:52/    |         |       |      |
    | \_    Error deserializing report data |           |           |    0:38 |       |      |
    #+END:
-** Features [0/0]
+** Features [0/1]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
    :END:
+*** TODO Intermittent connectivity [0/0]
+    I need to handle loss of connection, on both sides. I am also unsure if I
+    notice on the server side when an Agent connection is gone.
 ** Components [7/10]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
@@ -142,7 +145,7 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
-**** TODO Web Interface [1/1]
+**** TODO Web Interface [0/1]
      :PROPERTIES:
      :COOKIE_DATA: todo recursive
      :VISIBILITY: children
@@ -163,9 +166,9 @@
      *Update* So far both Bottle and Jinja2 are very pleasant to use.
      [2025-05-06 Di 23:18]
      *Update* For graphs, I will be using matplotlib, probably.
-***** SUSPENDED Graphs
-      CLOSED: [2025-05-13 Di 17:42]
+***** TODO Graphs
       :LOGBOOK:
+      CLOCK: [2025-05-13 Di 19:31]--[2025-05-13 Di 19:55] =>  0:24
       CLOCK: [2025-05-08 Do 18:16]--[2025-05-08 Do 18:17] =>  0:01
       CLOCK: [2025-05-07 Mi 18:20]--[2025-05-07 Mi 19:21] =>  1:01
       CLOCK: [2025-05-07 Mi 17:21]--[2025-05-07 Mi 18:14] =>  0:53
