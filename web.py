@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-17 21:40:45 krylon>
+# Time-stamp: <2025-05-17 22:14:28 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -27,7 +27,6 @@ from datetime import datetime
 from typing import Any, Final, Optional, Union
 
 import bottle
-import matplotlib.dates as mdates
 import pygal
 from bottle import response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
