@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-17 21:42:56 krylon>
+# Time-stamp: <2025-05-17 22:56:00 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -18,12 +18,14 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-17 Sa 21:41]
+   #+CAPTION: Clock summary at [2025-05-17 Sa 22:55]
    | Headline                              | Time      |           |          |       |      |
    |---------------------------------------+-----------+-----------+----------+-------+------|
-   | *Total time*                          | *2d 2:40* |           |          |       |      |
+   | *Total time*                          | *2d 3:49* |           |          |       |      |
    |---------------------------------------+-----------+-----------+----------+-------+------|
-   | *Medusa [8/11]*                       | *2d 2:40* |           |          |       |      |
+   | *Medusa [8/11]*                       | *2d 3:49* |           |          |       |      |
+   | \_  /Features [0/1]/                  |           | /1:09/    |          |       |      |
+   | \_    Intermittent connectivity [0/0] |           |           |     1:09 |       |      |
    | \_  /Components [7/10]/               |           | /2d 1:48/ |          |       |      |
    | \_    Main [0/0]                      |           |           |     0:40 |       |      |
    | \_    Probes [1/3]                    |           |           |    10:20 |       |      |
@@ -48,6 +50,9 @@
    :VISIBILITY: children
    :END:
 *** TODO Intermittent connectivity [0/0]
+    :LOGBOOK:
+    CLOCK: [2025-05-17 Sa 21:46]--[2025-05-17 Sa 22:55] =>  1:09
+    :END:
     I need to handle loss of connection, on both sides. I am also unsure if I
     notice on the server side when an Agent connection is gone.
 ** Components [7/10]
