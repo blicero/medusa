@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 18:47:18 krylon>
+# Time-stamp: <2025-05-17 22:22:17 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -164,12 +164,27 @@ class Agent:
     def send(self, msg: Message) -> Optional[Message]:
         """Send a message to the server, receive a response."""
         xfr: str = jsonpickle.encode(msg)
-        self.sock.send(bytes(xfr, 'UTF-8'))
+        try:
+            self.sock.send(bytes(xfr, 'UTF-8'))
+        except BrokenPipeError:
+            if self.errcnt < MAX_ERR and self.connect():
+                return self.send(msg)
+            return None
 
         rcv: bytes = self.sock.recv(BUFSIZE)
+
+        if len(rcv) == 0:
+            self.log.error("Received 0 bytes of response from server")
+            return None
+
         try:
             response = jsonpickle.decode(rcv)
-            assert isinstance(response, Message)
+            if response is None:
+                self.log.error("NB response from server is None")
+        except BrokenPipeError:
+            if self.errcnt < MAX_ERR and self.connect():
+                return self.send(msg)
+            return None
         except OSError as oerr:
             self.log.error("OSError trying to talk to Server at %s: %s",
                            self.srv,
@@ -227,8 +242,11 @@ class Agent:
                 match res:
                     case None:
                         self.log.info("No response was received?")
-                        self.shutdown()
-                        break
+                        if self.errcnt >= MAX_ERR:
+                            self.shutdown()
+                            break
+                        if self.connect():
+                            continue
                     case Message(MsgType.Error, errmsg):
                         self.log.error("Server reported an error: %s",
                                        errmsg)
