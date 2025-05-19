@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-17 22:38:31 krylon>
+# Time-stamp: <2025-05-19 17:27:47 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -27,7 +27,6 @@ from typing import Optional
 
 import jsonpickle
 import krylib
-import yaml
 from krylib import fmt_err
 
 from medusa import common
