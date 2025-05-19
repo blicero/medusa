@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-17 22:14:28 krylon>
+# Time-stamp: <2025-05-19 18:57:43 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -30,6 +30,7 @@ import bottle
 import pygal
 from bottle import response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
+from pygal import Config
 
 from medusa import common, data
 from medusa.data import Host
@@ -150,7 +151,15 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records: list = db.record_get_by_host_probe(host, "sysload")
-            chart = pygal.Line(x_label_rotation=20)
+            cfg = Config()
+            cfg.show_minor_x_labels = False
+            cfg.x_label_rotation = 20
+            cfg.x_labels_major_count = 5
+            cfg.x_title = "Time"
+            cfg.width = 800
+            cfg.height = 400
+
+            chart = pygal.Line(cfg)
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
             chart.add("Load1", [x.load.load1 for x in records])
             chart.add("Load5", [x.load.load5 for x in records])
