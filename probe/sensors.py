@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 18:51:44 krylon>
+# Time-stamp: <2025-05-19 18:43:33 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -47,7 +47,7 @@ class SensorProbe(Probe):
         """Retrieve sensor data."""
         result: Optional[dict[str, SensorData]] = None
         match self.platform.name.lower():
-            case "opensuse-tumbleweed" | "debian":
+            case "opensuse-tumbleweed" | "opensuse-leap" | "debian":
                 # Attempt to run "sensors -J"
                 result = self._run_sensors_linux()
             case "openbsd":
