@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-20 15:24:34 krylon>
+# Time-stamp: <2025-05-20 18:43:53 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -29,7 +29,7 @@ from medusa.probe.osdetect import Platform, guess_os
 sysctlPat: Final[re.Pattern] = re.compile(r"^hw[.]sensors[.]([^=]+)=(.*)$", re.M)
 tempPat: Final[re.Pattern] = re.compile(r"^(\d+(?:[.]\d+)?)? \s+ (degC)", re.X)
 sensorPat: Final[re.Pattern] = \
-    re.compile(r"(\w+)_input")
+    re.compile(r"^(temp\d+)_input")
 
 
 class SensorProbe(Probe):
@@ -82,15 +82,7 @@ class SensorProbe(Probe):
         extract: dict[str, SensorData] = {}
 
         for k, v in sdata.items():
-            # TODO This is far from optimal, but it'll do for now, I suppose.
             self.log.debug("Process item %s", k)
-            # if "input" in v:
-            #     extract[k] = SensorData(v["input"]["value"], v["input"]["unit"])
-            # else:
-            #     for x, y in v.items():
-            #         if "input" in y:
-            #             idx = f"{k}/{x}"
-            #             extract[idx] = SensorData(y["input"]["value"], y["input"]["unit"])
             if isinstance(v, dict):
                 extract |= self._walk_sensors_linux(v, k)
 
