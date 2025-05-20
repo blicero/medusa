@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-19 18:57:43 krylon>
+# Time-stamp: <2025-05-19 19:07:30 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -168,6 +168,18 @@ class WebUI:
             response.set_header("Content-Type", "image/svg+xml")
             response.set_header("Cache-Control", "no-store, max-age=0")
             return chart.render(is_unicode=True)
+        finally:
+            db.close()
+
+    def host_sensor_graph(self, host_id: int) -> Union[bytes, str]:
+        """Render a time series chart of sensor data (i.e. temperature)."""
+        try:
+            db = Database()
+            host: Optional[data.Host] = db.host_get_by_id(host_id)
+            if host is None:
+                response.status = 404
+                return f"Host {host_id} does not exist in the database."
+            records = db.record_get_by_host_probe(host, "sensors")
         finally:
             db.close()
 
