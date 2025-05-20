@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-19 18:43:33 krylon>
+# Time-stamp: <2025-05-20 15:24:34 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -28,6 +28,8 @@ from medusa.probe.osdetect import Platform, guess_os
 
 sysctlPat: Final[re.Pattern] = re.compile(r"^hw[.]sensors[.]([^=]+)=(.*)$", re.M)
 tempPat: Final[re.Pattern] = re.compile(r"^(\d+(?:[.]\d+)?)? \s+ (degC)", re.X)
+sensorPat: Final[re.Pattern] = \
+    re.compile(r"(\w+)_input")
 
 
 class SensorProbe(Probe):
@@ -75,20 +77,40 @@ class SensorProbe(Probe):
                            proc.stderr)
             return None
 
+        # I think I need kind-of-recursive approach, simple iteration doesn't cut it.
         sdata = json.loads(proc.stdout)
         extract: dict[str, SensorData] = {}
 
         for k, v in sdata.items():
             # TODO This is far from optimal, but it'll do for now, I suppose.
             self.log.debug("Process item %s", k)
-            if "input" in v:
-                extract[k] = SensorData(v["input"]["value"], v["input"]["unit"])
-            else:
-                for x, y in v.items():
-                    if "input" in y:
-                        idx = f"{k}/{x}"
-                        extract[idx] = SensorData(y["input"]["value"], y["input"]["unit"])
+            # if "input" in v:
+            #     extract[k] = SensorData(v["input"]["value"], v["input"]["unit"])
+            # else:
+            #     for x, y in v.items():
+            #         if "input" in y:
+            #             idx = f"{k}/{x}"
+            #             extract[idx] = SensorData(y["input"]["value"], y["input"]["unit"])
+            if isinstance(v, dict):
+                extract |= self._walk_sensors_linux(v, k)
 
+        if len(extract) == 0:
+            self.log.info("For some reason, ZERO data points have been collected")
+            return None
+
+        return extract
+
+    def _walk_sensors_linux(self, tree: dict, prefix: str = "") -> dict[str, SensorData]:
+        """Walk a sub-tree of the output of /usr/bin/sensors recursively."""
+        extract: dict[str, SensorData] = {}
+        for k, v in tree.items():
+            if isinstance(v, dict):
+                extract |= self._walk_sensors_linux(v, f"{prefix}/{k}")
+            else:
+                m = sensorPat.match(k)
+                if m is not None:
+                    key = f"{prefix}/{m.group(1)}"
+                    extract[key] = SensorData(v, "°C")
         return extract
 
     def _run_sensors_openbsd(self) -> Optional[dict[str, SensorData]]:
