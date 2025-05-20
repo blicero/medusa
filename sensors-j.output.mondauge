@@ -1,0 +1,149 @@
+{
+   "coretemp-isa-0000":{
+      "Adapter": "ISA adapter",
+      "Package id 0":{
+         "temp1_input": 55.000,
+         "temp1_max": 100.000,
+         "temp1_crit": 100.000,
+         "temp1_crit_alarm": 0.000
+      },
+      "Core 0":{
+         "temp2_input": 52.000,
+         "temp2_max": 100.000,
+         "temp2_crit": 100.000,
+         "temp2_crit_alarm": 0.000
+      },
+      "Core 1":{
+         "temp3_input": 53.000,
+         "temp3_max": 100.000,
+         "temp3_crit": 100.000,
+         "temp3_crit_alarm": 0.000
+      }
+   },
+   "BAT0-acpi-0":{
+      "Adapter": "ACPI interface",
+      "in0":{
+         "in0_input": 7.822
+      },
+      "temp":{
+         "temp1_input": 29.300
+      },
+      "curr1":{
+         "curr1_input": 1.261,
+         "curr1_average": 1.346
+      }
+   },
+   "applesmc-isa-0300":{
+      "Adapter": "ISA adapter",
+      "Exhaust  ":{
+         "fan1_input": 1204.000,
+         "fan1_min": 1200.000,
+         "fan1_max": 6500.000
+      },
+      "TB0T":{
+         "temp1_input": 29.000
+      },
+      "TB1T":{
+         "temp2_input": 29.000
+      },
+      "TB2T":{
+         "temp3_input": 27.500
+      },
+      "TBXT":{
+         "temp4_input": 28.750
+      },
+      "TC0E":{
+         "temp5_input": -127.000
+      },
+      "TC0F":{
+         "temp6_input": -127.000
+      },
+      "TC0P":{
+         "temp7_input": 51.250
+      },
+      "TC1C":{
+         "temp8_input": 55.000
+      },
+      "TC2C":{
+         "temp9_input": 58.000
+      },
+      "TCGC":{
+         "temp10_input": 57.000
+      },
+      "TCHP":{
+         "temp11_input": 41.000
+      },
+      "TCMX":{
+         "temp12_input": 58.000
+      },
+      "TCSA":{
+         "temp13_input": 56.000
+      },
+      "TCXC":{
+         "temp14_input": 57.750
+      },
+      "TH0A":{
+         "temp15_input": 67.750
+      },
+      "TH0B":{
+         "temp16_input": 54.500
+      },
+      "TH0C":{
+         "temp17_input": -127.000
+      },
+      "TH0F":{
+         "temp18_input": -10.000
+      },
+      "TH0R":{
+         "temp19_input": -24.250
+      },
+      "TH0V":{
+         "temp20_input": -127.000
+      },
+      "TH0a":{
+         "temp21_input": 67.750
+      },
+      "TH0b":{
+         "temp22_input": 54.500
+      },
+      "TH0c":{
+         "temp23_input": -127.000
+      },
+      "THSP":{
+         "temp24_input": 38.500
+      },
+      "TM0P":{
+         "temp25_input": 44.000
+      },
+      "TPCD":{
+         "temp26_input": 60.000
+      },
+      "TS2P":{
+         "temp27_input": 49.750
+      },
+      "TW0P":{
+         "temp28_input": 39.000
+      },
+      "Ta0P":{
+         "temp29_input": 42.500
+      },
+      "Th1H":{
+         "temp30_input": 31.500
+      },
+      "Tm0P":{
+         "temp31_input": 38.000
+      },
+      "Ts0P":{
+         "temp32_input": 27.250
+      },
+      "Ts0S":{
+         "temp33_input": -127.000
+      }
+   },
+   "BAT0-virtual-0":{
+      "Adapter": "Virtual device",
+      "temp1":{
+         "temp1_input": 29.300
+      }
+   }
+}
