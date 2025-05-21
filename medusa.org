@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-20 18:46:58 krylon>
+# Time-stamp: <2025-05-21 17:42:40 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [8/12]
+* Medusa [9/12]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,17 +18,17 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-20 Di 18:46]
+   #+CAPTION: Clock summary at [2025-05-21 Mi 17:42]
    | Headline                              | Time      |           |          |       |      |
    |---------------------------------------+-----------+-----------+----------+-------+------|
-   | *Total time*                          | *2d 9:27* |           |          |       |      |
+   | *Total time*                          | *2d 9:49* |           |          |       |      |
    |---------------------------------------+-----------+-----------+----------+-------+------|
-   | *Medusa [8/12]*                       | *2d 9:27* |           |          |       |      |
+   | *Medusa [8/12]*                       | *2d 9:49* |           |          |       |      |
    | \_  /Features [1/1]/                  |           | /2:11/    |          |       |      |
    | \_    Intermittent connectivity [0/0] |           |           |     2:11 |       |      |
-   | \_  /Components [7/10]/               |           | /2d 6:24/ |          |       |      |
+   | \_  /Components [7/10]/               |           | /2d 6:46/ |          |       |      |
    | \_    Main [0/0]                      |           |           |     0:40 |       |      |
-   | \_    Probes [1/3]                    |           |           |    13:07 |       |      |
+   | \_    Probes [2/3]                    |           |           |    13:07 |       |      |
    | \_      Free disk space ?             |           |           |          |  1:47 |      |
    | \_      Conditional imports           |           |           |          |  1:09 |      |
    | \_      Sensors                       |           |           |          |  4:57 |      |
@@ -36,9 +36,9 @@
    | \_    Database [2/2]                  |           |           |     1:45 |       |      |
    | \_      Exception handling            |           |           |          |  0:09 |      |
    | \_      Pool                          |           |           |          |  0:28 |      |
-   | \_    Server [4/5]                    |           |           | 1d 12:35 |       |      |
-   | \_      Web Interface [0/1]           |           |           |          | 12:38 |      |
-   | \_        Graphs                      |           |           |          |       | 4:54 |
+   | \_    Server [4/5]                    |           |           | 1d 12:57 |       |      |
+   | \_      Web Interface [0/1]           |           |           |          | 13:00 |      |
+   | \_        Graphs                      |           |           |          |       | 5:16 |
    | \_      Error Handling [0/0]          |           |           |          |  0:58 |      |
    | \_      Protocol                      |           |           |          | 14:12 |      |
    | \_  /Bugs [1/1]/                      |           | /0:52/    |          |       |      |
@@ -68,7 +68,7 @@
     CLOCK: [2025-05-07 Mi 19:23]--[2025-05-07 Mi 20:03] =>  0:40
     :END:
     The entry point, where it all begins.
-*** Probes [1/3]
+*** Probes [2/3]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -92,7 +92,8 @@
      I want to make the imports of the various probes conditional to keep the
      dependencies low.
      Also, I want to make the set of Probes an Agent runs configurable.
-**** TODO Sensors
+**** DONE Sensors
+     CLOSED: [2025-05-20 Di 19:19]
      :LOGBOOK:
      CLOCK: [2025-05-20 Di 18:30]--[2025-05-20 Di 18:46] =>  0:16
      CLOCK: [2025-05-20 Di 14:41]--[2025-05-20 Di 15:26] =>  0:45
@@ -144,7 +145,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [4/5]
+*** Server [3/5]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -179,6 +180,8 @@
      *Update* For graphs, I will be using matplotlib, probably.
 ***** TODO Graphs
       :LOGBOOK:
+      CLOCK: [2025-05-21 Mi 17:42]
+      CLOCK: [2025-05-20 Di 19:19]--[2025-05-20 Di 19:41] =>  0:22
       CLOCK: [2025-05-19 Mo 18:45]--[2025-05-19 Mo 20:34] =>  1:49
       CLOCK: [2025-05-17 Sa 20:55]--[2025-05-17 Sa 21:41] =>  0:46
       CLOCK: [2025-05-13 Di 19:31]--[2025-05-13 Di 19:55] =>  0:24
