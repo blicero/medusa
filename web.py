@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 17:52:04 krylon>
+# Time-stamp: <2025-05-21 18:06:14 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -28,7 +28,6 @@ from typing import Any, Final, Optional, Union
 
 import bottle
 import pygal
-import rapidjson
 from bottle import response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
 from pygal import Config
