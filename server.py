@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-19 17:27:47 krylon>
+# Time-stamp: <2025-05-21 18:58:45 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -17,6 +17,7 @@ medusa.server
 """
 
 
+import copy
 import json
 import logging
 import socket
@@ -138,9 +139,16 @@ class ConnectionHandler:
         while True:
             try:
                 rcv = self.conn.recv(BUFSIZE)
+                buf = copy.deepcopy(rcv)
+
                 if len(rcv) == 0:
                     continue
-                msg = jsonpickle.decode(rcv)
+
+                while len(rcv) >= BUFSIZE:
+                    buf += rcv
+                    rcv = self.conn.recv(BUFSIZE)
+
+                msg = jsonpickle.decode(buf)
                 response = self.handle_msg(msg)
                 xfr = jsonpickle.encode(response)
                 buf = bytes(xfr, 'UTF-8')

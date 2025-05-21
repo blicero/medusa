@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-19 17:56:25 krylon>
+# Time-stamp: <2025-05-21 19:05:41 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -184,6 +184,10 @@ class Agent:
     def send(self, msg: Message) -> Optional[Message]:
         """Send a message to the server, receive a response."""
         xfr: str = jsonpickle.encode(msg)
+        if len(xfr) >= BUFSIZE:
+            self.log.error("XXX Message exceeds buffer size: %d >= %d",
+                           len(xfr),
+                           BUFSIZE)
         try:
             self.sock.send(bytes(xfr, 'UTF-8'))
         except BrokenPipeError:
