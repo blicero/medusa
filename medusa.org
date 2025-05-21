@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-21 17:42:40 krylon>
+# Time-stamp: <2025-05-21 20:49:20 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -18,31 +18,31 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-21 Mi 17:42]
-   | Headline                              | Time      |           |          |       |      |
-   |---------------------------------------+-----------+-----------+----------+-------+------|
-   | *Total time*                          | *2d 9:49* |           |          |       |      |
-   |---------------------------------------+-----------+-----------+----------+-------+------|
-   | *Medusa [8/12]*                       | *2d 9:49* |           |          |       |      |
-   | \_  /Features [1/1]/                  |           | /2:11/    |          |       |      |
-   | \_    Intermittent connectivity [0/0] |           |           |     2:11 |       |      |
-   | \_  /Components [7/10]/               |           | /2d 6:46/ |          |       |      |
-   | \_    Main [0/0]                      |           |           |     0:40 |       |      |
-   | \_    Probes [2/3]                    |           |           |    13:07 |       |      |
-   | \_      Free disk space ?             |           |           |          |  1:47 |      |
-   | \_      Conditional imports           |           |           |          |  1:09 |      |
-   | \_      Sensors                       |           |           |          |  4:57 |      |
-   | \_    Model [0/0]                     |           |           |     2:17 |       |      |
-   | \_    Database [2/2]                  |           |           |     1:45 |       |      |
-   | \_      Exception handling            |           |           |          |  0:09 |      |
-   | \_      Pool                          |           |           |          |  0:28 |      |
-   | \_    Server [4/5]                    |           |           | 1d 12:57 |       |      |
-   | \_      Web Interface [0/1]           |           |           |          | 13:00 |      |
-   | \_        Graphs                      |           |           |          |       | 5:16 |
-   | \_      Error Handling [0/0]          |           |           |          |  0:58 |      |
-   | \_      Protocol                      |           |           |          | 14:12 |      |
-   | \_  /Bugs [1/1]/                      |           | /0:52/    |          |       |      |
-   | \_    Error deserializing report data |           |           |     0:38 |       |      |
+   #+CAPTION: Clock summary at [2025-05-21 Mi 20:45]
+   | Headline                              | Time       |           |          |       |      |
+   |---------------------------------------+------------+-----------+----------+-------+------|
+   | *Total time*                          | *2d 12:52* |           |          |       |      |
+   |---------------------------------------+------------+-----------+----------+-------+------|
+   | *Medusa [9/12]*                       | *2d 12:52* |           |          |       |      |
+   | \_  /Features [1/1]/                  |            | /2:11/    |          |       |      |
+   | \_    Intermittent connectivity [0/0] |            |           |     2:11 |       |      |
+   | \_  /Components [7/10]/               |            | /2d 9:49/ |          |       |      |
+   | \_    Main [0/0]                      |            |           |     0:40 |       |      |
+   | \_    Probes [2/3]                    |            |           |    13:07 |       |      |
+   | \_      Free disk space ?             |            |           |          |  1:47 |      |
+   | \_      Conditional imports           |            |           |          |  1:09 |      |
+   | \_      Sensors                       |            |           |          |  4:57 |      |
+   | \_    Model [0/0]                     |            |           |     2:17 |       |      |
+   | \_    Database [2/2]                  |            |           |     1:45 |       |      |
+   | \_      Exception handling            |            |           |          |  0:09 |      |
+   | \_      Pool                          |            |           |          |  0:28 |      |
+   | \_    Server [3/5]                    |            |           | 1d 16:00 |       |      |
+   | \_      Web Interface [0/1]           |            |           |          | 16:03 |      |
+   | \_        Graphs                      |            |           |          |       | 8:19 |
+   | \_      Error Handling [0/0]          |            |           |          |  0:58 |      |
+   | \_      Protocol                      |            |           |          | 14:12 |      |
+   | \_  /Bugs [1/1]/                      |            | /0:52/    |          |       |      |
+   | \_    Error deserializing report data |            |           |     0:38 |       |      |
    #+END:
 ** Features [1/1]
    :PROPERTIES:
@@ -180,7 +180,7 @@
      *Update* For graphs, I will be using matplotlib, probably.
 ***** TODO Graphs
       :LOGBOOK:
-      CLOCK: [2025-05-21 Mi 17:42]
+      CLOCK: [2025-05-21 Mi 17:42]--[2025-05-21 Mi 20:45] =>  3:03
       CLOCK: [2025-05-20 Di 19:19]--[2025-05-20 Di 19:41] =>  0:22
       CLOCK: [2025-05-19 Mo 18:45]--[2025-05-19 Mo 20:34] =>  1:49
       CLOCK: [2025-05-17 Sa 20:55]--[2025-05-17 Sa 21:41] =>  0:46
