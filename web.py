@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 10:15:57 krylon>
+# Time-stamp: <2025-05-21 17:52:04 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -137,7 +137,7 @@ class WebUI:
             tmpl_vars = self._tmpl_vars()
             tmpl_vars["host"] = host
             tmpl_vars["hosts"] = db.host_get_all()
-            tmpl_vars["data"] = db.record_get_by_host(host)
+            tmpl_vars["data"] = db.record_get_by_host(host, 1440)
             # ...
 
             return tmpl.render(tmpl_vars)
