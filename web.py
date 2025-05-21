@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 18:06:14 krylon>
+# Time-stamp: <2025-05-21 20:45:48 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -33,7 +33,7 @@ from jinja2 import Environment, FileSystemLoader, Template
 from pygal import Config
 
 from medusa import common, data
-from medusa.data import Host, SensorRecord
+from medusa.data import DiskRecord, Host, SensorRecord
 from medusa.database import Database
 
 mime_types: Final[dict[str, str]] = {
@@ -50,6 +50,9 @@ mime_types: Final[dict[str, str]] = {
 }
 
 suffix_pat: Final[re.Pattern] = re.compile("([.][^.]+)$")
+
+graph_width: Final[int] = 1000
+graph_height: Final[int] = 360
 
 
 def find_mime_type(path: str) -> str:
@@ -157,9 +160,9 @@ class WebUI:
             cfg.x_label_rotation = 20
             cfg.x_labels_major_count = 5
             cfg.x_title = "Time"
-            cfg.width = 800
             cfg.title = "System Load"
-            cfg.height = 400
+            cfg.width = graph_width
+            cfg.height = graph_height
 
             chart = pygal.Line(cfg)
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
@@ -189,8 +192,8 @@ class WebUI:
             cfg.x_labels_major_count = 5
             cfg.x_title = "Time"
             cfg.title = "Temperature"
-            cfg.width = 800
-            cfg.height = 400
+            cfg.width = graph_width
+            cfg.height = graph_height
 
             if common.DEBUG:
                 fpath: Final[str] = \
@@ -207,6 +210,39 @@ class WebUI:
                         sdata[k].append(v.value)
                     else:
                         sdata[k] = [v.value]
+
+            chart = pygal.Line(cfg)
+            chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
+            for k, v in sdata.items():
+                chart.add(k, v)
+            response.set_header("Content-Type", "image/svg+xml")
+            response.set_header("Cache-Control", "no-store, max-age=0")
+            return chart.render(is_unicode=True)
+        finally:
+            db.close()
+
+    def handle_disk_graph(self, host_id: int) -> Union[bytes, str]:
+        """Render a time series chart of disk space data on the root device."""
+        try:
+            db = Database()
+            host: Optional[data.Host] = db.host_get_by_id(host_id)
+            if host is None:
+                response.status = 404
+                return f"Host {host_id} does not exist in the database."
+            records = db.record_get_by_host_probe(host, "disk")
+
+            cfg = Config()
+            cfg.show_minor_x_labels = False
+            cfg.x_label_rotation = 20
+            cfg.x_labels_major_count = 5
+            cfg.x_title = "Time"
+            cfg.title = "Temperature"
+            cfg.width = graph_width
+            cfg.height = graph_height
+
+            sdata: dict = {}
+            for r in records:
+                assert isinstance(r, DiskRecord)
 
             chart = pygal.Line(cfg)
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
