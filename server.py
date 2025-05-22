@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-22 17:22:09 krylon>
+# Time-stamp: <2025-05-22 17:35:37 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -161,7 +161,9 @@ class ConnectionHandler:
                     # self.log.error("%s\n\n%s\n\n",
                     #                errmsg,
                     #                krylib.fmt_err(err))
-                    self.log.error(errmsg)
+                    self.log.error("%s\n\n%s\n\n",
+                                   errmsg,
+                                   buf)
                     response = Message(MsgType.Error, errmsg)
                 else:
                     response = self.handle_msg(msg)
