@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-21 20:49:20 krylon>
+# Time-stamp: <2025-05-22 17:39:02 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -252,7 +252,7 @@
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
    :END:
-** Bugs [1/1]
+** Bugs [0/1]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -260,8 +260,7 @@
    :LOGBOOK:
    CLOCK: [2025-05-12 Mo 17:50]--[2025-05-12 Mo 18:04] =>  0:14
    :END:
-*** DONE Error deserializing report data
-    CLOSED: [2025-05-13 Di 18:53]
+*** TODO Error deserializing report data
     :LOGBOOK:
     CLOCK: [2025-05-13 Di 18:15]--[2025-05-13 Di 18:53] =>  0:38
     :END:
@@ -279,3 +278,7 @@
     Delivering the records individually appears to work (for now). The
     situation with YAML and the various libraries and their availability
     across different systems is just too much. So I'll leave it at this.
+    [2025-05-22 Do 17:38]
+    I am done with this crap, I'll just switch to plain pickle.
+    I'll a fixed size field first that contains the length of the pickled
+    data, followed by said data.
