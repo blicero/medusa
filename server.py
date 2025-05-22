@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 18:58:45 krylon>
+# Time-stamp: <2025-05-22 17:22:09 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -121,8 +121,7 @@ class ConnectionHandler:
                        addr[1])
         set_keepalive_linux(self.conn)
 
-    def run(self) -> None:
-        """Handle communication with the Agent."""
+    def _run(self) -> None:
         self.db = Database()
         msg: Message = Message(
             MsgType.Hello,
@@ -136,20 +135,36 @@ class ConnectionHandler:
                            err,
                            fmt_err(err))
 
+        zerocnt: int = 0
+
         while True:
             try:
                 rcv = self.conn.recv(BUFSIZE)
                 buf = copy.deepcopy(rcv)
 
                 if len(rcv) == 0:
+                    zerocnt += 1
+                    if zerocnt > 3:
+                        return
                     continue
 
                 while len(rcv) >= BUFSIZE:
                     buf += rcv
                     rcv = self.conn.recv(BUFSIZE)
 
-                msg = jsonpickle.decode(buf)
-                response = self.handle_msg(msg)
+                try:
+                    msg = jsonpickle.decode(buf)
+                except Exception as err:  # pylint: disable-msg=W0718
+                    ename = err.__class__.__name__
+                    errmsg = \
+                        f"{ename} trying to decode message from {self.addr}: {err}"
+                    # self.log.error("%s\n\n%s\n\n",
+                    #                errmsg,
+                    #                krylib.fmt_err(err))
+                    self.log.error(errmsg)
+                    response = Message(MsgType.Error, errmsg)
+                else:
+                    response = self.handle_msg(msg)
                 xfr = jsonpickle.encode(response)
                 buf = bytes(xfr, 'UTF-8')
                 self.conn.send(buf)
@@ -157,7 +172,6 @@ class ConnectionHandler:
                 self.log.error("OSError while handling Agent %s: %s",
                                self.addr,
                                oerr)
-                self.conn.shutdown(socket.SHUT_RDWR)
                 return
             except json.JSONDecodeError as jerr:
                 self.log.error("Failed to decode JSON message (%d byte) from %s: %s\n%s\n\n",
@@ -171,6 +185,17 @@ class ConnectionHandler:
                                self.addr,
                                err,
                                krylib.fmt_err(err))
+
+    def run(self) -> None:
+        """Handle communication with the Agent."""
+        try:
+            self._run()
+        finally:
+            self.log.info("Shutting down connection from %s:%d",
+                          self.addr[0],
+                          self.addr[1])
+            self.db.close()
+            self.conn.close()
 
     def handle_msg(self, msg: Message) -> Message:
         """Handle a message received from the Agent."""

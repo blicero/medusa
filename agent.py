@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 19:05:41 krylon>
+# Time-stamp: <2025-05-22 11:07:46 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -188,6 +188,11 @@ class Agent:
             self.log.error("XXX Message exceeds buffer size: %d >= %d",
                            len(xfr),
                            BUFSIZE)
+        else:
+            self.log.debug("Sending Message of %d bytes to %s",
+                           len(xfr),
+                           self.srv)
+
         try:
             self.sock.send(bytes(xfr, 'UTF-8'))
         except BrokenPipeError:
