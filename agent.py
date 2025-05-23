@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-22 11:07:46 krylon>
+# Time-stamp: <2025-05-23 09:36:06 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -17,15 +17,14 @@ medusa.agent
 """
 
 
-import json
 import logging
+import pickle
 import socket
 import time
 from datetime import timedelta
 from threading import Lock
 from typing import Final, Optional
 
-import jsonpickle
 from krylib import fib, fmt_err
 
 from medusa import common
@@ -33,7 +32,7 @@ from medusa.config import Config
 from medusa.data import Record
 from medusa.probe import osdetect
 from medusa.probe.base import Probe
-from medusa.proto import BUFSIZE, Message, MsgType, set_keepalive_linux
+from medusa.proto import HDRSIZE, Message, MsgType, set_keepalive_linux
 
 # The maximum number of errors we tolerate before we bail.
 MAX_ERR: Final[int] = 10
@@ -138,8 +137,10 @@ class Agent:
             self.sock.connect((self.srv, common.PORT))
             set_keepalive_linux(self.sock)
 
-            rcv = self.sock.recv(BUFSIZE)
-            msg = jsonpickle.decode(rcv)
+            hdr = self.sock.recv(HDRSIZE)
+            msg_size = int(hdr, 16)
+            rcv = self.sock.recv(msg_size)
+            msg = pickle.loads(rcv)
             print(f"Received instance of {msg.__class__.__name__} from Server: {msg}")
             assert isinstance(msg, Message)
             assert msg.mtype == MsgType.Hello
@@ -183,31 +184,33 @@ class Agent:
 
     def send(self, msg: Message) -> Optional[Message]:
         """Send a message to the server, receive a response."""
-        xfr: str = jsonpickle.encode(msg)
-        if len(xfr) >= BUFSIZE:
-            self.log.error("XXX Message exceeds buffer size: %d >= %d",
-                           len(xfr),
-                           BUFSIZE)
-        else:
-            self.log.debug("Sending Message of %d bytes to %s",
-                           len(xfr),
-                           self.srv)
+        xfr: bytes = pickle.dumps(msg)
+        hdr: str = f"{len(xfr):08x}"
 
         try:
-            self.sock.send(bytes(xfr, 'UTF-8'))
+            self.sock.send(bytes(hdr, 'UTF-8'))
+            self.sock.send(xfr)
         except BrokenPipeError:
             if self.errcnt < MAX_ERR and self.connect():
                 return self.send(msg)
             return None
 
-        rcv: bytes = self.sock.recv(BUFSIZE)
+        hdr = self.sock.recv(HDRSIZE)
+        try:
+            msg_size = int(hdr.decode(encoding='utf-8'), 16)
+        except ValueError as verr:
+            self.log.error("Couldn't parse message header '%s': %s",
+                           str(hdr),
+                           verr)
+            msg_size = 2 << 16
+        rcv: bytes = self.sock.recv(msg_size)
 
         if len(rcv) == 0:
             self.log.error("Received 0 bytes of response from server")
             return None
 
         try:
-            response = jsonpickle.decode(rcv)
+            response = pickle.loads(rcv)
             if response is None:
                 self.log.error("NB response from server is None")
         except BrokenPipeError:
@@ -221,12 +224,6 @@ class Agent:
             self.errcnt += 1
             if self.errcnt < MAX_ERR and self.connect():
                 return self.send(msg)
-            response = None
-        except json.JSONDecodeError as jerr:
-            self.log.error("Failed to decode message from %s: %s\n%s\n",
-                           self.srv,
-                           jerr,
-                           rcv)
             response = None
 
         return response

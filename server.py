@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-22 17:35:37 krylon>
+# Time-stamp: <2025-05-22 18:53:27 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -17,16 +17,14 @@ medusa.server
 """
 
 
-import copy
-import json
 import logging
+import pickle
 import socket
 import sys
 import threading
 from datetime import datetime
-from typing import Optional
+from typing import Final, Optional
 
-import jsonpickle
 import krylib
 from krylib import fmt_err
 
@@ -34,7 +32,7 @@ from medusa import common
 from medusa.common import MedusaError
 from medusa.data import Host, Record
 from medusa.database import Database
-from medusa.proto import BUFSIZE, Message, MsgType, set_keepalive_linux
+from medusa.proto import Message, MsgType, set_keepalive_linux
 
 
 class Server:
@@ -121,66 +119,65 @@ class ConnectionHandler:
                        addr[1])
         set_keepalive_linux(self.conn)
 
+    def snd(self, msg: Message) -> bool:
+        """Serialize and send the message to the Agent."""
+        status: bool = False
+        try:
+            xfr: bytes = pickle.dumps(msg)
+            hdr: Final[str] = f"{len(xfr):08x}"
+            self.conn.send(bytes(hdr, encoding="UTF-8"))
+            self.conn.send(xfr)
+        except BrokenPipeError:
+            self.log.error("Connection was closed, failed to send message.")
+        except OSError as err:
+            self.log.error("%s trying to send message to %s: %s",
+                           err.__class__.__name__,
+                           self.addr[0],
+                           err)
+        else:
+            status = True
+
+        return status
+
+    def rcv(self) -> Optional[Message]:
+        """Attempt to read and decode a message from the Agent."""
+        try:
+            hdr = self.conn.recv(8)
+            msg_size: Final[int] = int(hdr, 16)
+            xfr: bytes = self.conn.recv(msg_size)
+            msg = pickle.loads(xfr)
+            return msg
+        except Exception as err:  # pylint: disable-msg=W0718
+            self.log.error("Error (%s) trying to receive / decode message from %s: %s",
+                           err.__class__.__name__,
+                           self.addr[0],
+                           err)
+            return None
+
     def _run(self) -> None:
         self.db = Database()
-        msg: Message = Message(
+        msg: Optional[Message] = Message(
             MsgType.Hello,
             "Hello")
-        try:
-            xfr: str = jsonpickle.encode(msg)
-            self.conn.send(bytes(xfr, 'UTF-8'))
-        except Exception as err:  # pylint: disable-msg=W0718
-            self.log.error("Failed to send Hello message to %s: %s\n%s\n\n",
-                           self.addr,
-                           err,
-                           fmt_err(err))
 
-        zerocnt: int = 0
+        assert msg is not None
+        if not self.snd(msg):
+            # WTF?
+            return
 
         while True:
             try:
-                rcv = self.conn.recv(BUFSIZE)
-                buf = copy.deepcopy(rcv)
-
-                if len(rcv) == 0:
-                    zerocnt += 1
-                    if zerocnt > 3:
-                        return
-                    continue
-
-                while len(rcv) >= BUFSIZE:
-                    buf += rcv
-                    rcv = self.conn.recv(BUFSIZE)
-
-                try:
-                    msg = jsonpickle.decode(buf)
-                except Exception as err:  # pylint: disable-msg=W0718
-                    ename = err.__class__.__name__
-                    errmsg = \
-                        f"{ename} trying to decode message from {self.addr}: {err}"
-                    # self.log.error("%s\n\n%s\n\n",
-                    #                errmsg,
-                    #                krylib.fmt_err(err))
-                    self.log.error("%s\n\n%s\n\n",
-                                   errmsg,
-                                   buf)
-                    response = Message(MsgType.Error, errmsg)
-                else:
+                msg = self.rcv()
+                if msg is not None:
                     response = self.handle_msg(msg)
-                xfr = jsonpickle.encode(response)
-                buf = bytes(xfr, 'UTF-8')
-                self.conn.send(buf)
+                    self.snd(response)
+                else:
+                    return
             except OSError as oerr:
                 self.log.error("OSError while handling Agent %s: %s",
                                self.addr,
                                oerr)
                 return
-            except json.JSONDecodeError as jerr:
-                self.log.error("Failed to decode JSON message (%d byte) from %s: %s\n%s\n\n",
-                               len(rcv),
-                               self.addr,
-                               jerr,
-                               rcv)
             except Exception as err:  # pylint: disable-msg=W0718
                 self.log.error("%s receiving data from %s: %s\n\n%s\n\n",
                                err.__class__.__name__,
