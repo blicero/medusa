@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-22 17:39:02 krylon>
+# Time-stamp: <2025-05-23 10:28:22 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [9/12]
+* Medusa [8/13]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,31 +18,32 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-21 Mi 20:45]
-   | Headline                              | Time       |           |          |       |      |
-   |---------------------------------------+------------+-----------+----------+-------+------|
-   | *Total time*                          | *2d 12:52* |           |          |       |      |
-   |---------------------------------------+------------+-----------+----------+-------+------|
-   | *Medusa [9/12]*                       | *2d 12:52* |           |          |       |      |
-   | \_  /Features [1/1]/                  |            | /2:11/    |          |       |      |
-   | \_    Intermittent connectivity [0/0] |            |           |     2:11 |       |      |
-   | \_  /Components [7/10]/               |            | /2d 9:49/ |          |       |      |
-   | \_    Main [0/0]                      |            |           |     0:40 |       |      |
-   | \_    Probes [2/3]                    |            |           |    13:07 |       |      |
-   | \_      Free disk space ?             |            |           |          |  1:47 |      |
-   | \_      Conditional imports           |            |           |          |  1:09 |      |
-   | \_      Sensors                       |            |           |          |  4:57 |      |
-   | \_    Model [0/0]                     |            |           |     2:17 |       |      |
-   | \_    Database [2/2]                  |            |           |     1:45 |       |      |
-   | \_      Exception handling            |            |           |          |  0:09 |      |
-   | \_      Pool                          |            |           |          |  0:28 |      |
-   | \_    Server [3/5]                    |            |           | 1d 16:00 |       |      |
-   | \_      Web Interface [0/1]           |            |           |          | 16:03 |      |
-   | \_        Graphs                      |            |           |          |       | 8:19 |
-   | \_      Error Handling [0/0]          |            |           |          |  0:58 |      |
-   | \_      Protocol                      |            |           |          | 14:12 |      |
-   | \_  /Bugs [1/1]/                      |            | /0:52/    |          |       |      |
-   | \_    Error deserializing report data |            |           |     0:38 |       |      |
+   #+CAPTION: Clock summary at [2025-05-23 Fr 10:28]
+   | Headline                              | Time       |            |          |       |      |
+   |---------------------------------------+------------+------------+----------+-------+------|
+   | *Total time*                          | *2d 14:43* |            |          |       |      |
+   |---------------------------------------+------------+------------+----------+-------+------|
+   | *Medusa [8/13]*                       | *2d 14:43* |            |          |       |      |
+   | \_  /Features [1/1]/                  |            | /2:11/     |          |       |      |
+   | \_    Intermittent connectivity [0/0] |            |            |     2:11 |       |      |
+   | \_  /Components [7/11]/               |            | /2d 11:40/ |          |       |      |
+   | \_    Main [0/0]                      |            |            |     0:40 |       |      |
+   | \_    Probes [2/3]                    |            |            |    13:07 |       |      |
+   | \_      Free disk space ?             |            |            |          |  1:47 |      |
+   | \_      Conditional imports           |            |            |          |  1:09 |      |
+   | \_      Sensors                       |            |            |          |  4:57 |      |
+   | \_    Model [0/0]                     |            |            |     2:17 |       |      |
+   | \_    Database [2/2]                  |            |            |     1:45 |       |      |
+   | \_      Exception handling            |            |            |          |  0:09 |      |
+   | \_      Pool                          |            |            |          |  0:28 |      |
+   | \_    Server [3/6]                    |            |            | 1d 17:51 |       |      |
+   | \_      Web Interface [0/1]           |            |            |          | 16:03 |      |
+   | \_        Graphs                      |            |            |          |       | 8:19 |
+   | \_      Error Handling [0/0]          |            |            |          |  0:58 |      |
+   | \_      Protocol                      |            |            |          | 16:03 |      |
+   | \_        In a pickle                 |            |            |          |       | 1:51 |
+   | \_  /Bugs [0/1]/                      |            | /0:52/     |          |       |      |
+   | \_    Error deserializing report data |            |            |     0:38 |       |      |
    #+END:
 ** Features [1/1]
    :PROPERTIES:
@@ -58,7 +59,7 @@
     :END:
     I need to handle loss of connection, on both sides. I am also unsure if I
     notice on the server side when an Agent connection is gone.
-** Components [7/10]
+** Components [7/11]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -145,7 +146,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [3/5]
+*** Server [3/6]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -237,6 +238,11 @@
      asyncore or its successor.
      ...
      Oh my, asyncore doesn't exist any longer, asyncio seems a bit much.
+***** TODO In a pickle
+      :LOGBOOK:
+      CLOCK: [2025-05-23 Fr 09:55]--[2025-05-23 Fr 10:27] =>  0:32
+      CLOCK: [2025-05-22 Do 18:08]--[2025-05-22 Do 19:27] =>  1:19
+      :END:
 **** SUSPENDED mDNS
      CLOSED: [2025-04-30 Mi 17:29]
      Every time, so far, I've dealt with mDNS, it either didn't work out, or
