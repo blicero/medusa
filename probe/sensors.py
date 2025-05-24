@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-20 18:43:53 krylon>
+# Time-stamp: <2025-05-24 21:15:58 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -98,6 +98,11 @@ class SensorProbe(Probe):
         for k, v in tree.items():
             if isinstance(v, dict):
                 extract |= self._walk_sensors_linux(v, f"{prefix}/{k}")
+            elif not isinstance(v, (int, float)) or v <= 0.0:
+                self.log.debug("Skipping curious sensor data (%s): %s",
+                               v.__class__.__name__,
+                               v)
+                continue
             else:
                 m = sensorPat.match(k)
                 if m is not None:

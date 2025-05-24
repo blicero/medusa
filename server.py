@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-22 18:53:27 krylon>
+# Time-stamp: <2025-05-23 16:55:04 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -22,6 +22,7 @@ import pickle
 import socket
 import sys
 import threading
+import time
 from datetime import datetime
 from typing import Final, Optional
 
@@ -144,9 +145,18 @@ class ConnectionHandler:
         try:
             hdr = self.conn.recv(8)
             msg_size: Final[int] = int(hdr, 16)
-            xfr: bytes = self.conn.recv(msg_size)
+            rcv_size: int = msg_size
+            xfr: bytes = b''
+            while len(xfr) < msg_size:
+                tmp: bytes = self.conn.recv(rcv_size)
+                rcv_size -= len(tmp)
+                xfr += tmp
+
             msg = pickle.loads(xfr)
             return msg
+        except ValueError:
+            time.sleep(0.01)
+            return self.rcv()
         except Exception as err:  # pylint: disable-msg=W0718
             self.log.error("Error (%s) trying to receive / decode message from %s: %s",
                            err.__class__.__name__,

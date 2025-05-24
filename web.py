@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 20:45:48 krylon>
+# Time-stamp: <2025-05-24 20:42:48 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -32,7 +32,7 @@ from bottle import response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
 from pygal import Config
 
-from medusa import common, data
+from medusa import common, data, config
 from medusa.data import DiskRecord, Host, SensorRecord
 from medusa.database import Database
 
@@ -73,10 +73,17 @@ class WebUI:
     tmpl_root: str
     lock: threading.Lock
     env: Environment
+    host: str
+    port: int
 
     def __init__(self, root: str = "") -> None:
         self.log = common.get_logger("WebUI")
         self.lock = threading.Lock()
+
+        cfg = config.Config()
+        self.host = cfg.get("Web", "Host")
+        self.port = cfg.get("Web", "Port")
+
         if root == "":
             self.root = os.path.join(".", "web")
         else:
@@ -109,7 +116,7 @@ class WebUI:
 
     def run(self) -> None:
         """Run the web server."""
-        run(host="localhost", port=9001, debug=common.DEBUG)
+        run(host=self.host, port=self.port, debug=common.DEBUG)
 
     def main(self) -> str:
         """Presents the landing page."""

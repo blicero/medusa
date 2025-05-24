@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-23 09:36:06 krylon>
+# Time-stamp: <2025-05-24 21:24:12 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -185,35 +185,42 @@ class Agent:
     def send(self, msg: Message) -> Optional[Message]:
         """Send a message to the server, receive a response."""
         xfr: bytes = pickle.dumps(msg)
-        hdr: str = f"{len(xfr):08x}"
+        hdr: Final[str] = f"{len(xfr):08x}"
+
+        self.log.debug("Send %s Message of %d bytes",
+                       msg.mtype.name,
+                       len(xfr))
 
         try:
             self.sock.send(bytes(hdr, 'UTF-8'))
             self.sock.send(xfr)
-        except BrokenPipeError:
+        except (BrokenPipeError, ConnectionResetError):
             if self.errcnt < MAX_ERR and self.connect():
                 return self.send(msg)
             return None
 
-        hdr = self.sock.recv(HDRSIZE)
+        rhdr = self.sock.recv(HDRSIZE)
         try:
-            msg_size = int(hdr.decode(encoding='utf-8'), 16)
+            msg_size = int(rhdr.decode(encoding='utf-8'), 16)
         except ValueError as verr:
             self.log.error("Couldn't parse message header '%s': %s",
-                           str(hdr),
+                           str(rhdr),
                            verr)
-            msg_size = 2 << 16
-        rcv: bytes = self.sock.recv(msg_size)
-
-        if len(rcv) == 0:
-            self.log.error("Received 0 bytes of response from server")
             return None
+
+        self.log.debug("Going to receive a message of %d bytes",
+                       msg_size)
+
+        rcv: bytes = self.sock.recv(msg_size)
+        while len(rcv) < msg_size:
+            tmp = self.sock.recv(msg_size - len(rcv))
+            rcv += tmp
 
         try:
             response = pickle.loads(rcv)
             if response is None:
                 self.log.error("NB response from server is None")
-        except BrokenPipeError:
+        except (ConnectionResetError, BrokenPipeError):
             if self.errcnt < MAX_ERR and self.connect():
                 return self.send(msg)
             response = None
