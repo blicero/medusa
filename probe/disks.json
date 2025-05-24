@@ -1,0 +1,380 @@
+{
+  "/": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/"
+  ],
+  "/.snapshots": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/.snapshots"
+  ],
+  "/boot/grub2/i386-pc": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/boot/grub2/i386-pc"
+  ],
+  "/boot/grub2/x86_64-efi": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/boot/grub2/x86_64-efi"
+  ],
+  "/srv": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/srv"
+  ],
+  "/opt": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/opt"
+  ],
+  "/var": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/var"
+  ],
+  "/root": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/root"
+  ],
+  "/usr/local": [
+    "sda3",
+    125829120,
+    93290472,
+    25388728,
+    "/usr/local"
+  ],
+  "/data": [
+    "sdb1",
+    447361024,
+    443316096,
+    3363104,
+    "/data"
+  ],
+  "/boot/efi": [
+    "sda1",
+    159564,
+    6084,
+    153480,
+    "/boot/efi"
+  ],
+  "/home": [
+    "sda4",
+    101379888,
+    97457292,
+    3922596,
+    "/home"
+  ],
+  "/snap/core18/2846": [
+    "loop5",
+    56704,
+    56704,
+    0,
+    "/snap/core18/2846"
+  ],
+  "/snap/core18/2855": [
+    "loop6",
+    56704,
+    56704,
+    0,
+    "/snap/core18/2855"
+  ],
+  "/snap/core20/2501": [
+    "loop7",
+    65408,
+    65408,
+    0,
+    "/snap/core20/2501"
+  ],
+  "/snap/core20/2571": [
+    "loop8",
+    65408,
+    65408,
+    0,
+    "/snap/core20/2571"
+  ],
+  "/snap/core22/1908": [
+    "loop9",
+    75776,
+    75776,
+    0,
+    "/snap/core22/1908"
+  ],
+  "/snap/core22/1963": [
+    "loop10",
+    75776,
+    75776,
+    0,
+    "/snap/core22/1963"
+  ],
+  "/snap/core24/888": [
+    "loop11",
+    68480,
+    68480,
+    0,
+    "/snap/core24/888"
+  ],
+  "/snap/bare/5": [
+    "loop2",
+    128,
+    128,
+    0,
+    "/snap/bare/5"
+  ],
+  "/snap/core24/988": [
+    "loop12",
+    68480,
+    68480,
+    0,
+    "/snap/core24/988"
+  ],
+  "/snap/gnome-3-28-1804/194": [
+    "loop13",
+    168832,
+    168832,
+    0,
+    "/snap/gnome-3-28-1804/194"
+  ],
+  "/snap/gnome-3-28-1804/198": [
+    "loop14",
+    168832,
+    168832,
+    0,
+    "/snap/gnome-3-28-1804/198"
+  ],
+  "/snap/gnome-3-38-2004/140": [
+    "loop15",
+    358144,
+    358144,
+    0,
+    "/snap/gnome-3-38-2004/140"
+  ],
+  "/snap/audible-for-linux/13": [
+    "loop1",
+    66048,
+    66048,
+    0,
+    "/snap/audible-for-linux/13"
+  ],
+  "/snap/core/17210": [
+    "loop4",
+    107136,
+    107136,
+    0,
+    "/snap/core/17210"
+  ],
+  "/snap/gnome-3-38-2004/143": [
+    "loop16",
+    358144,
+    358144,
+    0,
+    "/snap/gnome-3-38-2004/143"
+  ],
+  "/snap/asciiquarium/42": [
+    "loop0",
+    4352,
+    4352,
+    0,
+    "/snap/asciiquarium/42"
+  ],
+  "/snap/gnome-42-2204/202": [
+    "loop18",
+    528512,
+    528512,
+    0,
+    "/snap/gnome-42-2204/202"
+  ],
+  "/snap/gnome-42-2204/176": [
+    "loop17",
+    517248,
+    517248,
+    0,
+    "/snap/gnome-42-2204/176"
+  ],
+  "/snap/core/17200": [
+    "loop3",
+    106752,
+    106752,
+    0,
+    "/snap/core/17200"
+  ],
+  "/snap/gnome-46-2404/77": [
+    "loop19",
+    413824,
+    413824,
+    0,
+    "/snap/gnome-46-2404/77"
+  ],
+  "/snap/gnome-46-2404/90": [
+    "loop20",
+    414080,
+    414080,
+    0,
+    "/snap/gnome-46-2404/90"
+  ],
+  "/snap/gtk-common-themes/1519": [
+    "loop21",
+    66816,
+    66816,
+    0,
+    "/snap/gtk-common-themes/1519"
+  ],
+  "/snap/gtk-common-themes/1535": [
+    "loop22",
+    93952,
+    93952,
+    0,
+    "/snap/gtk-common-themes/1535"
+  ],
+  "/snap/poddr/6": [
+    "loop31",
+    102016,
+    102016,
+    0,
+    "/snap/poddr/6"
+  ],
+  "/snap/snapd/23771": [
+    "loop33",
+    45568,
+    45568,
+    0,
+    "/snap/snapd/23771"
+  ],
+  "/snap/opensurge/103": [
+    "loop28",
+    105216,
+    105216,
+    0,
+    "/snap/opensurge/103"
+  ],
+  "/snap/snapd/24505": [
+    "loop36",
+    52224,
+    52224,
+    0,
+    "/snap/snapd/24505"
+  ],
+  "/snap/signal-desktop/791": [
+    "loop35",
+    163072,
+    163072,
+    0,
+    "/snap/signal-desktop/791"
+  ],
+  "/snap/kde-frameworks-5-core18/35": [
+    "loop25",
+    296832,
+    296832,
+    0,
+    "/snap/kde-frameworks-5-core18/35"
+  ],
+  "/snap/joplin/150": [
+    "loop23",
+    78080,
+    78080,
+    0,
+    "/snap/joplin/150"
+  ],
+  "/snap/mesa-2404/495": [
+    "loop27",
+    212480,
+    212480,
+    0,
+    "/snap/mesa-2404/495"
+  ],
+  "/snap/signal-desktop/789": [
+    "loop34",
+    161024,
+    161024,
+    0,
+    "/snap/signal-desktop/789"
+  ],
+  "/snap/opensurge/97": [
+    "loop29",
+    105216,
+    105216,
+    0,
+    "/snap/opensurge/97"
+  ],
+  "/snap/zoom-client/242": [
+    "loop40",
+    396928,
+    396928,
+    0,
+    "/snap/zoom-client/242"
+  ],
+  "/snap/mesa-2404/143": [
+    "loop26",
+    216576,
+    216576,
+    0,
+    "/snap/mesa-2404/143"
+  ],
+  "/snap/zoom-client/258": [
+    "loop41",
+    462208,
+    462208,
+    0,
+    "/snap/zoom-client/258"
+  ],
+  "/snap/regex-craftsman/29": [
+    "loop30",
+    8960,
+    8960,
+    0,
+    "/snap/regex-craftsman/29"
+  ],
+  "/snap/kde-frameworks-5-core18/32": [
+    "loop24",
+    267008,
+    267008,
+    0,
+    "/snap/kde-frameworks-5-core18/32"
+  ],
+  "/snap/prehistoric/1": [
+    "loop32",
+    62464,
+    62464,
+    0,
+    "/snap/prehistoric/1"
+  ],
+  "/snap/wine-platform-5-stable/18": [
+    "loop37",
+    310400,
+    310400,
+    0,
+    "/snap/wine-platform-5-stable/18"
+  ],
+  "/snap/wine-platform-runtime/397": [
+    "loop39",
+    355072,
+    355072,
+    0,
+    "/snap/wine-platform-runtime/397"
+  ],
+  "/snap/wine-platform-runtime/396": [
+    "loop38",
+    355072,
+    355072,
+    0,
+    "/snap/wine-platform-runtime/396"
+  ]
+}
