@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 17:00:35 krylon>
+# Time-stamp: <2025-05-24 20:22:27 krylon>
 #
 # /data/code/python/medusa/config.py
 # created on 09. 05. 2025
@@ -45,6 +45,8 @@ Server = "schwarzgeraet"
 Address = "::"
 
 [Web]
+Host = "localhost"
+Port = 9001
 """
 
 open_lock: Final[Lock] = Lock()
