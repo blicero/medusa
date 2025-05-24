@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-23 16:55:04 krylon>
+# Time-stamp: <2025-05-24 21:41:48 krylon>
 #
 # /data/code/python/medusa/server.py
 # created on 18. 03. 2025
@@ -22,7 +22,6 @@ import pickle
 import socket
 import sys
 import threading
-import time
 from datetime import datetime
 from typing import Final, Optional
 
@@ -154,9 +153,14 @@ class ConnectionHandler:
 
             msg = pickle.loads(xfr)
             return msg
-        except ValueError:
-            time.sleep(0.01)
-            return self.rcv()
+        except ValueError as verr:
+            self.log.error("%s attempting to receive message: %s\n%s\n\n",
+                           verr.__class__.__name__,
+                           verr,
+                           fmt_err(verr))
+            return None
+            # time.sleep(0.01)
+            # return self.rcv()
         except Exception as err:  # pylint: disable-msg=W0718
             self.log.error("Error (%s) trying to receive / decode message from %s: %s",
                            err.__class__.__name__,
