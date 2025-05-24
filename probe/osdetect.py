@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-21 18:19:33 krylon>
+# Time-stamp: <2025-05-24 22:03:38 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -74,6 +74,8 @@ def guess_os(osrel: str = OS_REL) -> Platform:
                 return Platform("freebsd", info["version_id"], "unknown")
             case "arch" | "manjaro":
                 return Platform("arch", 'n/a', "unknown")
+            case "fedora":
+                return Platform("fedora", info["version_id"], "unknown")
     else:
         warnings.warn("No os-release file was found, calling uname(1)",
                       UserWarning,
