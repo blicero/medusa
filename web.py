@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-24 20:42:48 krylon>
+# Time-stamp: <2025-05-25 18:55:54 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -100,6 +100,7 @@ class WebUI:
         route("/host/<host_id:int>", callback=self.host_details)
         route("/graph/sysload/<host_id:int>", callback=self.host_load_graph)
         route("/graph/sensor/<host_id:int>", callback=self.host_sensor_graph)
+        route("/graph/disk/<host_id:int>", callback=self.host_disk_graph)
         route("/static/<path>", callback=self.staticfile)
         route("/ajax/beacon", callback=self.handle_beacon)
         route("/favicon.ico", callback=self.handle_favicon)
@@ -162,6 +163,11 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records: list = db.record_get_by_host_probe(host, "sysload")
+            max_load: int = 0
+
+            for r in records:
+                max_load = max(max_load, r.load.load1, r.load.load5, r.load.load15)
+
             cfg = Config()
             cfg.show_minor_x_labels = False
             cfg.x_label_rotation = 20
@@ -170,6 +176,7 @@ class WebUI:
             cfg.title = "System Load"
             cfg.width = graph_width
             cfg.height = graph_height
+            cfg.range = (0, max_load)
 
             chart = pygal.Line(cfg)
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
@@ -228,8 +235,15 @@ class WebUI:
         finally:
             db.close()
 
-    def handle_disk_graph(self, host_id: int) -> Union[bytes, str]:
+    def host_disk_graph(self, host_id: int) -> Union[bytes, str]:
         """Render a time series chart of disk space data on the root device."""
+        fs: Final[set[str]] = {
+            "/",
+            "/home",
+            "/usr",
+            "/var",
+        }
+
         try:
             db = Database()
             host: Optional[data.Host] = db.host_get_by_id(host_id)
@@ -237,19 +251,28 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records = db.record_get_by_host_probe(host, "disk")
+            max_free: int = 0
+            sdata: dict = {}
+            for r in records:
+                assert isinstance(r, DiskRecord)
+                for path, info in r.disks.items():
+                    if info[3] > max_free:
+                        max_free = info[3]
+                    if path in fs:
+                        if path in sdata:
+                            sdata[path].append(info[3])
+                        else:
+                            sdata[path] = [info[3]]
 
             cfg = Config()
             cfg.show_minor_x_labels = False
             cfg.x_label_rotation = 20
             cfg.x_labels_major_count = 5
+            cfg.range = (0, max_free)
             cfg.x_title = "Time"
-            cfg.title = "Temperature"
+            cfg.title = "Free Disk Space"
             cfg.width = graph_width
             cfg.height = graph_height
-
-            sdata: dict = {}
-            for r in records:
-                assert isinstance(r, DiskRecord)
 
             chart = pygal.Line(cfg)
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
