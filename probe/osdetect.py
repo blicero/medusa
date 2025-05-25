@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-24 22:03:38 krylon>
+# Time-stamp: <2025-05-25 18:56:25 krylon>
 #
 # /data/code/python/medusa/probe/osdetect.py
 # created on 26. 01. 2024
@@ -50,7 +50,7 @@ def unquote(s: str) -> str:
     return m[1]
 
 
-def guess_os(osrel: str = OS_REL) -> Platform:
+def guess_os(osrel: str = OS_REL) -> Platform:  # pylint: disable-msg=R0911
     """Attempt to determine which platform we are running on."""
     # First step, we try /etc/os-release, if it exists.
     if krylib.fexist(osrel):
