@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-25 18:55:54 krylon>
+# Time-stamp: <2025-05-26 12:20:37 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -199,6 +199,17 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records = db.record_get_by_host_probe(host, "sensors")
+            max_temp: int = 0
+
+            sdata: dict = {}
+            for r in records:
+                assert isinstance(r, SensorRecord)
+                for k, v in r.sensors.items():
+                    max_temp = max(max_temp, v.value)
+                    if k in sdata:
+                        sdata[k].append(v.value)
+                    else:
+                        sdata[k] = [v.value]
 
             cfg = Config()
             cfg.show_minor_x_labels = False
@@ -208,6 +219,7 @@ class WebUI:
             cfg.title = "Temperature"
             cfg.width = graph_width
             cfg.height = graph_height
+            cfg.range = (0, max_temp)
 
             if common.DEBUG:
                 fpath: Final[str] = \
@@ -215,15 +227,6 @@ class WebUI:
                 with open(fpath, "w", encoding="utf-8") as fh:
                     # rapidjson.dump(records, fh)
                     print(records, file=fh)
-
-            sdata: dict = {}
-            for r in records:
-                assert isinstance(r, SensorRecord)
-                for k, v in r.sensors.items():
-                    if k in sdata:
-                        sdata[k].append(v.value)
-                    else:
-                        sdata[k] = [v.value]
 
             chart = pygal.Line(cfg)
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
