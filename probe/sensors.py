@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-24 22:16:27 krylon>
+# Time-stamp: <2025-05-26 18:44:49 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -22,6 +22,7 @@ import subprocess
 from datetime import timedelta
 from typing import Final, Optional
 
+from krylib import LF
 from medusa.data import Record, SensorData, SensorRecord
 from medusa.probe.base import Probe
 from medusa.probe.osdetect import Platform, guess_os
@@ -30,6 +31,8 @@ sysctlPat: Final[re.Pattern] = re.compile(r"^hw[.]sensors[.]([^=]+)=(.*)$", re.M
 tempPat: Final[re.Pattern] = re.compile(r"^(\d+(?:[.]\d+)?)? \s+ (degC)", re.X)
 sensorPat: Final[re.Pattern] = \
     re.compile(r"^(temp\d+)_input")
+ipmiPat: Final[re.Pattern] = re.compile(r"\|")
+commaPat: Final[re.Pattern] = re.compile(",")
 
 
 class SensorProbe(Probe):
@@ -54,6 +57,8 @@ class SensorProbe(Probe):
                 result = self._run_sensors_linux()
             case "openbsd":
                 result = self._run_sensors_openbsd()
+            case "freebsd":
+                result = self._run_sensors_freebsd()
             case _:
                 raise NotImplementedError(f"Unsupported platform {self.platform.name}")
 
@@ -136,6 +141,33 @@ class SensorProbe(Probe):
                 extract[name] = SensorData(float(deg[1]), deg[2])
 
         return extract
+
+    def _run_sensors_freebsd(self) -> Optional[dict[str, SensorData]]:
+        """Attempt to extract sensor data via ipmitool on FreeBSD."""
+        cmd: Final[list[str]] = ["/usr/local/bin/ipmitool", "sensor"]
+        proc = subprocess.run(cmd,
+                              capture_output=True,
+                              text=True,
+                              check=False,
+                              encoding="utf-8")
+
+        if proc.returncode != 0:
+            self.log.error("Failed to invoke ipmitool(1):\n%s\n\n",
+                           proc.stderr)
+            return None
+
+        lines: list[str] = LF.split(proc.stdout)
+        sens: dict[str, SensorData] = {}
+
+        for line in lines:
+            pieces = ipmiPat.split(line)
+            pieces = [p.strip() for p in pieces]
+            if pieces[2] == "degrees C":
+                sens[pieces[0]] = SensorData(float(commaPat.sub(".", pieces[1])),
+                                             pieces[2])
+
+        return sens
+
 
 # Local Variables: #
 # python-indent: 4 #
