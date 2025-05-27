@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-26 18:44:49 krylon>
+# Time-stamp: <2025-05-27 10:51:23 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -156,11 +156,18 @@ class SensorProbe(Probe):
                            proc.stderr)
             return None
 
-        lines: list[str] = LF.split(proc.stdout)
+        lines: list[str] = proc.stdout.split("\n")
         sens: dict[str, SensorData] = {}
 
         for line in lines:
+            # self.log.debug("Attempting to parse line:\n\t%s\n", line)
             pieces = ipmiPat.split(line)
+            # self.log.debug("Split line into %d pieces: %s",
+            #                len(pieces),
+            #                pieces)
+            if len(pieces) < 3:
+                self.log.debug("Expected at least 3 pieces, only got %d", len(pieces))
+                continue
             pieces = [p.strip() for p in pieces]
             if pieces[2] == "degrees C":
                 sens[pieces[0]] = SensorData(float(commaPat.sub(".", pieces[1])),
