@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-26 12:20:37 krylon>
+# Time-stamp: <2025-05-27 15:07:16 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -64,6 +64,18 @@ def find_mime_type(path: str) -> str:
     if suffix in mime_types:
         return mime_types[suffix]
     return "application/octet-stream"
+
+
+def fmt_kbytes(n: Union[int, float]) -> str:
+    """Format a quantity of KiB to a human-readable string."""
+    idx: int = 0
+    units = ("KB", "MB", "GB", "TB", "PB", "EB")
+
+    while n > 1024:
+        idx += 1
+        n /= 1024.0
+
+    return f"{n:.1f} {units[idx]}"
 
 
 class WebUI:
@@ -199,7 +211,7 @@ class WebUI:
                 response.status = 404
                 return f"Host {host_id} does not exist in the database."
             records = db.record_get_by_host_probe(host, "sensors")
-            max_temp: int = 0
+            max_temp: Union[int, float] = 0
 
             sdata: dict = {}
             for r in records:
@@ -216,7 +228,7 @@ class WebUI:
             cfg.x_label_rotation = 20
             cfg.x_labels_major_count = 5
             cfg.x_title = "Time"
-            cfg.title = "Temperature"
+            cfg.title = "Temperature (°C)"
             cfg.width = graph_width
             cfg.height = graph_height
             cfg.range = (0, max_temp)
@@ -278,6 +290,7 @@ class WebUI:
             cfg.height = graph_height
 
             chart = pygal.Line(cfg)
+            chart.value_formatter = fmt_kbytes
             chart.x_labels = [x.timestamp.strftime(common.TIME_FMT) for x in records]
             for k, v in sdata.items():
                 chart.add(k, v)
