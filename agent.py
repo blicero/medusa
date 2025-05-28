@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-24 21:24:12 krylon>
+# Time-stamp: <2025-05-28 15:05:53 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -194,12 +194,12 @@ class Agent:
         try:
             self.sock.send(bytes(hdr, 'UTF-8'))
             self.sock.send(xfr)
+            rhdr = self.sock.recv(HDRSIZE)
         except (BrokenPipeError, ConnectionResetError):
             if self.errcnt < MAX_ERR and self.connect():
                 return self.send(msg)
             return None
 
-        rhdr = self.sock.recv(HDRSIZE)
         try:
             msg_size = int(rhdr.decode(encoding='utf-8'), 16)
         except ValueError as verr:
