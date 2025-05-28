@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Time-stamp: "2025-05-06 19:06:25 krylon" -->
+    <!-- Time-stamp: "2025-05-28 11:02:12 krylon" -->
     <title>{% block title %}{% endblock %}</title>
 
     <meta charset="utf-8" />
@@ -55,7 +55,11 @@
           {% for host in hosts %}
             <tr>
               <td>{{ host.host_id }}</td>
-              <td>{{ host.name }}</td>
+              <td>
+                <a href="/host/{{ host.host_id }}">
+                  {{ host.name }}
+                </a>
+              </td>
               <td>{{ host.os }}</td>
               <td>{{ host.contact_str }}</td>
             </tr>
