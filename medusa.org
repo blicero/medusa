@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-27 15:15:48 krylon>
+# Time-stamp: <2025-05-30 16:55:21 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [11/15]
+* Medusa [13/15]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,15 +18,15 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-27 Di 15:15]
+   #+CAPTION: Clock summary at [2025-05-30 Fr 16:52]
    | Headline                              | Time      |           |         |         |       |      |
    |---------------------------------------+-----------+-----------+---------+---------+-------+------|
    | *Total time*                          | *3d 4:09* |           |         |         |       |      |
    |---------------------------------------+-----------+-----------+---------+---------+-------+------|
-   | *Medusa [11/15]*                      | *3d 4:09* |           |         |         |       |      |
+   | *Medusa [13/15]*                      | *3d 4:09* |           |         |         |       |      |
    | \_  /Features [1/1]/                  |           | /2:11/    |         |         |       |      |
    | \_    Intermittent connectivity [0/0] |           |           |    2:11 |         |       |      |
-   | \_  /Components [10/13]/              |           | /3d 1:06/ |         |         |       |      |
+   | \_  /Components [11/13]/              |           | /3d 1:06/ |         |         |       |      |
    | \_    Main [0/0]                      |           |           |    0:40 |         |       |      |
    | \_    Probes [4/4]                    |           |           |   14:43 |         |       |      |
    | \_      Free disk space ?             |           |           |         |    1:47 |       |      |
@@ -37,14 +37,14 @@
    | \_    Database [2/2]                  |           |           |    1:45 |         |       |      |
    | \_      Exception handling            |           |           |         |    0:09 |       |      |
    | \_      Pool                          |           |           |         |    0:28 |       |      |
-   | \_    Server [4/7]                    |           |           | 2d 5:41 |         |       |      |
-   | \_      Web Interface [1/2]           |           |           |         | 1d 3:53 |       |      |
+   | \_    Server [5/7]                    |           |           | 2d 5:41 |         |       |      |
+   | \_      Web Interface [2/2]           |           |           |         | 1d 3:53 |       |      |
    | \_        Graphs [1/1]                |           |           |         |         | 20:09 |      |
    | \_          Labels on Y-axis          |           |           |         |         |       | 0:25 |
    | \_      Error Handling [0/0]          |           |           |         |    0:58 |       |      |
    | \_      Protocol                      |           |           |         |   16:03 |       |      |
    | \_        In a pickle                 |           |           |         |         |  1:51 |      |
-   | \_  /Bugs [0/1]/                      |           | /0:52/    |         |         |       |      |
+   | \_  /Bugs [1/1]/                      |           | /0:52/    |         |         |       |      |
    | \_    Error deserializing report data |           |           |    0:38 |         |       |      |
    #+END:
 ** Features [1/1]
@@ -61,7 +61,7 @@
     :END:
     I need to handle loss of connection, on both sides. I am also unsure if I
     notice on the server side when an Agent connection is gone.
-** Components [10/13]
+** Components [11/13]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -157,7 +157,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [4/7]
+*** Server [5/7]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -169,7 +169,7 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
-**** TODO Web Interface [1/2]
+**** TODO Web Interface [2/2]
      :PROPERTIES:
      :COOKIE_DATA: todo recursive
      :VISIBILITY: children
@@ -190,7 +190,8 @@
      *Update* So far both Bottle and Jinja2 are very pleasant to use.
      [2025-05-06 Di 23:18]
      *Update* For graphs, I will be using matplotlib, probably.
-***** TODO Graphs [1/1]
+***** DONE Graphs [1/1]
+      CLOSED: [2025-05-30 Fr 16:49]
       :LOGBOOK:
       CLOCK: [2025-05-25 So 10:01]--[2025-05-25 So 21:26] => 11:25
       CLOCK: [2025-05-21 Mi 17:42]--[2025-05-21 Mi 20:45] =>  3:03
@@ -267,17 +268,26 @@
      Every time, so far, I've dealt with mDNS, it either didn't work out, or
      the payoff was much, much lower than what I had hoped for.
      So for the time being, I'll shelve this idea.
-*** Agent [0/0]
+*** Agent [0/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
     :END:
+**** TODO HTTP FTW
+     I should switch the communication between Agent and Server to HTTP, the
+     protocol I am using now is too error prone, and the Agent still tends to
+     crash when connectivity is lost.
+**** TODO Separate data collection and submission
+     I want to separate the collection of data from the probes from the
+     submission of said data to the Server.
+     That way I can deal with intermittent connectivity in a natural manner,
+     and while I am switching to HTTP anyway, it makes sense to do it now.
 ** Refactor [0/0]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
    :END:
-** Bugs [0/1]
+** Bugs [1/1]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -285,7 +295,8 @@
    :LOGBOOK:
    CLOCK: [2025-05-12 Mo 17:50]--[2025-05-12 Mo 18:04] =>  0:14
    :END:
-*** TODO Error deserializing report data
+*** DONE Error deserializing report data
+    CLOSED: [2025-05-30 Fr 16:52]
     :LOGBOOK:
     CLOCK: [2025-05-13 Di 18:15]--[2025-05-13 Di 18:53] =>  0:38
     :END:
