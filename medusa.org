@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-30 16:55:21 krylon>
+# Time-stamp: <2025-05-30 18:49:16 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -18,15 +18,15 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-30 Fr 16:52]
+   #+CAPTION: Clock summary at [2025-05-30 Fr 18:49]
    | Headline                              | Time      |           |         |         |       |      |
    |---------------------------------------+-----------+-----------+---------+---------+-------+------|
-   | *Total time*                          | *3d 4:09* |           |         |         |       |      |
+   | *Total time*                          | *3d 6:00* |           |         |         |       |      |
    |---------------------------------------+-----------+-----------+---------+---------+-------+------|
-   | *Medusa [13/15]*                      | *3d 4:09* |           |         |         |       |      |
+   | *Medusa [13/15]*                      | *3d 6:00* |           |         |         |       |      |
    | \_  /Features [1/1]/                  |           | /2:11/    |         |         |       |      |
    | \_    Intermittent connectivity [0/0] |           |           |    2:11 |         |       |      |
-   | \_  /Components [11/13]/              |           | /3d 1:06/ |         |         |       |      |
+   | \_  /Components [11/13]/              |           | /3d 2:57/ |         |         |       |      |
    | \_    Main [0/0]                      |           |           |    0:40 |         |       |      |
    | \_    Probes [4/4]                    |           |           |   14:43 |         |       |      |
    | \_      Free disk space ?             |           |           |         |    1:47 |       |      |
@@ -44,6 +44,8 @@
    | \_      Error Handling [0/0]          |           |           |         |    0:58 |       |      |
    | \_      Protocol                      |           |           |         |   16:03 |       |      |
    | \_        In a pickle                 |           |           |         |         |  1:51 |      |
+   | \_    Agent [0/2]                     |           |           |    1:51 |         |       |      |
+   | \_      HTTP FTW                      |           |           |         |    1:51 |       |      |
    | \_  /Bugs [1/1]/                      |           | /0:52/    |         |         |       |      |
    | \_    Error deserializing report data |           |           |    0:38 |         |       |      |
    #+END:
@@ -274,6 +276,9 @@
     :VISIBILITY: children
     :END:
 **** TODO HTTP FTW
+     :LOGBOOK:
+     CLOCK: [2025-05-30 Fr 16:58]--[2025-05-30 Fr 18:49] =>  1:51
+     :END:
      I should switch the communication between Agent and Server to HTTP, the
      protocol I am using now is too error prone, and the Agent still tends to
      crash when connectivity is lost.
