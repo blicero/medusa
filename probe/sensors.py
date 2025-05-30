@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-27 10:51:23 krylon>
+# Time-stamp: <2025-05-30 18:49:38 krylon>
 #
 # /data/code/python/medusa/probe/sensors.py
 # created on 09. 05. 2025
@@ -22,7 +22,6 @@ import subprocess
 from datetime import timedelta
 from typing import Final, Optional
 
-from krylib import LF
 from medusa.data import Record, SensorData, SensorRecord
 from medusa.probe.base import Probe
 from medusa.probe.osdetect import Platform, guess_os
