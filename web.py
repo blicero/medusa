@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-27 15:07:16 krylon>
+# Time-stamp: <2025-05-30 18:47:42 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -20,6 +20,7 @@ medusa.web
 import json
 import logging
 import os
+import pickle
 import re
 import socket
 import threading
@@ -28,12 +29,12 @@ from typing import Any, Final, Optional, Union
 
 import bottle
 import pygal
-from bottle import response, route, run
+from bottle import request, response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
 from pygal import Config
 
-from medusa import common, data, config
-from medusa.data import DiskRecord, Host, SensorRecord
+from medusa import common, config, data
+from medusa.data import AgentResponse, DiskRecord, Host, SensorRecord
 from medusa.database import Database
 
 mime_types: Final[dict[str, str]] = {
@@ -113,6 +114,7 @@ class WebUI:
         route("/graph/sysload/<host_id:int>", callback=self.host_load_graph)
         route("/graph/sensor/<host_id:int>", callback=self.host_sensor_graph)
         route("/graph/disk/<host_id:int>", callback=self.host_disk_graph)
+        route("/ajax/submit_report/<hostname:str>", callback=self.handle_submit_data)
         route("/static/<path>", callback=self.staticfile)
         route("/ajax/beacon", callback=self.handle_beacon)
         route("/favicon.ico", callback=self.handle_favicon)
@@ -325,6 +327,31 @@ class WebUI:
             return fh.read()
 
     # AJAX Handlers
+
+    def handle_submit_data(self, hostname: str) -> Union[bytes, str]:
+        """Handle a submission of data from an Agent."""
+        try:
+            res: AgentResponse = AgentResponse()
+            db = Database()
+            host = db.host_get_by_name(hostname)
+            if host is None:
+                msg: Final[str] = f"Did not find Host {hostname} in database"
+                self.log.error("Cannot handle submitted data: %s",
+                               msg)
+                res.msg = msg
+            else:
+                report = pickle.load(request.body)
+                with db:
+                    for r in report:
+                        db.record_add(r)
+                res.status = True
+                res.msg = "Data was processed successfully."
+            xfr = json.dumps(res)
+            response.set_header("Content-Type", "application/json")
+            response.set_header("Cache-Control", "no-store, max-age=0")
+            return xfr
+        finally:
+            db.close()
 
     def handle_beacon(self) -> str:
         """Handle the AJAX call for the beacon."""
