@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-30 18:47:42 krylon>
+# Time-stamp: <2025-05-30 20:33:31 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -114,7 +114,7 @@ class WebUI:
         route("/graph/sysload/<host_id:int>", callback=self.host_load_graph)
         route("/graph/sensor/<host_id:int>", callback=self.host_sensor_graph)
         route("/graph/disk/<host_id:int>", callback=self.host_disk_graph)
-        route("/ajax/submit_report/<hostname:str>", callback=self.handle_submit_data)
+        route("/ajax/submit_report/<hostname>", callback=self.handle_submit_data)
         route("/static/<path>", callback=self.staticfile)
         route("/ajax/beacon", callback=self.handle_beacon)
         route("/favicon.ico", callback=self.handle_favicon)
