@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-05-30 18:49:16 krylon>
+# Time-stamp: <2025-06-02 19:46:54 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [13/15]
+* Medusa [15/18]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,36 +18,37 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-05-30 Fr 18:49]
-   | Headline                              | Time      |           |         |         |       |      |
-   |---------------------------------------+-----------+-----------+---------+---------+-------+------|
-   | *Total time*                          | *3d 6:00* |           |         |         |       |      |
-   |---------------------------------------+-----------+-----------+---------+---------+-------+------|
-   | *Medusa [13/15]*                      | *3d 6:00* |           |         |         |       |      |
-   | \_  /Features [1/1]/                  |           | /2:11/    |         |         |       |      |
-   | \_    Intermittent connectivity [0/0] |           |           |    2:11 |         |       |      |
-   | \_  /Components [11/13]/              |           | /3d 2:57/ |         |         |       |      |
-   | \_    Main [0/0]                      |           |           |    0:40 |         |       |      |
-   | \_    Probes [4/4]                    |           |           |   14:43 |         |       |      |
-   | \_      Free disk space ?             |           |           |         |    1:47 |       |      |
-   | \_      Conditional imports           |           |           |         |    1:09 |       |      |
-   | \_      Sensors [1/1]                 |           |           |         |    6:33 |       |      |
-   | \_        FreeBSD                     |           |           |         |         |  1:35 |      |
-   | \_    Model [0/0]                     |           |           |    2:17 |         |       |      |
-   | \_    Database [2/2]                  |           |           |    1:45 |         |       |      |
-   | \_      Exception handling            |           |           |         |    0:09 |       |      |
-   | \_      Pool                          |           |           |         |    0:28 |       |      |
-   | \_    Server [5/7]                    |           |           | 2d 5:41 |         |       |      |
-   | \_      Web Interface [2/2]           |           |           |         | 1d 3:53 |       |      |
-   | \_        Graphs [1/1]                |           |           |         |         | 20:09 |      |
-   | \_          Labels on Y-axis          |           |           |         |         |       | 0:25 |
-   | \_      Error Handling [0/0]          |           |           |         |    0:58 |       |      |
-   | \_      Protocol                      |           |           |         |   16:03 |       |      |
-   | \_        In a pickle                 |           |           |         |         |  1:51 |      |
-   | \_    Agent [0/2]                     |           |           |    1:51 |         |       |      |
-   | \_      HTTP FTW                      |           |           |         |    1:51 |       |      |
-   | \_  /Bugs [1/1]/                      |           | /0:52/    |         |         |       |      |
-   | \_    Error deserializing report data |           |           |    0:38 |         |       |      |
+   #+CAPTION: Clock summary at [2025-06-02 Mo 19:46]
+   | Headline                                  | Time       |            |         |         |       |      |
+   |-------------------------------------------+------------+------------+---------+---------+-------+------|
+   | *Total time*                              | *3d 14:45* |            |         |         |       |      |
+   |-------------------------------------------+------------+------------+---------+---------+-------+------|
+   | *Medusa [15/18]*                          | *3d 14:45* |            |         |         |       |      |
+   | \_  /Features [1/1]/                      |            | /3:10/     |         |         |       |      |
+   | \_    Intermittent connectivity [0/0]     |            |            |    3:10 |         |       |      |
+   | \_  /Components [13/16]/                  |            | /3d 10:43/ |         |         |       |      |
+   | \_    Main [0/0]                          |            |            |    0:40 |         |       |      |
+   | \_    Probes [4/4]                        |            |            |   14:43 |         |       |      |
+   | \_      Free disk space ?                 |            |            |         |    1:47 |       |      |
+   | \_      Conditional imports               |            |            |         |    1:09 |       |      |
+   | \_      Sensors [1/1]                     |            |            |         |    6:33 |       |      |
+   | \_        FreeBSD                         |            |            |         |         |  1:35 |      |
+   | \_    Model [0/0]                         |            |            |    2:17 |         |       |      |
+   | \_    Database [2/2]                      |            |            |    1:45 |         |       |      |
+   | \_      Exception handling                |            |            |         |    0:09 |       |      |
+   | \_      Pool                              |            |            |         |    0:28 |       |      |
+   | \_    Server [7/8]                        |            |            | 2d 6:30 |         |       |      |
+   | \_      Web Interface [2/2]               |            |            |         | 1d 3:53 |       |      |
+   | \_        Graphs [1/1]                    |            |            |         |         | 20:09 |      |
+   | \_          Labels on Y-axis              |            |            |         |         |       | 0:25 |
+   | \_      Error Handling [0/0]              |            |            |         |    0:58 |       |      |
+   | \_      Protocol                          |            |            |         |   16:52 |       |      |
+   | \_        Handle Agent HTTP communication |            |            |         |         |  0:49 |      |
+   | \_        In a pickle                     |            |            |         |         |  1:51 |      |
+   | \_    Agent [0/2]                         |            |            |    8:48 |         |       |      |
+   | \_      HTTP FTW                          |            |            |         |    8:48 |       |      |
+   | \_  /Bugs [1/1]/                          |            | /0:52/     |         |         |       |      |
+   | \_    Error deserializing report data     |            |            |    0:38 |         |       |      |
    #+END:
 ** Features [1/1]
    :PROPERTIES:
@@ -55,15 +56,22 @@
    :VISIBILITY: children
    :END:
 *** DONE Intermittent connectivity [0/0]
-    CLOSED: [2025-05-19 Mo 17:57]
+    CLOSED: [2025-06-02 Mo 19:46]
     :LOGBOOK:
+    CLOCK: [2025-06-02 Mo 18:49]--[2025-06-02 Mo 19:46] =>  0:57
+    CLOCK: [2025-06-02 Mo 18:43]--[2025-06-02 Mo 18:45] =>  0:02
     CLOCK: [2025-05-19 Mo 17:21]--[2025-05-19 Mo 17:57] =>  0:36
     CLOCK: [2025-05-18 So 17:52]--[2025-05-18 So 18:18] =>  0:26
     CLOCK: [2025-05-17 Sa 21:46]--[2025-05-17 Sa 22:55] =>  1:09
     :END:
     I need to handle loss of connection, on both sides. I am also unsure if I
     notice on the server side when an Agent connection is gone.
-** Components [11/13]
+
+    [2025-06-02 Mo 18:42]
+    After switching the communication between Agent and Server to HTTP, I want
+    to separate the collection of data in the Agent from submitting it to the
+    Server.
+** Components [13/16]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -159,7 +167,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [5/7]
+*** Server [7/8]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -239,7 +247,7 @@
      CLOCK: [2025-05-05 Mo 18:01]--[2025-05-05 Mo 18:59] =>  0:58
      :END:
 **** DONE Protocol
-     CLOSED: [2025-05-05 Mo 17:00]
+     CLOSED: [2025-06-02 Mo 18:41]
      :LOGBOOK:
      CLOCK: [2025-05-13 Di 17:10]--[2025-05-13 Di 17:43] =>  0:33
      CLOCK: [2025-05-03 Sa 21:40]--[2025-05-03 Sa 23:31] =>  1:51
@@ -260,7 +268,13 @@
      asyncore or its successor.
      ...
      Oh my, asyncore doesn't exist any longer, asyncio seems a bit much.
-***** TODO In a pickle
+***** DONE Handle Agent HTTP communication
+      CLOSED: [2025-06-02 Mo 18:41]
+      :LOGBOOK:
+      CLOCK: [2025-06-02 Mo 17:52]--[2025-06-02 Mo 18:41] =>  0:49
+      :END:
+***** DONE In a pickle
+      CLOSED: [2025-06-02 Mo 17:51]
       :LOGBOOK:
       CLOCK: [2025-05-23 Fr 09:55]--[2025-05-23 Fr 10:27] =>  0:32
       CLOCK: [2025-05-22 Do 18:08]--[2025-05-22 Do 19:27] =>  1:19
@@ -277,6 +291,7 @@
     :END:
 **** TODO HTTP FTW
      :LOGBOOK:
+     CLOCK: [2025-05-31 Sa 13:06]--[2025-05-31 Sa 20:03] =>  6:57
      CLOCK: [2025-05-30 Fr 16:58]--[2025-05-30 Fr 18:49] =>  1:51
      :END:
      I should switch the communication between Agent and Server to HTTP, the
