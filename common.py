@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-13 17:45:16 krylon>
+# Time-stamp: <2025-06-02 18:54:31 krylon>
 #
 # /data/code/python/medusa/common.py
 # created on 24. 01. 2024
@@ -64,8 +64,12 @@ class Path:
         return os.path.join(self.__base, f"{APP_NAME.lower()}.log")
 
     def locations(self) -> str:
-        """Return the of the location(s) file"""
+        """Return the path of the location(s) file"""
         return os.path.join(self.__base, "locations.txt")
+
+    def spool(self) -> str:
+        """Return the path of the spool directory."""
+        return os.path.join(self.__base, "spool")
 
     def config(self) -> str:
         """Return the path of the configuration file"""
@@ -89,6 +93,8 @@ def init_app() -> None:
     if not os.path.isdir(path.base()):
         print(f"Create base directory {path.base()}")
         os.mkdir(path.base())
+    if not os.path.isdir(path.spool()):
+        os.mkdir(path.spool())
 
 
 def get_logger(name: str, terminal: bool = True) -> logging.Logger:

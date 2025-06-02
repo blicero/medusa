@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-02 18:35:29 krylon>
+# Time-stamp: <2025-06-02 19:42:48 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -19,12 +19,13 @@ medusa.agent
 
 import json
 import logging
+import os
 import pickle
 import socket
 import time
-from datetime import timedelta
-from threading import Lock
-from typing import Final, Optional
+from datetime import datetime, timedelta
+from threading import Lock, Thread
+from typing import Final, Optional, Union
 
 import requests
 
@@ -56,7 +57,8 @@ class Agent:
         "port",
         "active",
         "errcnt",
-        "interval",
+        "collect_interval",
+        "submit_interval",
         "endpoint",
         "timeout",
     ]
@@ -70,7 +72,8 @@ class Agent:
     port: int
     active: bool
     errcnt: int
-    interval: int
+    collect_interval: int
+    submit_interval: int
     endpoint: str
     timeout: float
 
@@ -120,11 +123,14 @@ class Agent:
         self.os = platform.name
 
         plist: list[str] = cfg.get("Agent", "Probes")
-        self.interval = cfg.get("Probe", "Interval")
-        self.log.debug("Reporting interval is %d seconds.", self.interval)
+        self.collect_interval = cfg.get("Probe", "Interval")
+        self.submit_interval = cfg.get("Agent", "Interval")
+        self.log.debug("Collecting data every %d seconds, submitting data every %d seconds",
+                       self.collect_interval,
+                       self.submit_interval)
 
         for pname in plist:
-            p = self.get_probe(pname, self.interval)
+            p = self.get_probe(pname, self.collect_interval)
             if p is not None:
                 self.probes.add(p)
 
@@ -183,23 +189,27 @@ class Agent:
         with self.lock:
             self.active = True
 
+        collect_thr = Thread(target=self.collect_data, daemon=True)
+        collect_thr.start()
+
         while self.is_active():
             try:
-                self._handle_probes()
+                self.process_data()
             finally:
-                time.sleep(self.interval)
+                time.sleep(5)
 
-    def _handle_probes(self) -> None:
-        records: list[Record] = self.run_probes()
+    def process_data(self) -> None:
+        """Attempt to submit collected data to the Server."""
+        with os.scandir(common.path.spool()) as spool:
+            for entry in spool:
+                if entry.is_file() and not entry.name.startswith("tmp."):
+                    with open(entry.path, "rb") as fh:
+                        xfr = fh.read()
+                    if self.submit_data(xfr):
+                        os.remove(entry.path)
 
-        if len(records) == 0:
-            return
-
-        self.log.debug("I shall deliver %d records to the server",
-                       len(records))
-
-        xfr = pickle.dumps(records)
-
+    def submit_data(self, xfr: Union[str, bytes]) -> bool:
+        """Submit a serialized report to the Server."""
         res = requests.request("POST",
                                self.endpoint,
                                data=xfr,
@@ -213,12 +223,12 @@ class Agent:
             self.log.error("Unexpected content type in response from %s: %s",
                            self.srv,
                            res.headers["content-type"])
-            return
+            return False
         if res.status_code != 200:
             self.log.error("Unexpected HTTP status code from %s: %s",
                            self.srv,
                            res.status_code)
-            return
+            return False
 
         body = res.json()
 
@@ -228,12 +238,40 @@ class Agent:
                     self.log.error("Failed to register with %s",
                                    self.srv)
                     self.stop()
-                    return
+                    return False
+                return self.submit_data(xfr)
             case MsgType.Success:
                 self.log.debug("Data successfully sent to Server.")
+                return True
             case _:
                 self.log.error("Server replied with unexpected/invalid message type %s",
                                body["status"])
+                return False
+
+    def collect_data(self) -> None:
+        """Periodically collect data from Probes and store it to the spool directory."""
+        while self.is_active():
+            try:
+                records: list[Record] = self.run_probes()
+
+                if len(records) == 0:
+                    return
+
+                self.log.debug("I shall deliver %d records to the server",
+                               len(records))
+
+                xfr = pickle.dumps(records)
+                path: str = os.path.join(
+                    common.path.spool(),
+                    datetime.now().strftime("tmp.%Y%m%d_%H%M%S.data"))
+
+                with open(path, "wb") as fh:
+                    fh.write(xfr)
+
+                newpath = path.replace("tmp.", "")
+                os.rename(path, newpath)
+            finally:
+                time.sleep(self.collect_interval)
 
 # Local Variables: #
 # python-indent: 4 #
