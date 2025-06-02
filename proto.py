@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-22 18:44:32 krylon>
+# Time-stamp: <2025-06-02 18:01:03 krylon>
 #
 # /data/code/python/medusa/proto.py
 # created on 23. 04. 2025
@@ -16,14 +16,15 @@ medusa.proto
 (c) 2025 Benjamin Walkenhorst
 """
 
+import json
 import os
 import socket
 import warnings
-from dataclasses import dataclass
-from datetime import timedelta
+from datetime import datetime, timedelta
 from enum import IntEnum, auto
-from typing import Any, Final
+from typing import Final
 
+from medusa import common
 from medusa.common import MedusaError
 
 # For testing/debugging, I set this to a very low value, later on I should increase this.
@@ -60,23 +61,42 @@ class MsgType(IntEnum):
     """MsgType identifies what kind of message a ... message is."""
 
     Nothing = auto()
-    Hello = auto()
-    Welcome = auto()
-    ReportSubmit = auto()
-    ReportSubmitMany = auto()
-    ReportAck = auto()
-    ReportQuery = auto()
     Error = auto()
+    UnknownHost = auto()
+    DataError = auto()
+    Success = auto()
 
 
-@dataclass(slots=True)
 class Message:  # pylint: disable-msg=R0903
-    """Message is what Agents and Servers send to each other."""
+    """Message is the response the Web server sends to the Agent, and possibly to the WebUI."""
 
-    mtype: MsgType
-    payload: Any
+    status: MsgType
+    timestamp: str
+    msg: str
 
-    __match_args__ = ("mtype", "payload")
+    def __init__(self, **kwargs) -> None:
+        if "status" in kwargs:
+            self.status = kwargs["status"]
+        else:
+            self.status = MsgType.Nothing
+        if "timestamp" in kwargs:
+            self.timestamp = kwargs["timestamp"]
+        else:
+            self.timestamp = datetime.now().strftime(common.TIME_FMT)
+        if "msg" in kwargs:
+            self.msg = kwargs["msg"]
+        else:
+            self.msg = ""
+
+    def json(self) -> str:
+        """Convert the instance to JSON."""
+        tbl = {
+            "status": self.status,
+            "timestamp": self.timestamp,
+            "msg": self.msg,
+        }
+
+        return json.dumps(tbl)
 
 
 # Local Variables: #

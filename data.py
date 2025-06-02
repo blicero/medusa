@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-30 17:30:42 krylon>
+# Time-stamp: <2025-05-31 14:50:37 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -194,14 +194,6 @@ class DiskRecord(Record):
         """Return the Record payload in serialized form."""
         return json.dumps(self.disks)
 
-
-@dataclass(slots=False, kw_only=True)
-class AgentResponse:
-    """AgentResponse is a response the Server sends to an Agent."""
-
-    status: bool = False
-    timestamp: datetime = field(default_factory=datetime.now)
-    msg: str = ""
 
 # Local Variables: #
 # python-indent: 4 #

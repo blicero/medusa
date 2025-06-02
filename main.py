@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-12 18:44:25 krylon>
+# Time-stamp: <2025-06-02 18:35:39 krylon>
 #
 # /data/code/python/medusa/medusa.py
 # created on 07. 05. 2025
@@ -25,7 +25,7 @@ from threading import Thread
 
 from medusa import common
 from medusa.agent import Agent
-from medusa.server import Server
+# from medusa.server import Server
 from medusa.web import WebUI
 
 parser = argparse.ArgumentParser(
@@ -47,22 +47,22 @@ try:
 
     match args.mode:
         case "server":
-            srv = Server(args.address, args.port)
-            tsrv = Thread(target=srv.listen, name="Server", daemon=True)
-            tsrv.start()
+            # srv = Server(args.address, args.port)
+            # tsrv = Thread(target=srv.listen, name="Server", daemon=True)
+            # tsrv.start()
 
             www = WebUI()
             wsrv = Thread(target=www.run, name="Web", daemon=True)
             wsrv.start()
 
-            tsrv.join()
+            # tsrv.join()
             wsrv.join()
         case "agent":
             ag = Agent(args.address)
             try:
                 ag.run()
             finally:
-                ag.shutdown()
+                ag.stop()
         case _:
             print(f"CANTHAPPEN - Mode {args.mode} is not supported")
 except KeyboardInterrupt:

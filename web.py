@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-30 20:33:31 krylon>
+# Time-stamp: <2025-06-02 18:21:22 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -31,11 +31,13 @@ import bottle
 import pygal
 from bottle import request, response, route, run
 from jinja2 import Environment, FileSystemLoader, Template
+from krylib import fmt_err
 from pygal import Config
 
 from medusa import common, config, data
-from medusa.data import AgentResponse, DiskRecord, Host, SensorRecord
-from medusa.database import Database
+from medusa.data import DiskRecord, Host, SensorRecord
+from medusa.database import Database, DatabaseError
+from medusa.proto import Message, MsgType
 
 mime_types: Final[dict[str, str]] = {
     ".css":  "text/css",
@@ -114,7 +116,8 @@ class WebUI:
         route("/graph/sysload/<host_id:int>", callback=self.host_load_graph)
         route("/graph/sensor/<host_id:int>", callback=self.host_sensor_graph)
         route("/graph/disk/<host_id:int>", callback=self.host_disk_graph)
-        route("/ajax/submit_report/<hostname>", callback=self.handle_submit_data)
+        route("/ajax/submit_report/<hostname>", 'POST', callback=self.handle_submit_report)
+        route("/ajax/register", "POST", callback=self.handle_register_host)
         route("/static/<path>", callback=self.staticfile)
         route("/ajax/beacon", callback=self.handle_beacon)
         route("/favicon.ico", callback=self.handle_favicon)
@@ -328,10 +331,45 @@ class WebUI:
 
     # AJAX Handlers
 
-    def handle_submit_data(self, hostname: str) -> Union[bytes, str]:
-        """Handle a submission of data from an Agent."""
+    def handle_register_host(self) -> Union[bytes, str]:
+        """Handle a Host registering."""
+        req = request.json
+        res: Message = Message()
+        self.log.debug("Attempting to register Host: %s",
+                       req)
         try:
-            res: AgentResponse = AgentResponse()
+            db = Database()
+            host = Host(name=req["name"], os=req["os"], last_contact=datetime.now())
+            ck_host = db.host_get_by_name(req["name"])
+
+            if ck_host is None:
+                with db:
+                    db.host_add(host)
+                    res.status = MsgType.Success
+                    res.msg = f"Welcome aboard, {host.name}"
+            else:
+                res.status = MsgType.Success
+                res.msg = f"Welcome back, {host.name}"
+        except DatabaseError as err:
+            self.log.error("Failed to add Host %s to database: %s\n%s\n\n",
+                           host.name,
+                           err,
+                           fmt_err(err))
+            res.status = MsgType.Error
+        finally:
+            db.close()
+
+        xfr = res.json()
+        response.set_header("Content-Type", "application/json")
+        response.set_header("Cache-Control", "no-store, max-age=0")
+        response.set_header("Content-Length", str(len(xfr)))
+        return xfr
+
+    def handle_submit_report(self, hostname: str) -> Union[bytes, str]:
+        """Handle a submission of data from an Agent."""
+        self.log.debug("Handle report data from %s", hostname)
+        try:
+            res: Message = Message()
             db = Database()
             host = db.host_get_by_name(hostname)
             if host is None:
@@ -339,14 +377,18 @@ class WebUI:
                 self.log.error("Cannot handle submitted data: %s",
                                msg)
                 res.msg = msg
+                res.status = MsgType.UnknownHost
             else:
                 report = pickle.load(request.body)
+                self.log.debug("Add %d records to database",
+                               len(report))
                 with db:
                     for r in report:
+                        r.host_id = host.host_id
                         db.record_add(r)
-                res.status = True
+                res.status = MsgType.Success
                 res.msg = "Data was processed successfully."
-            xfr = json.dumps(res)
+            xfr = res.json()
             response.set_header("Content-Type", "application/json")
             response.set_header("Cache-Control", "no-store, max-age=0")
             return xfr
