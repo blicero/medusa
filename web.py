@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-03 17:42:11 krylon>
+# Time-stamp: <2025-06-03 19:04:37 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -306,36 +306,36 @@ class WebUI:
         finally:
             db.close()
 
-    # def handle_probe_graph(self, src: str) -> Union[str, bytes]:
-    #     """Render a graph of the data for the given Probe."""
-    #     try:
-    #         db = Database()
-    #         hlist: list[data.Host] = db.host_get_all()
-    #         hosts: dict[int, data.Host] = {}
-    #         for h in hlist:
-    #             hosts[h.name] = h
-    #         now: int = int(time.time())
-    #         records = db.record_get_by_probe(src, now-86400, now)
-    #         sdata: dict[str, list[data.Record]]
-    #         for r in records:
-    #             host = hosts[r.host_id]
-    #             if not host.name in sdata:
-    #                 sdata[host.name] = []
-    #             sdata[host.name].append(r)
+    def handle_probe_view(self) -> Union[str, bytes]:
+        """Render graphs of the data from selected Probes for the last 24 hours."""
+        probes = ("disk", "sysload")
+        try:
+            db = Database()
+            hlist: list[data.Host] = db.host_get_all()
+            hosts: dict[int, data.Host] = {}
+            for h in hlist:
+                hosts[h.name] = h
+            now: int = int(time.time())
+            chart_data = {}
+            for p in probes:
+                records = db.record_get_by_probe(p, now-86400, now)
+                sdata: dict[str, list[data.Record]] = {}
+                for r in records:
+                    host = hosts[r.host_id]
+                    if not host.name in sdata:
+                        sdata[host.name] = []
+                    sdata[host.name].append(r)
+                chart_data[p] = sdata
 
-    #         cfg = Config()
-    #         cfg.show_minor_x_labels = False
-    #         cfg.x_label_rotation = 20
-    #         cfg.x_labels_major_count = 5
-    #         cfg.range = (0, max_free)
-    #         cfg.x_title = "Time"
-    #         cfg.title = "Free Disk Space"
-    #         cfg.width = graph_width
-    #         cfg.height = graph_height
+            tmpl: Template = self.env.get_template("probes.jinja")
+            tmpl_vars = self._tmpl_vars()
+            tmpl_vars["hosts"] = hosts
+            tmpl_vars["data"] = chart_data
+            tmpl_vars["probes"] = probes
 
-    #         return ""
-    #     finally:
-    #         db.close()
+            return tmpl.render(tmpl_vars)
+        finally:
+            db.close()
 
     # Static files
 

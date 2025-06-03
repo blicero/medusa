@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-31 14:50:37 krylon>
+# Time-stamp: <2025-06-03 19:10:43 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -108,6 +108,10 @@ class Record(ABC):
     @abstractmethod
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
+
+    def timestr(self) -> str:
+        """Return a string of the timestamp in ISO 8601 format."""
+        return self.timestamp.strftime(common.TIME_FMT)
 
 
 @dataclass(slots=True)
