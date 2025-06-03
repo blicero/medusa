@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-05-17 20:18:43 krylon>
+# Time-stamp: <2025-06-03 15:18:13 krylon>
 #
 # /data/code/python/medusa/database.py
 # created on 18. 03. 2025
@@ -93,6 +93,7 @@ class QueryID(IntEnum):
     RecordAdd = auto()
     RecordGetByHost = auto()
     RecordGetByHostProbe = auto()
+    RecordGetByProbe = auto()
 
 
 db_queries: Final[dict[QueryID, str]] = {
@@ -136,6 +137,16 @@ SELECT
 FROM record
 WHERE host_id = ? AND source = ? AND timestamp >= ?
 ORDER BY timestamp
+    """,
+    QueryID.RecordGetByProbe: """
+SELECT
+    id,
+    host_id,
+    timestamp,
+    payload
+FROM record
+WHERE source = ?
+  AND timestamp BETWEEN ? AND ?
     """,
 }
 
@@ -353,6 +364,37 @@ class Database:
         except sqlite3.Error as err:
             cname: Final[str] = err.__class__.__name__
             msg = f"{cname} trying to load records for Host {host.name} from {source}: {err}"
+            self.log.error(msg)
+            raise DatabaseError(msg) from err
+
+    def record_get_by_probe(self, src: str, begin: int = -1, end: int = -1) \
+            -> list[data.Record]:
+        """Get all records from a given source for the given period."""
+        if begin == -1:
+            now = int(time.time())
+            begin = now - 86400
+            end = now
+        else:
+            assert begin < end
+        try:
+            cur: sqlite3.Cursor = self.db.cursor()
+            cur.execute(db_queries[QueryID.RecordGetByProbe],
+                        (src, begin, end))
+            records: list[data.Record] = []
+            # ...
+            for row in cur:
+                rec = data.Record.get_instance(
+                    row[0],
+                    row[1],
+                    datetime.fromtimestamp(row[2]),
+                    src,
+                    row[3],
+                )
+                records.append(rec)
+            return records
+        except sqlite3.Error as err:
+            cname: Final[str] = err.__class__.__name__
+            msg = f"{cname} trying to load records for Probe {src}: {err}"
             self.log.error(msg)
             raise DatabaseError(msg) from err
 
