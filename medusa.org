@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-06-02 19:46:54 krylon>
+# Time-stamp: <2025-06-03 14:59:14 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [15/18]
+* Medusa [17/18]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,15 +18,15 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-06-02 Mo 19:46]
+   #+CAPTION: Clock summary at [2025-06-03 Di 14:59]
    | Headline                                  | Time       |            |         |         |       |      |
    |-------------------------------------------+------------+------------+---------+---------+-------+------|
    | *Total time*                              | *3d 14:45* |            |         |         |       |      |
    |-------------------------------------------+------------+------------+---------+---------+-------+------|
-   | *Medusa [15/18]*                          | *3d 14:45* |            |         |         |       |      |
+   | *Medusa [17/18]*                          | *3d 14:45* |            |         |         |       |      |
    | \_  /Features [1/1]/                      |            | /3:10/     |         |         |       |      |
    | \_    Intermittent connectivity [0/0]     |            |            |    3:10 |         |       |      |
-   | \_  /Components [13/16]/                  |            | /3d 10:43/ |         |         |       |      |
+   | \_  /Components [15/16]/                  |            | /3d 10:43/ |         |         |       |      |
    | \_    Main [0/0]                          |            |            |    0:40 |         |       |      |
    | \_    Probes [4/4]                        |            |            |   14:43 |         |       |      |
    | \_      Free disk space ?                 |            |            |         |    1:47 |       |      |
@@ -45,7 +45,7 @@
    | \_      Protocol                          |            |            |         |   16:52 |       |      |
    | \_        Handle Agent HTTP communication |            |            |         |         |  0:49 |      |
    | \_        In a pickle                     |            |            |         |         |  1:51 |      |
-   | \_    Agent [0/2]                         |            |            |    8:48 |         |       |      |
+   | \_    Agent [2/2]                         |            |            |    8:48 |         |       |      |
    | \_      HTTP FTW                          |            |            |         |    8:48 |       |      |
    | \_  /Bugs [1/1]/                          |            | /0:52/     |         |         |       |      |
    | \_    Error deserializing report data     |            |            |    0:38 |         |       |      |
@@ -71,7 +71,7 @@
     After switching the communication between Agent and Server to HTTP, I want
     to separate the collection of data in the Agent from submitting it to the
     Server.
-** Components [13/16]
+** Components [15/16]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -284,12 +284,13 @@
      Every time, so far, I've dealt with mDNS, it either didn't work out, or
      the payoff was much, much lower than what I had hoped for.
      So for the time being, I'll shelve this idea.
-*** Agent [0/2]
+*** Agent [2/2]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
     :END:
-**** TODO HTTP FTW
+**** DONE HTTP FTW
+     CLOSED: [2025-06-03 Di 14:58]
      :LOGBOOK:
      CLOCK: [2025-05-31 Sa 13:06]--[2025-05-31 Sa 20:03] =>  6:57
      CLOCK: [2025-05-30 Fr 16:58]--[2025-05-30 Fr 18:49] =>  1:51
@@ -297,7 +298,8 @@
      I should switch the communication between Agent and Server to HTTP, the
      protocol I am using now is too error prone, and the Agent still tends to
      crash when connectivity is lost.
-**** TODO Separate data collection and submission
+**** DONE Separate data collection and submission
+     CLOSED: [2025-06-03 Di 14:58]
      I want to separate the collection of data from the probes from the
      submission of said data to the Server.
      That way I can deal with intermittent connectivity in a natural manner,
