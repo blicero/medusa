@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-06-03 17:52:37 krylon>
+# Time-stamp: <2025-06-03 20:35:51 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [18/19]
+* Medusa [17/19]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,15 +18,15 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-06-03 Di 17:52]
+   #+CAPTION: Clock summary at [2025-06-03 Di 20:35]
    | Headline                                  | Time       |            |         |         |       |      |
    |-------------------------------------------+------------+------------+---------+---------+-------+------|
-   | *Total time*                              | *3d 15:06* |            |         |         |       |      |
+   | *Total time*                              | *3d 17:39* |            |         |         |       |      |
    |-------------------------------------------+------------+------------+---------+---------+-------+------|
-   | *Medusa [18/19]*                          | *3d 15:06* |            |         |         |       |      |
+   | *Medusa [17/19]*                          | *3d 17:39* |            |         |         |       |      |
    | \_  /Features [1/1]/                      |            | /3:10/     |         |         |       |      |
    | \_    Intermittent connectivity [0/0]     |            |            |    3:10 |         |       |      |
-   | \_  /Components [16/17]/                  |            | /3d 11:04/ |         |         |       |      |
+   | \_  /Components [15/17]/                  |            | /3d 13:37/ |         |         |       |      |
    | \_    Main [0/0]                          |            |            |    0:40 |         |       |      |
    | \_    Probes [4/4]                        |            |            |   14:43 |         |       |      |
    | \_      Free disk space ?                 |            |            |         |    1:47 |       |      |
@@ -37,9 +37,9 @@
    | \_    Database [2/2]                      |            |            |    1:45 |         |       |      |
    | \_      Exception handling                |            |            |         |    0:09 |       |      |
    | \_      Pool                              |            |            |         |    0:28 |       |      |
-   | \_    Server [8/9]                        |            |            | 2d 6:51 |         |       |      |
-   | \_      Web Interface [3/3]               |            |            |         | 1d 4:14 |       |      |
-   | \_        Probe Graphs                    |            |            |         |         |  0:21 |      |
+   | \_    Server [7/9]                        |            |            | 2d 9:24 |         |       |      |
+   | \_      Web Interface [2/3]               |            |            |         | 1d 6:47 |       |      |
+   | \_        Probe Graphs                    |            |            |         |         |  2:54 |      |
    | \_        Graphs [1/1]                    |            |            |         |         | 20:09 |      |
    | \_          Labels on Y-axis              |            |            |         |         |       | 0:25 |
    | \_      Error Handling [0/0]              |            |            |         |    0:58 |       |      |
@@ -72,7 +72,7 @@
     After switching the communication between Agent and Server to HTTP, I want
     to separate the collection of data in the Agent from submitting it to the
     Server.
-** Components [16/17]
+** Components [15/17]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -168,7 +168,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [8/9]
+*** Server [7/9]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -180,7 +180,7 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
-**** TODO Web Interface [3/3]
+**** TODO Web Interface [2/3]
      :PROPERTIES:
      :COOKIE_DATA: todo recursive
      :VISIBILITY: children
@@ -201,9 +201,9 @@
      *Update* So far both Bottle and Jinja2 are very pleasant to use.
      [2025-05-06 Di 23:18]
      *Update* For graphs, I will be using matplotlib, probably.
-***** SUSPENDED Probe Graphs
-      CLOSED: [2025-06-03 Di 17:52]
+***** TODO Probe Graphs
       :LOGBOOK:
+      CLOCK: [2025-06-03 Di 18:02]--[2025-06-03 Di 20:35] =>  2:33
       CLOCK: [2025-06-03 Di 15:08]--[2025-06-03 Di 15:29] =>  0:21
       :END:
       In addition to the graphs on the Host detail pages, I want to render
@@ -219,6 +219,11 @@
       and it wasn't great, unless I am prepared to take the plunge and look
       into matplotlib again. Which I am *not* at this time, although I might
       do so in the future.
+      ...
+      /Hold that thought!/ - I just remembered I did one deadend project in Go
+      where I ended up using a Javascript library for rendering the charts on
+      the client side, and *that* did produce some rather nice
+      charts.
 ***** DONE Graphs [1/1]
       CLOSED: [2025-05-30 Fr 16:49]
       :LOGBOOK:
