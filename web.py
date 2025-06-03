@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-03 15:29:10 krylon>
+# Time-stamp: <2025-06-03 17:42:11 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -306,15 +306,36 @@ class WebUI:
         finally:
             db.close()
 
-    def handle_probe_graph(self, src: str) -> Union[str, bytes]:
-        """Render a graph of the data for the given Probe."""
-        try:
-            db = Database()
-            now: int = int(time.time())
-            records = db.record_get_by_probe(src, now-86400, now)
-            return ""
-        finally:
-            db.close()
+    # def handle_probe_graph(self, src: str) -> Union[str, bytes]:
+    #     """Render a graph of the data for the given Probe."""
+    #     try:
+    #         db = Database()
+    #         hlist: list[data.Host] = db.host_get_all()
+    #         hosts: dict[int, data.Host] = {}
+    #         for h in hlist:
+    #             hosts[h.name] = h
+    #         now: int = int(time.time())
+    #         records = db.record_get_by_probe(src, now-86400, now)
+    #         sdata: dict[str, list[data.Record]]
+    #         for r in records:
+    #             host = hosts[r.host_id]
+    #             if not host.name in sdata:
+    #                 sdata[host.name] = []
+    #             sdata[host.name].append(r)
+
+    #         cfg = Config()
+    #         cfg.show_minor_x_labels = False
+    #         cfg.x_label_rotation = 20
+    #         cfg.x_labels_major_count = 5
+    #         cfg.range = (0, max_free)
+    #         cfg.x_title = "Time"
+    #         cfg.title = "Free Disk Space"
+    #         cfg.width = graph_width
+    #         cfg.height = graph_height
+
+    #         return ""
+    #     finally:
+    #         db.close()
 
     # Static files
 
