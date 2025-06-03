@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-02 18:21:22 krylon>
+# Time-stamp: <2025-06-03 15:29:10 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -24,6 +24,7 @@ import pickle
 import re
 import socket
 import threading
+import time
 from datetime import datetime
 from typing import Any, Final, Optional, Union
 
@@ -302,6 +303,16 @@ class WebUI:
             response.set_header("Content-Type", "image/svg+xml")
             response.set_header("Cache-Control", "no-store, max-age=0")
             return chart.render(is_unicode=True)
+        finally:
+            db.close()
+
+    def handle_probe_graph(self, src: str) -> Union[str, bytes]:
+        """Render a graph of the data for the given Probe."""
+        try:
+            db = Database()
+            now: int = int(time.time())
+            records = db.record_get_by_probe(src, now-86400, now)
+            return ""
         finally:
             db.close()
 
