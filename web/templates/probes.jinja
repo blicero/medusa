@@ -1,0 +1,41 @@
+{# -*- mode: jinja2; coding: utf-8; -*-
+Time-stamp: <2025-06-03 19:49:05 krylon>
+/data/code/python/medusa/web/templates/probes.jinja
+created on 03. 06. 2025
+(c) 2025 Benjamin Walkenhorst
+ #}
+
+{% extends "main.jinja" %}
+
+{% block title %}
+  Data by Probe type
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    {% for src in probes %}
+      <div class="row">
+        <h3>{{ src }}</h3>
+
+        <canvas id="{{ src }}_chart" width="1200" height="400"></canvas>
+        <script>
+          let {{ src }}_data = {
+          {% for host in hosts %}
+            "{{ host.name }}": [
+            {% for d in data[host.host_id] %}
+              {
+                  timestamp: new Date("{{ d.timestr() }}"),
+                  score: {{ d.load5 }},
+              },
+            {% endfor %}
+            ],
+          {% endfor %}
+          }
+          
+        </script>
+      </div>
+    {% end %}
+  </div>
+{% endblock %}
+
+
