@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-02 19:42:48 krylon>
+# Time-stamp: <2025-06-04 15:18:42 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -21,6 +21,7 @@ import json
 import logging
 import os
 import pickle
+import random
 import socket
 import time
 from datetime import datetime, timedelta
@@ -143,14 +144,17 @@ class Agent:
         endpoint: Final[str] = f"http://{self.srv}:{self.port}/ajax/register"
         body = {"name": self.name, "os": self.os}
         xfr = json.dumps(body)
-        res = requests.request("POST",
-                               endpoint,
-                               data=xfr,
-                               timeout=10,
-                               headers={
-                                   "Content-Type": "application/json",
-                                   "Content-Length": str(len(xfr)),
-                               })
+        try:
+            res = requests.request("POST",
+                                   endpoint,
+                                   data=xfr,
+                                   timeout=10,
+                                   headers={
+                                       "Content-Type": "application/json",
+                                       "Content-Length": str(len(xfr)),
+                                   })
+        except requests.exceptions.ConnectionError:
+            return False
 
         msg = res.json()
         if msg["status"] != MsgType.Success:
@@ -194,11 +198,12 @@ class Agent:
 
         while self.is_active():
             try:
-                self.process_data()
+                if not self.process_data():
+                    time.sleep(random.randint(1, self.errcnt**2))
             finally:
                 time.sleep(5)
 
-    def process_data(self) -> None:
+    def process_data(self) -> bool:
         """Attempt to submit collected data to the Server."""
         with os.scandir(common.path.spool()) as spool:
             for entry in spool:
@@ -207,17 +212,26 @@ class Agent:
                         xfr = fh.read()
                     if self.submit_data(xfr):
                         os.remove(entry.path)
+                    else:
+                        return False
+        return True
 
     def submit_data(self, xfr: Union[str, bytes]) -> bool:
         """Submit a serialized report to the Server."""
-        res = requests.request("POST",
-                               self.endpoint,
-                               data=xfr,
-                               timeout=self.timeout,
-                               headers={
-                                   "Content-Type": "application/octet-stream",
-                                   "Content-Length": str(len(xfr)),
-                               })
+        try:
+            res = requests.request("POST",
+                                   self.endpoint,
+                                   data=xfr,
+                                   timeout=self.timeout,
+                                   headers={
+                                       "Content-Type": "application/octet-stream",
+                                       "Content-Length": str(len(xfr)),
+                                   })
+        except requests.exceptions.ConnectionError:
+            self.errcnt += 1
+            return False
+
+        self.errcnt = 0
 
         if res.headers["content-type"] != "application/json":
             self.log.error("Unexpected content type in response from %s: %s",
@@ -231,6 +245,7 @@ class Agent:
             return False
 
         body = res.json()
+        status: bool = False
 
         match body["status"]:
             case MsgType.UnknownHost:
@@ -238,15 +253,15 @@ class Agent:
                     self.log.error("Failed to register with %s",
                                    self.srv)
                     self.stop()
-                    return False
                 return self.submit_data(xfr)
             case MsgType.Success:
                 self.log.debug("Data successfully sent to Server.")
-                return True
+                status = True
             case _:
                 self.log.error("Server replied with unexpected/invalid message type %s",
                                body["status"])
-                return False
+
+        return status
 
     def collect_data(self) -> None:
         """Periodically collect data from Probes and store it to the spool directory."""
