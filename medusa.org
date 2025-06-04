@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-06-04 15:36:00 krylon>
+# Time-stamp: <2025-06-04 16:37:18 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -18,15 +18,15 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-06-04 Mi 15:35]
+   #+CAPTION: Clock summary at [2025-06-04 Mi 16:37]
    | Headline                                  | Time       |            |          |         |       |      |
    |-------------------------------------------+------------+------------+----------+---------+-------+------|
-   | *Total time*                              | *3d 20:55* |            |          |         |       |      |
+   | *Total time*                              | *3d 21:37* |            |          |         |       |      |
    |-------------------------------------------+------------+------------+----------+---------+-------+------|
-   | *Medusa [17/19]*                          | *3d 20:55* |            |          |         |       |      |
+   | *Medusa [17/19]*                          | *3d 21:37* |            |          |         |       |      |
    | \_  /Features [1/1]/                      |            | /4:33/     |          |         |       |      |
    | \_    Intermittent connectivity [0/0]     |            |            |     4:33 |         |       |      |
-   | \_  /Components [15/17]/                  |            | /3d 15:30/ |          |         |       |      |
+   | \_  /Components [15/17]/                  |            | /3d 16:12/ |          |         |       |      |
    | \_    Main [0/0]                          |            |            |     0:40 |         |       |      |
    | \_    Probes [4/4]                        |            |            |    14:43 |         |       |      |
    | \_      Free disk space ?                 |            |            |          |    1:47 |       |      |
@@ -37,9 +37,9 @@
    | \_    Database [2/2]                      |            |            |     1:45 |         |       |      |
    | \_      Exception handling                |            |            |          |    0:09 |       |      |
    | \_      Pool                              |            |            |          |    0:28 |       |      |
-   | \_    Server [7/9]                        |            |            | 2d 11:17 |         |       |      |
-   | \_      Web Interface [2/3]               |            |            |          | 1d 8:40 |       |      |
-   | \_        Probe Graphs                    |            |            |          |         |  4:47 |      |
+   | \_    Server [7/9]                        |            |            | 2d 11:59 |         |       |      |
+   | \_      Web Interface [2/3]               |            |            |          | 1d 9:22 |       |      |
+   | \_        Probe Graphs                    |            |            |          |         |  5:29 |      |
    | \_        Graphs [1/1]                    |            |            |          |         | 20:09 |      |
    | \_          Labels on Y-axis              |            |            |          |         |       | 0:25 |
    | \_      Error Handling [0/0]              |            |            |          |    0:58 |       |      |
@@ -204,6 +204,8 @@
      *Update* For graphs, I will be using matplotlib, probably.
 ***** TODO Probe Graphs
       :LOGBOOK:
+      CLOCK: [2025-06-04 Mi 16:15]--[2025-06-04 Mi 16:37] =>  0:22
+      CLOCK: [2025-06-04 Mi 15:40]--[2025-06-04 Mi 16:00] =>  0:20
       CLOCK: [2025-06-04 Mi 09:13]--[2025-06-04 Mi 11:06] =>  1:53
       CLOCK: [2025-06-03 Di 18:02]--[2025-06-03 Di 20:35] =>  2:33
       CLOCK: [2025-06-03 Di 15:08]--[2025-06-03 Di 15:29] =>  0:21
