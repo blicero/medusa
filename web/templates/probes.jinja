@@ -1,5 +1,5 @@
 {# -*- mode: jinja2; coding: utf-8; -*-
-Time-stamp: <2025-06-04 15:34:26 krylon>
+Time-stamp: <2025-06-04 16:33:09 krylon>
 /data/code/python/medusa/web/templates/probes.jinja
 created on 03. 06. 2025
 (c) 2025 Benjamin Walkenhorst
@@ -22,10 +22,10 @@ created on 03. 06. 2025
           let {{ src }}_data = {
           {% for hid, host in hosts.items() %}
             "{{ host.name }}": [
-            {% for d in data[hid] %}
+            {% for d in data[src][host.name] %}
               {
                   timestamp: new Date("{{ d.timestr() }}"),
-                  score: {{ d.load5 }},
+                  score: {{ d.load.load5 }},
               },
             {% endfor %}
             ],
@@ -37,10 +37,10 @@ created on 03. 06. 2025
             type: "line",
             data: {
               datasets: [
-              {% for host in hosts %}
+              {% for hid, host in hosts.items() %}
                 {
                   label: "{{ host.name }}",
-                  data: {{ src }}_data[host.host_id],
+                  data: {{ src }}_data["{{ host.name }}"],
                   backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -83,7 +83,7 @@ created on 03. 06. 2025
            y: {
              beginAtZero: true,
              min: 0,
-             max: 256,
+             {# max: 256, #}
            },
          },
          layout: {
@@ -115,7 +115,8 @@ created on 03. 06. 2025
              },
            },
           },
-          })
+              },
+              })
         </script>
       </div>
     {% endfor %}
