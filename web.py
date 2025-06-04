@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-03 19:04:37 krylon>
+# Time-stamp: <2025-06-04 15:25:08 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -113,6 +113,7 @@ class WebUI:
 
         bottle.debug(common.DEBUG)
         route("/main", callback=self.main)
+        route("/probes", callback=self.handle_probe_view)
         route("/host/<host_id:int>", callback=self.host_details)
         route("/graph/sysload/<host_id:int>", callback=self.host_load_graph)
         route("/graph/sensor/<host_id:int>", callback=self.host_sensor_graph)
@@ -308,13 +309,13 @@ class WebUI:
 
     def handle_probe_view(self) -> Union[str, bytes]:
         """Render graphs of the data from selected Probes for the last 24 hours."""
-        probes = ("disk", "sysload")
+        probes = ("sysload", )
         try:
             db = Database()
             hlist: list[data.Host] = db.host_get_all()
             hosts: dict[int, data.Host] = {}
             for h in hlist:
-                hosts[h.name] = h
+                hosts[h.host_id] = h
             now: int = int(time.time())
             chart_data = {}
             for p in probes:
@@ -322,7 +323,7 @@ class WebUI:
                 sdata: dict[str, list[data.Record]] = {}
                 for r in records:
                     host = hosts[r.host_id]
-                    if not host.name in sdata:
+                    if host.name not in sdata:
                         sdata[host.name] = []
                     sdata[host.name].append(r)
                 chart_data[p] = sdata

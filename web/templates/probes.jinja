@@ -1,5 +1,5 @@
 {# -*- mode: jinja2; coding: utf-8; -*-
-Time-stamp: <2025-06-03 19:49:05 krylon>
+Time-stamp: <2025-06-04 15:34:26 krylon>
 /data/code/python/medusa/web/templates/probes.jinja
 created on 03. 06. 2025
 (c) 2025 Benjamin Walkenhorst
@@ -20,9 +20,9 @@ created on 03. 06. 2025
         <canvas id="{{ src }}_chart" width="1200" height="400"></canvas>
         <script>
           let {{ src }}_data = {
-          {% for host in hosts %}
+          {% for hid, host in hosts.items() %}
             "{{ host.name }}": [
-            {% for d in data[host.host_id] %}
+            {% for d in data[hid] %}
               {
                   timestamp: new Date("{{ d.timestr() }}"),
                   score: {{ d.load5 }},
@@ -31,10 +31,94 @@ created on 03. 06. 2025
             ],
           {% endfor %}
           }
-          
+
+          let ctx = $("#{{ src }}_chart")
+          let chart = new Chart(ctx, {
+            type: "line",
+            data: {
+              datasets: [
+              {% for host in hosts %}
+                {
+                  label: "{{ host.name }}",
+                  data: {{ src }}_data[host.host_id],
+                  backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1,
+                  color: "rgba(0, 164, 33, 0)",
+                },
+              {% endfor %}
+              ],
+            },
+            options: {
+         locale: "de-DE",
+         parsing: {
+           xAxisKey: "timestamp",
+           yAxisKey: "score",
+         },
+         scales: {
+           x: {
+             type: "time",
+             time: {
+               displayFormats: {
+                 minute: "HH:mm",
+                 hour: "HH:mm",
+                 day: "dd. MM. yyyy",
+               },
+             },
+           },
+           y: {
+             beginAtZero: true,
+             min: 0,
+             max: 256,
+           },
+         },
+         layout: {
+           padding: {
+             left: 50,
+             right: 50,
+             top: 0,
+             bottom: 0,
+           },
+         },
+         plugins: {
+           tooltip: {
+             callbacks: {
+               title: (ctx) => {
+                 return ctx[0].dataset.data[ctx[0].dataIndex].timestamp.toLocaleString()
+               },
+               label: (context) => {
+                 let lbl = context.dataset.label || '';
+                 const note = context.dataset.data[context.dataIndex].note
+                 const score = context.dataset.data[context.dataIndex].score
+
+                 lbl += `: ${score}`
+
+                 if (lbl && note != '') {
+                   lbl += ` (${note})`;
+                 }
+                 return lbl;
+               },
+             },
+           },
+          },
+          })
         </script>
       </div>
-    {% end %}
+    {% endfor %}
   </div>
 {% endblock %}
 
