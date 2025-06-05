@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-04 15:25:08 krylon>
+# Time-stamp: <2025-06-05 18:01:30 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -309,7 +309,7 @@ class WebUI:
 
     def handle_probe_view(self) -> Union[str, bytes]:
         """Render graphs of the data from selected Probes for the last 24 hours."""
-        probes = ("sysload", )
+        probes = ("sysload", "disk")
         try:
             db = Database()
             hlist: list[data.Host] = db.host_get_all()
@@ -359,6 +359,10 @@ class WebUI:
                             "no-store, max-age=0" if common.DEBUG else "max-age=7200")
 
         full_path = os.path.join(self.root, "static", path)
+        if not os.path.isfile(full_path):
+            self.log.error("Static file %s was not found", path)
+            response.status = 404
+            return ""
         with open(full_path, "rb") as fh:
             return fh.read()
 
