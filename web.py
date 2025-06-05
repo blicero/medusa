@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-05 18:01:30 krylon>
+# Time-stamp: <2025-06-05 18:58:31 krylon>
 #
 # /data/code/python/medusa/web.py
 # created on 05. 05. 2025
@@ -330,7 +330,8 @@ class WebUI:
 
             tmpl: Template = self.env.get_template("probes.jinja")
             tmpl_vars = self._tmpl_vars()
-            tmpl_vars["hosts"] = hosts
+            tmpl_vars["hosts"] = hlist
+            tmpl_vars["hlist"] = hosts
             tmpl_vars["data"] = chart_data
             tmpl_vars["probes"] = probes
 
