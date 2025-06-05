@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-06-04 16:37:18 krylon>
+# Time-stamp: <2025-06-05 19:31:55 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -8,7 +8,7 @@
 #+TODO: MEDITATE(m) PLANNING(p) | SUSPENDED(s)
 #+PRIORITIES: A G D
 
-* Medusa [17/19]
+* Medusa [18/19]
   :PROPERTIES:
   :COOKIE_DATA: todo recursive
   :VISIBILITY: children
@@ -18,38 +18,38 @@
   of that data.
 ** Clocktable
    #+BEGIN: clocktable :scope file :maxlevel 255 :emphasize t
-   #+CAPTION: Clock summary at [2025-06-04 Mi 16:37]
-   | Headline                                  | Time       |            |          |         |       |      |
-   |-------------------------------------------+------------+------------+----------+---------+-------+------|
-   | *Total time*                              | *3d 21:37* |            |          |         |       |      |
-   |-------------------------------------------+------------+------------+----------+---------+-------+------|
-   | *Medusa [17/19]*                          | *3d 21:37* |            |          |         |       |      |
-   | \_  /Features [1/1]/                      |            | /4:33/     |          |         |       |      |
-   | \_    Intermittent connectivity [0/0]     |            |            |     4:33 |         |       |      |
-   | \_  /Components [15/17]/                  |            | /3d 16:12/ |          |         |       |      |
-   | \_    Main [0/0]                          |            |            |     0:40 |         |       |      |
-   | \_    Probes [4/4]                        |            |            |    14:43 |         |       |      |
-   | \_      Free disk space ?                 |            |            |          |    1:47 |       |      |
-   | \_      Conditional imports               |            |            |          |    1:09 |       |      |
-   | \_      Sensors [1/1]                     |            |            |          |    6:33 |       |      |
-   | \_        FreeBSD                         |            |            |          |         |  1:35 |      |
-   | \_    Model [0/0]                         |            |            |     2:17 |         |       |      |
-   | \_    Database [2/2]                      |            |            |     1:45 |         |       |      |
-   | \_      Exception handling                |            |            |          |    0:09 |       |      |
-   | \_      Pool                              |            |            |          |    0:28 |       |      |
-   | \_    Server [7/9]                        |            |            | 2d 11:59 |         |       |      |
-   | \_      Web Interface [2/3]               |            |            |          | 1d 9:22 |       |      |
-   | \_        Probe Graphs                    |            |            |          |         |  5:29 |      |
-   | \_        Graphs [1/1]                    |            |            |          |         | 20:09 |      |
-   | \_          Labels on Y-axis              |            |            |          |         |       | 0:25 |
-   | \_      Error Handling [0/0]              |            |            |          |    0:58 |       |      |
-   | \_      Protocol                          |            |            |          |   16:52 |       |      |
-   | \_        Handle Agent HTTP communication |            |            |          |         |  0:49 |      |
-   | \_        In a pickle                     |            |            |          |         |  1:51 |      |
-   | \_    Agent [2/2]                         |            |            |     8:48 |         |       |      |
-   | \_      HTTP FTW                          |            |            |          |    8:48 |       |      |
-   | \_  /Bugs [1/1]/                          |            | /0:52/     |          |         |       |      |
-   | \_    Error deserializing report data     |            |            |     0:38 |         |       |      |
+   #+CAPTION: Clock summary at [2025-06-05 Do 19:31]
+   | Headline                                  | Time      |            |          |          |       |      |
+   |-------------------------------------------+-----------+------------+----------+----------+-------+------|
+   | *Total time*                              | *4d 0:02* |            |          |          |       |      |
+   |-------------------------------------------+-----------+------------+----------+----------+-------+------|
+   | *Medusa [18/19]*                          | *4d 0:02* |            |          |          |       |      |
+   | \_  /Features [1/1]/                      |           | /4:33/     |          |          |       |      |
+   | \_    Intermittent connectivity [0/0]     |           |            |     4:33 |          |       |      |
+   | \_  /Components [16/17]/                  |           | /3d 18:37/ |          |          |       |      |
+   | \_    Main [0/0]                          |           |            |     0:40 |          |       |      |
+   | \_    Probes [4/4]                        |           |            |    14:43 |          |       |      |
+   | \_      Free disk space ?                 |           |            |          |     1:47 |       |      |
+   | \_      Conditional imports               |           |            |          |     1:09 |       |      |
+   | \_      Sensors [1/1]                     |           |            |          |     6:33 |       |      |
+   | \_        FreeBSD                         |           |            |          |          |  1:35 |      |
+   | \_    Model [0/0]                         |           |            |     2:17 |          |       |      |
+   | \_    Database [2/2]                      |           |            |     1:45 |          |       |      |
+   | \_      Exception handling                |           |            |          |     0:09 |       |      |
+   | \_      Pool                              |           |            |          |     0:28 |       |      |
+   | \_    Server [8/9]                        |           |            | 2d 14:24 |          |       |      |
+   | \_      Web Interface [3/3]               |           |            |          | 1d 11:47 |       |      |
+   | \_        Probe Graphs                    |           |            |          |          |  7:54 |      |
+   | \_        Graphs [1/1]                    |           |            |          |          | 20:09 |      |
+   | \_          Labels on Y-axis              |           |            |          |          |       | 0:25 |
+   | \_      Error Handling [0/0]              |           |            |          |     0:58 |       |      |
+   | \_      Protocol                          |           |            |          |    16:52 |       |      |
+   | \_        Handle Agent HTTP communication |           |            |          |          |  0:49 |      |
+   | \_        In a pickle                     |           |            |          |          |  1:51 |      |
+   | \_    Agent [2/2]                         |           |            |     8:48 |          |       |      |
+   | \_      HTTP FTW                          |           |            |          |     8:48 |       |      |
+   | \_  /Bugs [1/1]/                          |           | /0:52/     |          |          |       |      |
+   | \_    Error deserializing report data     |           |            |     0:38 |          |       |      |
    #+END:
 ** Features [1/1]
    :PROPERTIES:
@@ -73,7 +73,7 @@
     After switching the communication between Agent and Server to HTTP, I want
     to separate the collection of data in the Agent from submitting it to the
     Server.
-** Components [15/17]
+** Components [16/17]
    :PROPERTIES:
    :COOKIE_DATA: todo recursive
    :VISIBILITY: children
@@ -169,7 +169,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [7/9]
+*** Server [8/9]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -181,7 +181,7 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
-**** TODO Web Interface [2/3]
+**** TODO Web Interface [3/3]
      :PROPERTIES:
      :COOKIE_DATA: todo recursive
      :VISIBILITY: children
@@ -202,8 +202,10 @@
      *Update* So far both Bottle and Jinja2 are very pleasant to use.
      [2025-05-06 Di 23:18]
      *Update* For graphs, I will be using matplotlib, probably.
-***** TODO Probe Graphs
+***** DONE Probe Graphs
+      CLOSED: [2025-06-05 Do 19:26]
       :LOGBOOK:
+      CLOCK: [2025-06-05 Do 17:00]--[2025-06-05 Do 19:25] =>  2:25
       CLOCK: [2025-06-04 Mi 16:15]--[2025-06-04 Mi 16:37] =>  0:22
       CLOCK: [2025-06-04 Mi 15:40]--[2025-06-04 Mi 16:00] =>  0:20
       CLOCK: [2025-06-04 Mi 09:13]--[2025-06-04 Mi 11:06] =>  1:53
