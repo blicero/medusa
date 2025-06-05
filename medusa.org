@@ -1,5 +1,5 @@
 # -*- mode: org; fill-column: 78; -*-
-# Time-stamp: <2025-06-05 19:31:55 krylon>
+# Time-stamp: <2025-06-05 19:34:35 krylon>
 #
 #+TAGS: internals(i) ui(u) bug(b) feature(f)
 #+TAGS: database(d) design(e), meditation(m)
@@ -169,7 +169,7 @@
      [2025-05-06 Di 15:05]
      Also, sqlite3 connections only work in the thread that created them, so
      the whole concept of a Pool doesn't work.
-*** Server [8/9]
+*** Server [8/8]
     :PROPERTIES:
     :COOKIE_DATA: todo recursive
     :VISIBILITY: children
@@ -181,7 +181,7 @@
     CLOCK: [2025-04-23 Mi 16:55]--[2025-04-23 Mi 16:59] =>  0:04
     CLOCK: [2025-04-22 Di 20:03]--[2025-04-23 Mi 00:39] =>  4:36
     :END:
-**** TODO Web Interface [3/3]
+**** Web Interface [2/3]
      :PROPERTIES:
      :COOKIE_DATA: todo recursive
      :VISIBILITY: children
@@ -230,8 +230,7 @@
       where I ended up using a Javascript library for rendering the charts on
       the client side, and *that* did produce some rather nice
       charts.
-***** DONE Graphs [1/1]
-      CLOSED: [2025-05-30 Fr 16:49]
+***** TODO Graphs [1/1]
       :LOGBOOK:
       CLOCK: [2025-05-25 So 10:01]--[2025-05-25 So 21:26] => 11:25
       CLOCK: [2025-05-21 Mi 17:42]--[2025-05-21 Mi 20:45] =>  3:03
@@ -244,6 +243,9 @@
       CLOCK: [2025-05-07 Mi 17:21]--[2025-05-07 Mi 18:14] =>  0:53
       :END:
       In my first attempt, I will be using [[https://matplotlib.org/][Matplotlib]].
+****** [2025-06-05 Do 19:32]
+       Now that I render the Probe charts client side using chart.js, I wonder
+       if I should use that for the host charts as well. 🤔
 ****** [2025-05-08 Do 18:16]
        Okay, so, whatever I want to, matplotlib is definitely up to the
        task. It is, however, hugely complex and almost certainly overkill for
