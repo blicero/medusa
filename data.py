@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-03 19:10:43 krylon>
+# Time-stamp: <2025-06-05 17:59:40 krylon>
 #
 # /data/code/python/medusa/data.py
 # created on 18. 03. 2025
@@ -21,7 +21,7 @@ import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Final, NamedTuple, Optional
+from typing import Any, Final, NamedTuple, Optional, Union
 
 from medusa import common
 
@@ -113,6 +113,10 @@ class Record(ABC):
         """Return a string of the timestamp in ISO 8601 format."""
         return self.timestamp.strftime(common.TIME_FMT)
 
+    @abstractmethod
+    def score(self) -> Union[int, float]:
+        """Return a numeric value to be used in rendering charts."""
+
 
 @dataclass(slots=True)
 class CPURecord(Record):
@@ -127,6 +131,10 @@ class CPURecord(Record):
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
         return json.dumps(self.frequency)
+
+    def score(self) -> Union[int, float]:
+        """Return a numeric value to be used in rendering charts."""
+        return self.frequency
 
 
 class SysLoad(NamedTuple):
@@ -151,6 +159,10 @@ class LoadRecord(Record):
         """Return the Record payload in serialized form."""
         return json.dumps(self.load)
 
+    def score(self) -> Union[int, float]:
+        """Return a numeric value to be used in rendering charts."""
+        return self.load.load5 if self.load is not None else 0
+
 
 class SensorData(NamedTuple):
     """SensorData is a number and a unit."""
@@ -172,6 +184,10 @@ class SensorRecord(Record):
     def payload(self) -> str:
         """Return the Record payload in serialized form."""
         return json.dumps(self.sensors)
+
+    def score(self) -> Union[int, float]:
+        """Return a numeric value to be used in rendering charts."""
+        return 0
 
 
 class FileSystem(NamedTuple):
@@ -198,6 +214,9 @@ class DiskRecord(Record):
         """Return the Record payload in serialized form."""
         return json.dumps(self.disks)
 
+    def score(self) -> Union[int, float]:
+        """Return a numeric value to be used in rendering charts."""
+        return self.disks["/"][3]
 
 # Local Variables: #
 # python-indent: 4 #
