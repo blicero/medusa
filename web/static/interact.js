@@ -1,4 +1,4 @@
-// Time-stamp: <2025-06-05 17:30:51 krylon>
+// Time-stamp: <2025-06-05 18:41:55 krylon>
 // -*- mode: javascript; coding: utf-8; -*-
 // Copyright 2015-2020 Benjamin Walkenhorst <krylon@gmx.net>
 //
@@ -191,12 +191,20 @@ function msg_add(msg, level=1) {
     msg_tbl.innerHTML += row
 } // function msg_add(msg)
 
-function fmtNumber(n) {
+function fmtNumber(n, kind = "") {
+    if (kind in formatters) {
+        return formatters[kind](n)
+    } else {
+        return fmtDefault(n)
+    }
+}
+
+function fmtDefault(n) {
     return n.toPrecision(3).toString()
 }
 
 function fmtBytes(n) {
-    const units = ["Bytes", "KB", "MB", "GB", "TB", "PB"]
+    const units = ["KB", "MB", "GB", "TB", "PB"]
     let idx = 0
     while (n >= 1024) {
         n /= 1024
