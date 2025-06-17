@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-06-04 15:18:42 krylon>
+# Time-stamp: <2025-06-17 19:05:38 krylon>
 #
 # /data/code/python/medusa/agent.py
 # created on 18. 03. 2025
@@ -199,7 +199,7 @@ class Agent:
         while self.is_active():
             try:
                 if not self.process_data():
-                    time.sleep(random.randint(1, self.errcnt**2))
+                    time.sleep(random.randint(1, min(self.errcnt**2, 2)))
             finally:
                 time.sleep(5)
 
