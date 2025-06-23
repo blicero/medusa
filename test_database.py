@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Time-stamp: <2025-04-29 18:48:24 krylon>
+# Time-stamp: <2025-06-23 18:45:32 krylon>
 #
 # /data/code/python/medusa/test_database.py
 # created on 24. 04. 2025
@@ -26,6 +26,7 @@ from medusa import common
 from medusa.database import Database
 
 TEST_DIR: Final[str] = os.path.join(
+    "/tmp",
     datetime.now().strftime("medusa_test_database_%Y%m%d_%H%M%S"))
 
 
